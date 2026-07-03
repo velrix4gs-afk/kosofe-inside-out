@@ -71,7 +71,7 @@ export default async function Home() {
       {/* Inside the Logo & Ad Banner section */}
       <div className="w-full md:w-auto flex justify-center md:justify-start">
         <Image
-          src="/img/kio logo.jpg"  // Starts with /, pointing to public/img
+          src="/img/kio-logo.jpg"  // Starts with /, pointing to public/img
           alt="Kosofe Inside Out Logo"
           width={220}               // Required to remove red lines
           height={60}               // Required to remove red lines
@@ -81,7 +81,7 @@ export default async function Home() {
       {/* Ad Banner Image */}
       <div className="w-full md:w-[500px] h-[80px] flex items-center justify-center overflow-hidden shrink-0 rounded">
         <img
-          src="/img/kio banner.jpg"
+          src="/img/kio-banner.jpg"
           alt="Advertise with Kosofe Inside Out"
           className="w-full h-full object-contain"
         />
