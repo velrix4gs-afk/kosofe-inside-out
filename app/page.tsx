@@ -69,109 +69,113 @@ export default async function Home() {
       </div>
 
       {/* --- LOGO & AD BANNER --- */}
-      <div className="bg-white py-6 border-b">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-center md:text-left">
-            KOSOFE <span className="text-[#c41e3a]">INSIDE OUT</span>
-            <div className="text-[10px] font-normal text-gray-500 tracking-wider">News that shape our community</div>
-          </h1>
-          {/* Ad Banner Placeholder */}
-          <div className="bg-[#222] text-white w-full md:w-[500px] h-[80px] flex items-center justify-center rounded text-sm font-medium">
-            <div className="text-center">
-              <p className="text-lg font-bold">Your Business Deserves<br />Maximum Visibility</p>
-              <button className="mt-1 bg-[#c41e3a] px-4 py-1 text-xs uppercase font-bold rounded">Advertise With Us</button>
-            </div>
-          </div>
+      {/* Logo Image */}
+      <div className="w-full md:w-auto flex justify-center md:justify-start">
+        <img
+          src="img/KIO Logo.jpg"
+          alt="Kosofe Inside Out Logo"
+          className="h-14 md:h-16 w-auto object-contain"
+        />
+      </div>
+      {/* Ad Banner Placeholder */}
+      <div className="bg-[#222] text-white w-full md:w-[500px] h-[80px] flex items-center justify-center rounded text-sm font-medium">
+        <div className="text-center">
+          <p className="text-lg font-bold">Your Business Deserves<br />Maximum Visibility</p>
+          <button className="mt-1 bg-[#c41e3a] px-4 py-1 text-xs uppercase font-bold rounded">Advertise With Us</button>
         </div>
       </div>
+    </div>
+      </div >
 
-      {/* --- MAIN NAVIGATION --- */}
-      <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between overflow-x-auto py-3 gap-6">
-          <div className="flex items-center gap-6 text-sm font-bold text-gray-700 whitespace-nowrap">
-            <a href="#" className="bg-[#c41e3a] text-white px-3 py-1 rounded">NEWS</a>
-            <a href="#" className="hover:text-[#c41e3a]">POLITICS</a>
-            <a href="#" className="hover:text-[#c41e3a]">GOVERNANCE</a>
-            <a href="#" className="hover:text-[#c41e3a]">COMMUNITY</a>
-            <a href="#" className="hover:text-[#c41e3a]">BUSINESS</a>
-            <a href="#" className="hover:text-[#c41e3a]">ENTERTAINMENT</a>
-            <a href="#" className="hover:text-[#c41e3a]">OPINION</a>
-            <a href="#" className="hover:text-[#c41e3a]">MORE</a>
-          </div>
-          <button className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap">
-            🔥 TRENDING
-          </button>
+    {/* --- MAIN NAVIGATION --- */ }
+    < nav className = "bg-white border-b shadow-sm sticky top-0 z-50" >
+      <div className="max-w-6xl mx-auto px-4 flex items-center justify-between overflow-x-auto py-3 gap-6">
+        <div className="flex items-center gap-6 text-sm font-bold text-gray-700 whitespace-nowrap">
+          <a href="#" className="bg-[#c41e3a] text-white px-3 py-1 rounded">NEWS</a>
+          <a href="#" className="hover:text-[#c41e3a]">POLITICS</a>
+          <a href="#" className="hover:text-[#c41e3a]">GOVERNANCE</a>
+          <a href="#" className="hover:text-[#c41e3a]">COMMUNITY</a>
+          <a href="#" className="hover:text-[#c41e3a]">BUSINESS</a>
+          <a href="#" className="hover:text-[#c41e3a]">ENTERTAINMENT</a>
+          <a href="#" className="hover:text-[#c41e3a]">OPINION</a>
+          <a href="#" className="hover:text-[#c41e3a]">MORE</a>
         </div>
-      </nav>
+        <button className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap">
+          🔥 TRENDING
+        </button>
+      </div>
+      </nav >
 
-      {/* --- BREAKING NEWS TICKER --- */}
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a]">
-          <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm">Breaking News</span>
-          <p className="text-sm font-medium truncate">
-            {articles[0]?.title || "No breaking news at the moment."}
-          </p>
+    {/* --- BREAKING NEWS TICKER --- */ }
+    < div className = "max-w-6xl mx-auto px-4 py-4" >
+      <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a]">
+        <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm">Breaking News</span>
+        <p className="text-sm font-medium truncate">
+          {articles[0]?.title || "No breaking news at the moment."}
+        </p>
+      </div>
+      </div >
+
+    {/* --- HERO SECTION --- */ }
+    < div className = "max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8" >
+      {/* LEFT: Top Story */ }
+      < div className = "lg:col-span-2 relative group cursor-pointer" >
+        <div className="relative h-[400px] bg-gray-200 rounded overflow-hidden">
+          <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 p-6 w-full">
+            <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
+            <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
+            <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
+            <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
+          </div>
+        </div>
+        </div >
+
+    {/* RIGHT: Sidebar Stories */ }
+    < div className = "flex flex-col gap-4" >
+    {
+      articles.slice(1, 4).map((story, idx) => (
+        <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
+          <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
+          <div>
+            <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
+            <h4 className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer">{story.title}</h4>
+            <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
+          </div>
+        </div>
+      ))
+    }
+        </div >
+      </div >
+
+    {/* --- WEATHER & STAY INFORMED SECTION --- */ }
+    < div className = "max-w-6xl mx-auto px-4 pb-8" >
+      <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-6 justify-between items-start">
+        {/* Left: Weather */}
+        <div className="flex-1">
+          <h3 className="font-bold text-[#c41e3a] mb-4">KOSOFE WEATHER</h3>
+          <div className="flex items-center gap-4 mb-2">
+            <span className="text-4xl font-bold">{weather.temp}°C</span>
+            <span className="text-sm text-gray-600">{weather.desc}</span>
+          </div>
+          <div className="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-2 border-t pt-4">
+            <span>Humidity: {weather.humidity}%</span>
+            <span>Wind: {weather.wind} km/h</span>
+            <span>Feels like: {weather.temp}°C</span>
+          </div>
+        </div>
+        {/* Right: Subscribe */}
+        <div className="flex-1 border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
+          <h3 className="font-bold mb-2">STAY INFORMED</h3>
+          <p className="text-sm text-gray-600 mb-4">Get the latest news and updates from Kosofe delivered to your inbox.</p>
+          <NewsletterForm />
         </div>
       </div>
+      </div >
 
-      {/* --- HERO SECTION --- */}
-      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8">
-        {/* LEFT: Top Story */}
-        <div className="lg:col-span-2 relative group cursor-pointer">
-          <div className="relative h-[400px] bg-gray-200 rounded overflow-hidden">
-            <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-6 w-full">
-              <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-              <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
-              <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
-              <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT: Sidebar Stories */}
-        <div className="flex flex-col gap-4">
-          {articles.slice(1, 4).map((story, idx) => (
-            <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
-              <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
-              <div>
-                <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
-                <h4 className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer">{story.title}</h4>
-                <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* --- WEATHER & STAY INFORMED SECTION --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-8">
-        <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-6 justify-between items-start">
-          {/* Left: Weather */}
-          <div className="flex-1">
-            <h3 className="font-bold text-[#c41e3a] mb-4">KOSOFE WEATHER</h3>
-            <div className="flex items-center gap-4 mb-2">
-              <span className="text-4xl font-bold">{weather.temp}°C</span>
-              <span className="text-sm text-gray-600">{weather.desc}</span>
-            </div>
-            <div className="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-2 border-t pt-4">
-              <span>Humidity: {weather.humidity}%</span>
-              <span>Wind: {weather.wind} km/h</span>
-              <span>Feels like: {weather.temp}°C</span>
-            </div>
-          </div>
-          {/* Right: Subscribe */}
-          <div className="flex-1 border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
-            <h3 className="font-bold mb-2">STAY INFORMED</h3>
-            <p className="text-sm text-gray-600 mb-4">Get the latest news and updates from Kosofe delivered to your inbox.</p>
-            <NewsletterForm />
-          </div>
-        </div>
-      </div>
-
-      {/* --- EXPLORE BY CATEGORY (3x2 Grid) --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
+    {/* --- EXPLORE BY CATEGORY (3x2 Grid) --- */ }
+    < div className = "max-w-6xl mx-auto px-4 pb-12" >
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Explore By Category</h3>
           <a href="#" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Categories &rarr;</a>
@@ -196,13 +200,13 @@ export default async function Home() {
             </div>
           ))}
         </div>
-      </div>
+      </div >
 
-      {/* --- FOLLOW US & TRENDING NOW --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+    {/* --- FOLLOW US & TRENDING NOW --- */ }
+    < div className = "max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8" >
 
-        {/* Left: Follow Us */}
-        <div className="bg-white p-6 rounded shadow-sm">
+      {/* Left: Follow Us */ }
+      < div className = "bg-white p-6 rounded shadow-sm" >
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
           <div className="flex flex-wrap gap-4">
             <button className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">Facebook</button>
@@ -210,10 +214,10 @@ export default async function Home() {
             <button className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">Instagram</button>
             <button className="bg-[#FF0000] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">YouTube</button>
           </div>
-        </div>
+        </div >
 
-        {/* Right: Trending Now */}
-        <div className="bg-white p-6 rounded shadow-sm">
+    {/* Right: Trending Now */ }
+    < div className = "bg-white p-6 rounded shadow-sm" >
           <h3 className="font-bold text-lg mb-4 border-b pb-2 flex items-center justify-between">
             TRENDING NOW
             <span className="text-xs text-[#c41e3a] font-normal">View All &rarr;</span>
@@ -226,11 +230,11 @@ export default async function Home() {
               </li>
             ))}
           </ul>
-        </div>
-      </div>
+        </div >
+      </div >
 
-      {/* --- SPECIAL FEATURES (2x2 Grid) --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
+    {/* --- SPECIAL FEATURES (2x2 Grid) --- */ }
+    < div className = "max-w-6xl mx-auto px-4 pb-12" >
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
           <a href="#" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</a>
@@ -253,21 +257,21 @@ export default async function Home() {
             </div>
           ))}
         </div>
-      </div>
+      </div >
 
-      {/* --- WHATSAPP CTA & FOOTER --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div>
-            <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
-            <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
-          </div>
-          <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
+    {/* --- WHATSAPP CTA & FOOTER --- */ }
+    < div className = "max-w-6xl mx-auto px-4 pb-12" >
+      <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div>
+          <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
+          <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
         </div>
+        <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
       </div>
+      </div >
 
-      {/* --- FOOTER --- */}
-      <footer className="bg-[#1a1a1a] text-gray-400 py-12 mt-8 border-t border-gray-800">
+    {/* --- FOOTER --- */ }
+    < footer className = "bg-[#1a1a1a] text-gray-400 py-12 mt-8 border-t border-gray-800" >
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
           {/* Col 1: Brand */}
           <div>
@@ -327,7 +331,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-4 mt-8 pt-6 border-t border-gray-800 text-center text-[10px] text-gray-600">
           &copy; {new Date().getFullYear()} Kosofe Inside Out. All Rights Reserved.
         </div>
-      </footer>
-    </main>
+      </footer >
+    </main >
   );
 }
