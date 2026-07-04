@@ -33,7 +33,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                 <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded">
                     <p className="font-bold">🚨 Server Error</p>
                     <p className="text-sm break-words">{errorMessage}</p>
-                    <p className="text-sm mt-2 text-gray-600">If you are seeing a "Missing Supabase environment variable" error, go to your Vercel Dashboard -> Settings -> Environment Variables and make sure you typed them exactly as they are in your .env.local. Then redeploy.</p>
+                    <p className="text-sm mt-2 text-gray-600">If you are seeing a 'Missing Supabase environment variable' error, go to your Vercel Dashboard -> Settings -> Environment Variables and make sure you typed them exactly as they are in your .env.local. Then redeploy.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
