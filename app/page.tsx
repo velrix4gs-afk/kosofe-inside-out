@@ -189,7 +189,6 @@ export default async function Home() {
           <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
         </div>
       </div>
-
     </main>
   );
 }
