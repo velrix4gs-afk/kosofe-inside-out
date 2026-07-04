@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
-    // Convert "Politics" to "politics" etc
+    // Convert "politics" to "Politics" to match database
     const categorySlug = params.slug.replace(/-/g, ' ');
     const formattedCategory = categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1);
 
@@ -20,7 +20,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {articles?.map((story) => (
-                    <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm p-4 hover:shadow-md transition cursor-pointer">
+                    <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm p-4 hover:shadow-md transition cursor-pointer block">
                         <img src={story.image_url || ''} alt={story.title} className="w-full h-48 object-cover rounded mb-3 bg-gray-200" />
                         <h4 className="font-bold text-gray-800 line-clamp-2 text-lg">{story.title}</h4>
                         <p className="text-sm text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>
