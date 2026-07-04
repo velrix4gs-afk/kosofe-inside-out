@@ -8,7 +8,7 @@ export default function Footer() {
                     <h2 className="text-white text-xl font-extrabold tracking-tight mb-4">
                         KOSOFE <span className="text-[#c41e3a]">INSIDE OUT</span>
                     </h2>
-                    <p className="text-xs leading-relaxed mb-4">Kosofe Inside Out is your trusted source for hyperlocal news, community intelligence, and stories that shape our lives in Kosofe.</p>
+                    <p className="text-xs leading-relaxed mb-4">Kosofe Inside Out is your trusted source for hyperlocal news.</p>
                     <div className="flex gap-4 text-xs">
                         <span className="bg-gray-800 p-2 rounded cursor-pointer hover:text-white">FB</span>
                         <span className="bg-gray-800 p-2 rounded cursor-pointer hover:text-white">X</span>
@@ -21,7 +21,6 @@ export default function Footer() {
                         <li className="hover:text-[#c41e3a] cursor-pointer">About Us</li>
                         <li className="hover:text-[#c41e3a] cursor-pointer">Contact Us</li>
                         <li className="hover:text-[#c41e3a] cursor-pointer">Advertise With Us</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Privacy Policy</li>
                     </ul>
                 </div>
                 <div>
@@ -31,7 +30,6 @@ export default function Footer() {
                         <li className="hover:text-[#c41e3a] cursor-pointer">Governance</li>
                         <li className="hover:text-[#c41e3a] cursor-pointer">Community</li>
                         <li className="hover:text-[#c41e3a] cursor-pointer">Business</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Entertainment</li>
                     </ul>
                 </div>
                 <div>
@@ -44,10 +42,6 @@ export default function Footer() {
                         <li className="flex flex-col">
                             <span className="text-gray-500">Email:</span>
                             <span className="text-[#c41e3a]">info@kosofeinsideout.com</span>
-                        </li>
-                        <li className="flex flex-col">
-                            <span className="text-gray-500">Phone:</span>
-                            <span>+234 800 123 4567</span>
                         </li>
                     </ul>
                 </div>
