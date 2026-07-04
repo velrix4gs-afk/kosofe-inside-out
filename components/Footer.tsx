@@ -4,7 +4,6 @@ export default function Footer() {
     return (
         <footer className="bg-[#1a1a1a] text-gray-400 py-12 mt-8 border-t border-gray-800">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-                {/* Col 1: Brand */}
                 <div>
                     <h2 className="text-white text-xl font-extrabold tracking-tight mb-4">
                         KOSOFE <span className="text-[#c41e3a]">INSIDE OUT</span>
@@ -16,8 +15,6 @@ export default function Footer() {
                         <span className="bg-gray-800 p-2 rounded cursor-pointer hover:text-white">IG</span>
                     </div>
                 </div>
-
-                {/* Col 2: Quick Links */}
                 <div>
                     <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Quick Links</h4>
                     <ul className="space-y-2 text-xs">
@@ -27,8 +24,6 @@ export default function Footer() {
                         <li className="hover:text-[#c41e3a] cursor-pointer">Privacy Policy</li>
                     </ul>
                 </div>
-
-                {/* Col 3: Categories */}
                 <div>
                     <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Categories</h4>
                     <ul className="space-y-2 text-xs">
@@ -39,8 +34,6 @@ export default function Footer() {
                         <li className="hover:text-[#c41e3a] cursor-pointer">Entertainment</li>
                     </ul>
                 </div>
-
-                {/* Col 4: Contact Info */}
                 <div>
                     <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Contact Us</h4>
                     <ul className="space-y-3 text-xs">
