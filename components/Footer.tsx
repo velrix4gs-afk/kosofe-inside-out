@@ -57,11 +57,11 @@
                 </li>
                 <li className="flex flex-col">
                     <span className="text-gray-500">Email:</span>
-                    <span className="text-[#c41e3a]">info@kosofeinsideout.com</span>
+                    <span className="text-[#c41e3a]">kosofeinsideout@gmail.com</span>
                 </li>
                 <li className="flex flex-col">
                     <span className="text-gray-500">Phone:</span>
-                    <span>+234 800 123 4567</span>
+                    <span>++234 802 849 4099</span>
                 </li>
             </ul>
         </div>
