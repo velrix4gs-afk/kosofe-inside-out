@@ -5,9 +5,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     const categorySlug = params.slug.replace(/-/g, ' ');
     const formattedCategory = categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1);
 
-    // Wrap the fetch in a try/catch so it doesn't crash the server if Supabase is unreachable
     let articles: any[] | null = [];
-    let errorMessage = null;
+    let errorMessage: string | null = null;
 
     try {
         const { data, error } = await supabase
@@ -18,12 +17,12 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             .order('created_at', { ascending: false });
 
         if (error) {
-            errorMessage = error.message;
+            errorMessage = `Supabase Error: ${error.message}`;
         } else {
             articles = data;
         }
     } catch (err: any) {
-        errorMessage = err.message || "Connection to database failed.";
+        errorMessage = `JavaScript Crash: ${err.message}`;
     }
 
     return (
@@ -32,9 +31,9 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
             {errorMessage ? (
                 <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded">
-                    <p className="font-bold">Oops! Something went wrong.</p>
-                    <p className="text-sm">Debug: {errorMessage}</p>
-                    <p className="text-sm mt-2">Make sure your environment variables are added to Vercel.</p>
+                    <p className="font-bold">🚨 Server Error</p>
+                    <p className="text-sm break-words">{errorMessage}</p>
+                    <p className="text-sm mt-2 text-gray-600">If you are seeing a "Missing Supabase environment variable" error, go to your Vercel Dashboard -> Settings -> Environment Variables and make sure you typed them exactly as they are in your .env.local. Then redeploy.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
