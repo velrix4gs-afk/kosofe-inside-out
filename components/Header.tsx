@@ -31,14 +31,17 @@ export default function Header() {
             <div className="bg-white py-6 border-b">
                 <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
                     {/* Logo Image */}
+                    {/* Logo Image */}
                     <div className="w-full md:w-auto flex justify-center md:justify-start">
-                        <Image
-                            src="/img/kio-logo.jpg"
-                            alt="Kosofe Inside Out Logo"
-                            width={220}
-                            height={60}
-                            className="h-14 md:h-16 w-auto object-contain"
-                        />
+                        <Link href="/">
+                            <Image
+                                src="/img/kio-logo.jpg"
+                                alt="Kosofe Inside Out Logo"
+                                width={220}
+                                height={60}
+                                className="h-14 md:h-16 w-auto object-contain cursor-pointer"
+                            />
+                        </Link>
                     </div>
                     {/* Ad Banner Image */}
                     <div className="w-full md:w-[500px] h-[80px] relative rounded overflow-hidden shrink-0">
