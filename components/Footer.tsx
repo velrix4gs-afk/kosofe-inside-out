@@ -70,6 +70,3 @@
         &copy; {new Date().getFullYear()} Kosofe Inside Out. All Rights Reserved.
     </div>
 </footer >
-    </main >
-  );
-}
