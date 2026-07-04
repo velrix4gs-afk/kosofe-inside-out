@@ -41,7 +41,11 @@ export default function Footer() {
                         </li>
                         <li className="flex flex-col">
                             <span className="text-gray-500">Email:</span>
-                            <span className="text-[#c41e3a]">info@kosofeinsideout.com</span>
+                            <span className="text-gray-500"> kosofeinsideout@gmail.com</span>
+                        </li>
+                        <li className="flex flex-col">
+                            <span className="text-gray-500">Phone Number:</span>
+                            <span className="text-[#c41e3a]">+234 802 849 4099</span>
                         </li>
                     </ul>
                 </div>
