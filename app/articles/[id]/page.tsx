@@ -1,4 +1,3 @@
-// app/articles/[id]/page.tsx
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 
@@ -9,8 +8,9 @@ export default async function ArticlePage({ params }: { params: { id: string } }
         .eq('id', params.id)
         .single();
 
+    // If the article doesn't exist in the database, show a 404 page
     if (!article || !article.published) {
-        notFound(); // Shows a 404 page if story doesn't exist
+        notFound();
     }
 
     return (

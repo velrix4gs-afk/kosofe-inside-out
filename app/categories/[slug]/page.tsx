@@ -1,12 +1,12 @@
-// app/categories/[slug]/page.tsx
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
-    // Convert "politics" to "Politics" to match database
+    // Convert the URL slug (e.g., "politics") into a formatted category name (e.g., "Politics")
     const categorySlug = params.slug.replace(/-/g, ' ');
     const formattedCategory = categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1);
 
+    // Fetch only articles belonging to this specific category
     const { data: articles } = await supabase
         .from('articles')
         .select('*')
