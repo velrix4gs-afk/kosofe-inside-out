@@ -131,11 +131,40 @@ export default async function Home() {
       <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
-          <div className="flex flex-wrap gap-4">
-            <button className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">Facebook</button>
-            <button className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">X (Twitter)</button>
-            <button className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">Instagram</button>
-            <button className="bg-[#FF0000] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90">YouTube</button>
+          {/* Left: Follow Us */}
+          <div className="bg-white p-6 rounded shadow-sm">
+            <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
+            <div className="flex flex-wrap gap-4">
+              {/* Facebook */}
+              <a
+                href="https://facebook.com/KosofeInsideOut"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
+              >
+                Facebook
+              </a>
+
+              {/* X (Twitter) */}
+              <a
+                href="https://x.com/kosofeinsideout"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
+              >
+                X (Twitter)
+              </a>
+
+              {/* Instagram */}
+              <a
+                href="https://instagram.com/kosofeinsideout"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
+              >
+                Instagram
+              </a>
+            </div>
           </div>
         </div>
         <div className="bg-white p-6 rounded shadow-sm">
