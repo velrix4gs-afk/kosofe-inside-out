@@ -79,7 +79,7 @@ export default async function Home() {
         />
       </div>
       {/* Ad Banner Image */}
-      <div className="w-full md:w-[500px] h-[80px] flex items-center justify-center overflow-hidden shrink-0 rounded">
+      <div className="w-full md:w-[800px] h-[80px] flex items-center justify-center overflow-hidden shrink-0 rounded">
         <img
           src="/img/kio-banner.jpg"
           alt="Advertise with Kosofe Inside Out"
