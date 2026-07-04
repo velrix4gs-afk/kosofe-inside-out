@@ -1,4 +1,5 @@
 // app/page.tsx
+import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
@@ -48,63 +49,7 @@ export default async function Home() {
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
       {/* --- TOP BAR (DATE, SOCIALS, LINKS) --- */}
-      <div className="bg-[#1a1a1a] text-white text-[11px] py-2">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
-          <div className="flex items-center gap-4">
-            <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            <div className="flex items-center gap-3 text-gray-400">
-              <span className="hover:text-white cursor-pointer font-bold">FB</span>
-              <span className="hover:text-white cursor-pointer font-bold">X</span>
-              <span className="hover:text-white cursor-pointer font-bold">IG</span>
-              <span className="hover:text-white cursor-pointer font-bold">YT</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-gray-400">
-            <a href="#" className="hover:text-white">Advertise With Us</a>
-            <a href="#" className="hover:text-white">About Us</a>
-            <a href="#" className="hover:text-white">Contact Us</a>
-            <span className="hover:text-white cursor-pointer">🔍</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Inside the Logo & Ad Banner section */}
-      <div className="w-full md:w-auto flex justify-center md:justify-start">
-        <Image
-          src="/img/kio-logo.jpg"  // Starts with /, pointing to public/img
-          alt="Kosofe Inside Out Logo"
-          width={220}               // Required to remove red lines
-          height={60}               // Required to remove red lines
-          className="h-14 md:h-16 w-auto object-contain"
-        />
-      </div>
-      {/* Ad Banner Image */}
-      <div className="w-full md:w-[800px] h-[80px] flex items-center justify-center overflow-hidden shrink-0 rounded">
-        <img
-          src="/img/kio-banner.jpg"
-          alt="Advertise with Kosofe Inside Out"
-          className="w-full h-full object-contain"
-        />
-      </div>
-
-      {/* --- MAIN NAVIGATION --- */}
-      < nav className="bg-white border-b shadow-sm sticky top-0 z-50" >
-        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between overflow-x-auto py-3 gap-6">
-          <div className="flex items-center gap-6 text-sm font-bold text-gray-700 whitespace-nowrap">
-            <a href="#" className="bg-[#c41e3a] text-white px-3 py-1 rounded">NEWS</a>
-            <a href="#" className="hover:text-[#c41e3a]">POLITICS</a>
-            <a href="#" className="hover:text-[#c41e3a]">GOVERNANCE</a>
-            <a href="#" className="hover:text-[#c41e3a]">COMMUNITY</a>
-            <a href="#" className="hover:text-[#c41e3a]">BUSINESS</a>
-            <a href="#" className="hover:text-[#c41e3a]">ENTERTAINMENT</a>
-            <a href="#" className="hover:text-[#c41e3a]">OPINION</a>
-            <a href="#" className="hover:text-[#c41e3a]">MORE</a>
-          </div>
-          <button className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap">
-            🔥 TRENDING
-          </button>
-        </div>
-      </nav >
 
       {/* --- BREAKING NEWS TICKER --- */}
       < div className="max-w-6xl mx-auto px-4 py-4" >
@@ -194,9 +139,9 @@ export default async function Home() {
               <div className="text-3xl mb-2">{cat.icon}</div>
               <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base">{cat.name}</h4>
               <p className="text-[10px] md:text-xs text-gray-500 leading-tight">{cat.desc}</p>
-              <button className="mt-3 text-[10px] font-bold text-[#c41e3a] border border-[#c41e3a] px-3 py-1 rounded hover:bg-[#c41e3a] hover:text-white transition">
+              <Link href={`/categories/${cat.name.toLowerCase()}`} className="mt-3 text-[10px] font-bold text-[#c41e3a] border border-[#c41e3a] px-3 py-1 rounded hover:bg-[#c41e3a] hover:text-white transition">
                 View all
-              </button>
+              </Link>
             </div>
           ))}
         </div>
@@ -226,7 +171,9 @@ export default async function Home() {
             {articles.slice(0, 5).map((story, idx) => (
               <li key={idx} className="flex gap-2 items-center">
                 <span className="font-bold text-[#c41e3a] text-xs">{(idx + 1).toString().padStart(2, '0')}</span>
-                <span className="text-gray-800 hover:text-[#c41e3a] cursor-pointer truncate">{story.title}</span>
+                <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer">
+                  {story.title}
+                </Link>
               </li>
             ))}
           </ul>
@@ -271,67 +218,7 @@ export default async function Home() {
       </div >
 
       {/* --- FOOTER --- */}
-      < footer className="bg-[#1a1a1a] text-gray-400 py-12 mt-8 border-t border-gray-800" >
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-          {/* Col 1: Brand */}
-          <div>
-            <h2 className="text-white text-xl font-extrabold tracking-tight mb-4">
-              KOSOFE <span className="text-[#c41e3a]">INSIDE OUT</span>
-            </h2>
-            <p className="text-xs leading-relaxed mb-4">Kosofe Inside Out is your trusted source for hyperlocal news, community intelligence, and stories that shape our lives in Kosofe.</p>
-            <div className="flex gap-4 text-xs">
-              <span className="bg-gray-800 p-2 rounded cursor-pointer hover:text-white">FB</span>
-              <span className="bg-gray-800 p-2 rounded cursor-pointer hover:text-white">X</span>
-              <span className="bg-gray-800 p-2 rounded cursor-pointer hover:text-white">IG</span>
-            </div>
-          </div>
 
-          {/* Col 2: Quick Links */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Quick Links</h4>
-            <ul className="space-y-2 text-xs">
-              <li className="hover:text-[#c41e3a] cursor-pointer">About Us</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Contact Us</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Advertise With Us</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Privacy Policy</li>
-            </ul>
-          </div>
-
-          {/* Col 3: Categories */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Categories</h4>
-            <ul className="space-y-2 text-xs">
-              <li className="hover:text-[#c41e3a] cursor-pointer">Politics</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Governance</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Community</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Business</li>
-              <li className="hover:text-[#c41e3a] cursor-pointer">Entertainment</li>
-            </ul>
-          </div>
-
-          {/* Col 4: Contact Info */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Contact Us</h4>
-            <ul className="space-y-3 text-xs">
-              <li className="flex flex-col">
-                <span className="text-gray-500">Address:</span>
-                <span>1, Kosofe Road, Ketu, Lagos State, Nigeria.</span>
-              </li>
-              <li className="flex flex-col">
-                <span className="text-gray-500">Email:</span>
-                <span className="text-[#c41e3a]">info@kosofeinsideout.com</span>
-              </li>
-              <li className="flex flex-col">
-                <span className="text-gray-500">Phone:</span>
-                <span>+234 800 123 4567</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-6xl mx-auto px-4 mt-8 pt-6 border-t border-gray-800 text-center text-[10px] text-gray-600">
-          &copy; {new Date().getFullYear()} Kosofe Inside Out. All Rights Reserved.
-        </div>
-      </footer >
     </main >
   );
 }
