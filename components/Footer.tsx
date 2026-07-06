@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 export default function Footer() {
     return (
@@ -18,18 +19,36 @@ export default function Footer() {
                 <div>
                     <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Quick Links</h4>
                     <ul className="space-y-2 text-xs">
-                        <li className="hover:text-[#c41e3a] cursor-pointer">About Us</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Contact Us</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Advertise With Us</li>
+                        <li>
+                            <Link href="/about" className="hover:text-[#c41e3a] transition-colors">About Us</Link>
+                        </li>
+                        <li>
+                            <Link href="/contact" className="hover:text-[#c41e3a] transition-colors">Contact Us</Link>
+                        </li>
+                        <li>
+                            <Link href="/advertise" className="hover:text-[#c41e3a] transition-colors">Advertise With Us</Link>
+                        </li>
                     </ul>
                 </div>
+                {/* Col 3: Categories */}
                 <div>
                     <h4 className="text-white font-bold mb-4 uppercase tracking-wider">Categories</h4>
                     <ul className="space-y-2 text-xs">
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Politics</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Governance</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Community</li>
-                        <li className="hover:text-[#c41e3a] cursor-pointer">Business</li>
+                        <li>
+                            <Link href="/categories/politics" className="hover:text-[#c41e3a] transition-colors">Politics</Link>
+                        </li>
+                        <li>
+                            <Link href="/categories/governance" className="hover:text-[#c41e3a] transition-colors">Governance</Link>
+                        </li>
+                        <li>
+                            <Link href="/categories/community" className="hover:text-[#c41e3a] transition-colors">Community</Link>
+                        </li>
+                        <li>
+                            <Link href="/categories/business" className="hover:text-[#c41e3a] transition-colors">Business</Link>
+                        </li>
+                        <li>
+                            <Link href="/categories/entertainment" className="hover:text-[#c41e3a] transition-colors">Entertainment</Link>
+                        </li>
                     </ul>
                 </div>
                 <div>
