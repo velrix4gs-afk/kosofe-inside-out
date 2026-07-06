@@ -1,16 +1,32 @@
 "use client";
 import { useState } from 'react';
+import { supabase } from "@/lib/supabase";
 
 export default function ContactPage() {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you can hook this form into Supabase or an email service later.
-        // For now, we'll just show a success message.
-        setSubmitted(true);
-        console.log("Contact Form Submitted:", formData);
+        setLoading(true);
+
+        // Insert into Supabase
+        const { error } = await supabase.from('inquiries').insert({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            message: formData.message,
+            type: 'contact'
+        });
+
+        setLoading(false);
+        if (error) {
+            alert("Error sending message: " + error.message);
+        } else {
+            setSubmitted(true);
+            setFormData({ name: '', email: '', phone: '', message: '' });
+        }
     };
 
     return (
@@ -30,14 +46,17 @@ export default function ContactPage() {
                 {submitted ? (
                     <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded text-center">
                         <p className="font-bold">Message sent!</p>
-                        <p className="text-xs mt-1">We will get back to you within 24 hours.</p>
+                        <p className="text-xs mt-1">We'll get back to you within 24 hours.</p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div><input type="text" placeholder="Your Name" required className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={(e) => setFormData({ ...formData, name: e.target.value })} /></div>
-                        <div><input type="email" placeholder="Your Email" required className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={(e) => setFormData({ ...formData, email: e.target.value })} /></div>
-                        <div><textarea rows={4} placeholder="Your Message" required className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={(e) => setFormData({ ...formData, message: e.target.value })} /></div>
-                        <button type="submit" className="w-full bg-[#c41e3a] text-white py-2 rounded font-bold hover:bg-[#a0152e]">Send Message</button>
+                        <input type="text" placeholder="Your Name" required className="w-full border p-2 rounded" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                        <input type="email" placeholder="Your Email" required className="w-full border p-2 rounded" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                        <input type="tel" placeholder="Your Phone Number" className="w-full border p-2 rounded" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                        <textarea rows={4} placeholder="Your Message" required className="w-full border p-2 rounded" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
+                        <button type="submit" disabled={loading} className="w-full bg-[#c41e3a] text-white py-2 rounded font-bold hover:bg-[#a0152e] disabled:opacity-50">
+                            {loading ? 'Sending...' : 'Send Message'}
+                        </button>
                     </form>
                 )}
             </div>

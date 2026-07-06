@@ -1,15 +1,32 @@
 "use client";
-import Link from "next/link";
 import { useState } from 'react';
+import { supabase } from "@/lib/supabase";
 
 export default function AdvertisePage() {
     const [formData, setFormData] = useState({ name: '', email: '', phone: '', plan: 'Standard' });
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setSubmitted(true);
-        console.log("Ad Enquiry:", formData);
+        setLoading(true);
+
+        // Insert into Supabase
+        const { error } = await supabase.from('inquiries').insert({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            package_interest: formData.plan,
+            type: 'advertise'
+        });
+
+        setLoading(false);
+        if (error) {
+            alert("Error sending enquiry: " + error.message);
+        } else {
+            setSubmitted(true);
+            setFormData({ name: '', email: '', phone: '', plan: 'Standard' });
+        }
     };
 
     return (
@@ -50,10 +67,10 @@ export default function AdvertisePage() {
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" placeholder="Business Name" required className="w-full border p-2 rounded" onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
-                            <input type="email" placeholder="Business Email" required className="w-full border p-2 rounded" onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                            <input type="text" placeholder="Business Name" required className="w-full border p-2 rounded" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                            <input type="email" placeholder="Business Email" required className="w-full border p-2 rounded" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                         </div>
-                        <input type="tel" placeholder="Phone Number" required className="w-full border p-2 rounded" onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                        <input type="tel" placeholder="Phone Number" required className="w-full border p-2 rounded" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">Which package are you interested in?</label>
                             <select className="w-full border p-2 rounded" value={formData.plan} onChange={(e) => setFormData({ ...formData, plan: e.target.value })}>
@@ -63,7 +80,9 @@ export default function AdvertisePage() {
                                 <option>Custom Quote</option>
                             </select>
                         </div>
-                        <button type="submit" className="w-full bg-[#c41e3a] text-white py-2 rounded font-bold hover:bg-[#a0152e]">Send Enquiry</button>
+                        <button type="submit" disabled={loading} className="w-full bg-[#c41e3a] text-white py-2 rounded font-bold hover:bg-[#a0152e] disabled:opacity-50">
+                            {loading ? 'Sending...' : 'Send Enquiry'}
+                        </button>
                     </form>
                 )}
             </div>

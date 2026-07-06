@@ -1,0 +1,3 @@
+User - agent: *
+    Allow: /
+Sitemap: https://kosofeinsideout.com/sitemap.xml

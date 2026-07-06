@@ -1,15 +1,24 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import Image from "next/image";
+
+// Strict TypeScript interface instead of 'any' - safer for production
+type Article = {
+    id: string;
+    title: string;
+    excerpt: string;
+    image_url: string | null;
+    category: string;
+    created_at: string;
+    published: boolean;
+};
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
-    // THE FIX: Await the params first (Next.js 15+ requirement)
     const { slug } = await params;
-
-    // Convert "politics" to "Politics" (works fine with await)
     const categorySlug = slug.replace(/-/g, ' ');
     const formattedCategory = categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1);
 
-    let articles: any[] | null = [];
+    let articles: Article[] | null = [];
     let errorMessage: string | null = null;
 
     try {
@@ -21,7 +30,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             .order('created_at', { ascending: false });
 
         if (error) errorMessage = error.message;
-        else articles = data;
+        else articles = data as Article[];
     } catch (err: any) {
         errorMessage = err.message;
     }
@@ -40,13 +49,25 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     {(!articles || articles.length === 0) && (
                         <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-6 rounded text-center">
                             <p className="font-bold text-lg">No stories found</p>
-                            <p className="text-sm mt-1">There are no published articles under "{formattedCategory}" yet. Check back soon!</p>
+                            <p className="text-sm mt-1">There are no published articles under &quot;{formattedCategory}&quot; yet. Check back soon!</p>
                         </div>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {articles?.map((story) => (
                             <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm p-4 hover:shadow-md transition cursor-pointer block">
-                                <img src={story.image_url || ''} alt={story.title} className="w-full h-48 object-cover rounded mb-3 bg-gray-200" />
+
+                                {/* REPLACED WITH NEXT.JS IMAGE COMPONENT */}
+                                <div className="relative w-full h-48 bg-gray-200 rounded mb-3 overflow-hidden">
+                                    <Image
+                                        src={story.image_url || ''}
+                                        alt={story.title}
+                                        width={400}
+                                        height={250}
+                                        className="w-full h-full object-cover"
+                                        unoptimized={true} // Fallback to prevent remote URL errors
+                                    />
+                                </div>
+
                                 <h4 className="font-bold text-gray-800 line-clamp-2 text-lg">{story.title}</h4>
                                 <p className="text-sm text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>
                                 <span className="mt-3 inline-block text-xs font-bold text-[#c41e3a]">Read More &rarr;</span>
