@@ -36,12 +36,13 @@ export default async function Home() {
     }
   } catch (e) { console.log("Weather API failed"); }
 
-  // --- FETCH PUBLISHED STORIES ---
+  // --- FETCH PUBLISHED STORIES (Sorted by Popularity and Date) ---
   const { data: articles } = await supabase
     .from('articles')
     .select('*')
     .eq('published', true)
-    .order('created_at', { ascending: false })
+    .order('views', { ascending: false, nullsFirst: false }) // Sort by highest views first!
+    .order('created_at', { ascending: false }) // If no views, fallback to newest stories
     .limit(10);
 
   if (!articles || articles.length === 0) {
@@ -213,12 +214,14 @@ export default async function Home() {
             <a href="https://instagram.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity">Instagram</a>
           </div>
         </div>
+        {/* Right: Trending Now */}
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-4 border-b pb-2 flex items-center justify-between">
             TRENDING NOW
             <Link href="/trending" className="text-xs text-[#c41e3a] font-normal hover:underline">View All &rarr;</Link>
           </h3>
           <ul className="space-y-3 text-sm">
+            {/* We only show the top 5 here */}
             {articles.slice(0, 5).map((story, idx) => (
               <li key={idx} className="flex gap-2 items-center">
                 <span className="font-bold text-[#c41e3a] text-xs">{(idx + 1).toString().padStart(2, '0')}</span>
@@ -227,66 +230,65 @@ export default async function Home() {
             ))}
           </ul>
         </div>
-      </div>
-      {/* --- SPECIAL FEATURES --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
-          <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {[
-            {
-              title: "Community Voices",
-              desc: "Hear stories from real people in Kosofe.",
-              img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400",
-              slug: "community-voices"
-            },
-            {
-              title: "Business Spotlight",
-              desc: "Highlighting local businesses making an impact.",
-              img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400",
-              slug: "business-spotlight"
-            },
-            {
-              title: "Photos of the Week",
-              desc: "A visual recap of Kosofe through our lens.",
-              img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400",
-              slug: "photos-of-the-week"
-            },
-            {
-              title: "Weekend Interview",
-              desc: "In-depth conversations with influential personalities.",
-              img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
-              slug: "weekend-interview"
-            }
-          ].map((feature, idx) => (
-            <Link
-              key={idx}
-              href={`/features/${feature.slug}`}
-              className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group"
-            >
-              <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
-              <div className="p-4">
-                <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
-                <p className="text-xs text-gray-500">{feature.desc}</p>
-                <span className="mt-2 inline-block text-[10px] font-bold text-[#c41e3a]">Read More &rarr;</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* --- WHATSAPP CTA --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div>
-            <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
-            <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
+        {/* --- SPECIAL FEATURES --- */}
+        <div className="max-w-6xl mx-auto px-4 pb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
+            <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
           </div>
-          <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              {
+                title: "Community Voices",
+                desc: "Hear stories from real people in Kosofe.",
+                img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400",
+                slug: "community-voices"
+              },
+              {
+                title: "Business Spotlight",
+                desc: "Highlighting local businesses making an impact.",
+                img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400",
+                slug: "business-spotlight"
+              },
+              {
+                title: "Photos of the Week",
+                desc: "A visual recap of Kosofe through our lens.",
+                img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400",
+                slug: "photos-of-the-week"
+              },
+              {
+                title: "Weekend Interview",
+                desc: "In-depth conversations with influential personalities.",
+                img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+                slug: "weekend-interview"
+              }
+            ].map((feature, idx) => (
+              <Link
+                key={idx}
+                href={`/features/${feature.slug}`}
+                className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group"
+              >
+                <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
+                <div className="p-4">
+                  <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
+                  <p className="text-xs text-gray-500">{feature.desc}</p>
+                  <span className="mt-2 inline-block text-[10px] font-bold text-[#c41e3a]">Read More &rarr;</span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+
+        {/* --- WHATSAPP CTA --- */}
+        <div className="max-w-6xl mx-auto px-4 pb-12">
+          <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <div>
+              <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
+              <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
+            </div>
+            <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
+          </div>
+        </div>
 
     </main>
   );

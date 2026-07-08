@@ -1,18 +1,17 @@
 "use client";
 import { supabase } from "@/lib/supabase";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function ArticleActionBar({ articleId }: { articleId: string }) {
-    // Auto-increment views when someone opens the page
+    // Auto-increment views
     useEffect(() => {
         const incrementViews = async () => {
-            // Get current view count first
             const { data: current } = await supabase
                 .from('articles')
                 .select('views')
                 .eq('id', articleId)
                 .single();
-
             if (current) {
                 await supabase
                     .from('articles')
@@ -20,42 +19,37 @@ export default function ArticleActionBar({ articleId }: { articleId: string }) {
                     .eq('id', articleId);
             }
         };
-        // Run this once when the component mounts
         incrementViews();
     }, [articleId]);
 
-    // The Share Button logic
     const handleShare = () => {
         if (navigator.share) {
-            navigator.share({
-                title: document.title,
-                url: window.location.href,
-            });
+            navigator.share({ title: document.title, url: window.location.href });
         } else {
-            // Fallback for desktop browsers
             navigator.clipboard.writeText(window.location.href);
             alert("Link copied to clipboard!");
         }
     };
 
     return (
-        <div className="mt-6 bg-white p-4 rounded shadow-sm flex flex-wrap justify-between items-center gap-4 border border-gray-100">
-            <div className="flex gap-4 text-sm">
-                <button onClick={handleShare} className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-3 py-1.5 rounded">
+        <div className="mt-6 bg-white p-4 rounded shadow-sm flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4 border border-gray-100">
+            {/* Left side: Action Buttons */}
+            <div className="flex flex-wrap gap-3 text-sm w-full sm:w-auto">
+                <button onClick={handleShare} className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-4 py-2 rounded">
                     <span>📤</span> Share
                 </button>
-
-                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-3 py-1.5 rounded">
+                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-4 py-2 rounded">
                     <span>💬</span> Comment
                 </button>
-
-                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-3 py-1.5 rounded">
+                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-4 py-2 rounded">
                     <span>🔖</span> Bookmark
                 </button>
             </div>
-            <a href="/" className="text-xs font-bold text-[#c41e3a] border border-[#c41e3a] px-3 py-1.5 rounded hover:bg-[#c41e3a] hover:text-white transition">
-                ← Back
-            </a>
+
+            {/* Right side: Back Button */}
+            <Link href="/" className="text-sm text-gray-500 hover:text-[#c41e3a] underline font-medium transition-colors">
+                ← Back to Home
+            </Link>
         </div>
     );
 }
