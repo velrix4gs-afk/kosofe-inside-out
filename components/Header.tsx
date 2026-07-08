@@ -28,7 +28,7 @@ export default function Header() {
 
             {/* --- LOGO & AD BANNER (Ad Banner Removed, Logo Bigger) --- */}
             <div className="bg-white py-4 border-b">
-                <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
+                <div className="w-full px-4 mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
                         <Image
                             src="/img/kio-logo.jpg"

@@ -60,24 +60,39 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- BREAKING NEWS TICKER (Fixed Overlap) --- */}
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
-          <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10 relative">
-            Breaking News
-          </span>
-          {/* The animated text is now restricted to this flex-1 div */}
-          <div className="flex-1 overflow-hidden whitespace-nowrap">
-            <div className="animate-ticker inline-block w-max">
-              {articles[0]?.title || "No breaking news at the moment."}
+      {/* --- FULL WIDTH IMAGE AD BANNER (Right below the nav) --- */}
+      <div className="w-full bg-white border-b">
+        <div className="w-full">
+          <Image
+            src="/img/kio-banner.jpg"
+            alt="Advertise with Kosofe Inside Out"
+            width={1200}
+            height={150}
+            className="w-full h-auto max-h-[120px] object-cover"
+          />
+        </div>
+      </div>
+
+      {/* --- BREAKING NEWS TICKER (Full width wrapper, centered content) --- */}
+      <div className="w-full bg-[#f5f5f5] py-4 px-0">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
+            <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10 relative">
+              Breaking News
+            </span>
+            <div className="flex-1 overflow-hidden whitespace-nowrap">
+              <div className="animate-ticker inline-block w-max">
+                {articles[0]?.title || "No breaking news at the moment."}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* --- HERO SECTION (Height increased to 550px) --- */}
-      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8">
-        <div className="lg:col-span-2 relative group cursor-pointer">
+      {/* --- HERO SECTION (Full width wrapper, centered content) --- */}
+      <div className="w-full px-0 pb-8">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* ... (The rest of your Hero and Sidebar code stays exactly the same from here down) ... */}
           <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden"> {/* Changed h-[400px] to h-[550px] */}
             <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
