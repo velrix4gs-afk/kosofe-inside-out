@@ -11,7 +11,6 @@ export default async function Home() {
   try {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
     if (apiKey) {
-      // Fetch weather and UV Index in parallel
       const [weatherRes, uvRes] = await Promise.all([
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=Lagos&units=metric&appid=${apiKey}`, { next: { revalidate: 600 } }),
         fetch(`https://api.openweathermap.org/data/2.5/uvi?lat=6.5244&lon=3.3792&appid=${apiKey}`, { next: { revalidate: 600 } })
@@ -36,13 +35,13 @@ export default async function Home() {
     }
   } catch (e) { console.log("Weather API failed"); }
 
-  // --- FETCH PUBLISHED STORIES (Sorted by Popularity and Date) ---
+  // --- FETCH PUBLISHED STORIES ---
   const { data: articles } = await supabase
     .from('articles')
     .select('*')
     .eq('published', true)
-    .order('views', { ascending: false, nullsFirst: false }) // Sort by highest views first!
-    .order('created_at', { ascending: false }) // If no views, fallback to newest stories
+    .order('views', { ascending: false, nullsFirst: false })
+    .order('created_at', { ascending: false })
     .limit(10);
 
   if (!articles || articles.length === 0) {
@@ -61,8 +60,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- FULL WIDTH IMAGE AD BANNER (Right below the nav) --- */}
-      {/* --- FULL WIDTH IMAGE AD BANNER (LINKED TO /ADVERTISE) --- */}
+      {/* --- FULL WIDTH IMAGE AD BANNER --- */}
       <div className="w-full bg-white border-b cursor-pointer hover:opacity-95 transition-opacity">
         <Link href="/advertise" className="block w-full">
           <div className="w-full">
@@ -77,7 +75,7 @@ export default async function Home() {
         </Link>
       </div>
 
-      {/* --- BREAKING NEWS TICKER (Full width wrapper, centered content) --- */}
+      {/* --- BREAKING NEWS TICKER --- */}
       <div className="w-full bg-[#f5f5f5] py-4 px-0">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
@@ -93,45 +91,44 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- HERO SECTION (Full width wrapper, centered content) --- */}
+      {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* ... (The rest of your Hero and Sidebar code stays exactly the same from here down) ... */}
-          <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden"> {/* Changed h-[400px] to h-[550px] */}
-            <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-6 w-full">
-              <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-              <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
-              <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
-              <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          {articles.slice(1, 4).map((story, idx) => (
-            <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
-              <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
-              <div>
-                <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
-                <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
-                <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
+          <div className="lg:col-span-2 relative group cursor-pointer">
+            <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
+              <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-6 w-full">
+                <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
+                <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
+                <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
+                <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
               </div>
             </div>
-          ))}
+          </div>
+          <div className="flex flex-col gap-4">
+            {articles.slice(1, 4).map((story, idx) => (
+              <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
+                <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
+                <div>
+                  <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
+                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
+                  <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* --- WEATHER & STAY INFORMED (Fully Upgraded) --- */}
+      {/* --- WEATHER & STAY INFORMED --- */}
       <div className="max-w-6xl mx-auto px-4 pb-8">
         <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-8 justify-between items-start">
-          {/* Left: Weather Card */}
           <div className="flex-1 w-full">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-[#c41e3a] text-lg">Weather Update</h3>
               <span className="text-xs text-gray-500 font-medium">📍Kosofe, Lagos</span>
             </div>
-
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 mb-4">
               <div className="flex items-center gap-4">
                 <span className="text-5xl font-bold">{weather.temp}°C</span>
@@ -141,7 +138,6 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 text-sm text-gray-600">
               <div className="flex flex-col">
                 <span className="text-[10px] text-gray-400 uppercase font-bold">Sunrise</span>
@@ -169,8 +165,6 @@ export default async function Home() {
               </div>
             </div>
           </div>
-
-          {/* Right: Subscribe */}
           <div className="flex-1 w-full border-t md:border-t-0 md:border-l pt-6 md:pt-0 md:pl-8">
             <h3 className="font-bold mb-2 text-lg">STAY INFORMED</h3>
             <p className="text-sm text-gray-600 mb-4">Get the latest news and updates from Kosofe delivered to your inbox.</p>
@@ -214,6 +208,7 @@ export default async function Home() {
             <a href="https://instagram.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity">Instagram</a>
           </div>
         </div>
+
         {/* Right: Trending Now */}
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-4 border-b pb-2 flex items-center justify-between">
@@ -221,7 +216,6 @@ export default async function Home() {
             <Link href="/trending" className="text-xs text-[#c41e3a] font-normal hover:underline">View All &rarr;</Link>
           </h3>
           <ul className="space-y-3 text-sm">
-            {/* We only show the top 5 here */}
             {articles.slice(0, 5).map((story, idx) => (
               <li key={idx} className="flex gap-2 items-center">
                 <span className="font-bold text-[#c41e3a] text-xs">{(idx + 1).toString().padStart(2, '0')}</span>
@@ -230,65 +224,43 @@ export default async function Home() {
             ))}
           </ul>
         </div>
-        {/* --- SPECIAL FEATURES --- */}
-        <div className="max-w-6xl mx-auto px-4 pb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
-            <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[
-              {
-                title: "Community Voices",
-                desc: "Hear stories from real people in Kosofe.",
-                img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400",
-                slug: "community-voices"
-              },
-              {
-                title: "Business Spotlight",
-                desc: "Highlighting local businesses making an impact.",
-                img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400",
-                slug: "business-spotlight"
-              },
-              {
-                title: "Photos of the Week",
-                desc: "A visual recap of Kosofe through our lens.",
-                img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400",
-                slug: "photos-of-the-week"
-              },
-              {
-                title: "Weekend Interview",
-                desc: "In-depth conversations with influential personalities.",
-                img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
-                slug: "weekend-interview"
-              }
-            ].map((feature, idx) => (
-              <Link
-                key={idx}
-                href={`/features/${feature.slug}`}
-                className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group"
-              >
-                <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
-                <div className="p-4">
-                  <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
-                  <p className="text-xs text-gray-500">{feature.desc}</p>
-                  <span className="mt-2 inline-block text-[10px] font-bold text-[#c41e3a]">Read More &rarr;</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+      </div>
 
-        {/* --- WHATSAPP CTA --- */}
-        <div className="max-w-6xl mx-auto px-4 pb-12">
-          <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <div>
-              <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
-              <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
-            </div>
-            <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
-          </div>
+      {/* --- SPECIAL FEATURES --- */}
+      <div className="max-w-6xl mx-auto px-4 pb-12">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
+          <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[
+            { title: "Community Voices", desc: "Hear stories from real people in Kosofe.", img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400", slug: "community-voices" },
+            { title: "Business Spotlight", desc: "Highlighting local businesses making an impact.", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400", slug: "business-spotlight" },
+            { title: "Photos of the Week", desc: "A visual recap of Kosofe through our lens.", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400", slug: "photos-of-the-week" },
+            { title: "Weekend Interview", desc: "In-depth conversations with influential personalities.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400", slug: "weekend-interview" }
+          ].map((feature, idx) => (
+            <Link key={idx} href={`/features/${feature.slug}`} className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group">
+              <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
+              <div className="p-4">
+                <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
+                <p className="text-xs text-gray-500">{feature.desc}</p>
+                <span className="mt-2 inline-block text-[10px] font-bold text-[#c41e3a]">Read More &rarr;</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* --- WHATSAPP CTA --- */}
+      <div className="max-w-6xl mx-auto px-4 pb-12">
+        <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+          <div>
+            <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
+            <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
+          </div>
+          <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
+        </div>
+      </div>
 
     </main>
   );
