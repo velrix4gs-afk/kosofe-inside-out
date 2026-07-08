@@ -53,7 +53,6 @@ export default function Header() {
                         <Link href="/categories/business" className="hover:text-[#c41e3a]">BUSINESS</Link>
                         <Link href="/categories/entertainment" className="hover:text-[#c41e3a]">ENTERTAINMENT</Link>
                         <Link href="/categories/opinion" className="hover:text-[#c41e3a]">OPINION</Link>
-                        <a href="#" className="hover:text-[#c41e3a]">MORE</a>
                     </div>
                     <div className="flex items-center gap-4 whitespace-nowrap">
                         {/* New Advertise Button */}

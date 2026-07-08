@@ -213,7 +213,7 @@ export default async function Home() {
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-4 border-b pb-2 flex items-center justify-between">
             TRENDING NOW
-            <span className="text-xs text-[#c41e3a] font-normal">View All &rarr;</span>
+            <Link href="/" className="text-xs text-[#c41e3a] font-normal hover:underline">View All &rarr;</Link>
           </h3>
           <ul className="space-y-3 text-sm">
             {articles.slice(0, 5).map((story, idx) => (
@@ -225,7 +225,6 @@ export default async function Home() {
           </ul>
         </div>
       </div>
-
       {/* --- SPECIAL FEATURES --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
@@ -234,19 +233,43 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {[
-            { title: "Community Voices", desc: "Hear stories from real people in Kosofe.", img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400" },
-            { title: "Business Spotlight", desc: "Highlighting local businesses making an impact.", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400" },
-            { title: "Photos of the Week", desc: "A visual recap of Kosofe through our lens.", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400" },
-            { title: "Weekend Interview", desc: "In-depth conversations with influential personalities.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400" }
+            {
+              title: "Community Voices",
+              desc: "Hear stories from real people in Kosofe.",
+              img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400",
+              slug: "community-voices"
+            },
+            {
+              title: "Business Spotlight",
+              desc: "Highlighting local businesses making an impact.",
+              img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400",
+              slug: "business-spotlight"
+            },
+            {
+              title: "Photos of the Week",
+              desc: "A visual recap of Kosofe through our lens.",
+              img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400",
+              slug: "photos-of-the-week"
+            },
+            {
+              title: "Weekend Interview",
+              desc: "In-depth conversations with influential personalities.",
+              img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+              slug: "weekend-interview"
+            }
           ].map((feature, idx) => (
-            <div key={idx} className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition">
+            <Link
+              key={idx}
+              href={`/features/${feature.slug}`}
+              className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group"
+            >
               <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
               <div className="p-4">
-                <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base">{feature.title}</h4>
+                <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
                 <p className="text-xs text-gray-500">{feature.desc}</p>
                 <span className="mt-2 inline-block text-[10px] font-bold text-[#c41e3a]">Read More &rarr;</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
