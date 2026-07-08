@@ -166,7 +166,7 @@ export default async function Home() {
             </div>
           </div>
           <div className="flex-1 w-full border-t md:border-t-0 md:border-l pt-6 md:pt-0 md:pl-8">
-            <h3 className="font-bold mb-2 text-lg">STAY INFORMED</h3>
+            <h3 className="font-bold mb-2 text-lg">Get Kosofe’s Biggest Stories Every Morning</h3>
             <p className="text-sm text-gray-600 mb-4">Get the latest news and updates from Kosofe delivered to your inbox.</p>
             <NewsletterForm />
           </div>
@@ -258,7 +258,9 @@ export default async function Home() {
             <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
             <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
           </div>
-          <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
+          <a href="https://whatsapp.com/channel/0029Vb7tfwGIiRoytADSsU1L" target="_blank" rel="noopener noreferrer">
+            <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
+          </a>
         </div>
       </div>
 

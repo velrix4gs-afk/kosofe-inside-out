@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 export default function Header() {
     return (
@@ -12,23 +13,26 @@ export default function Header() {
                     <div className="flex items-center gap-4">
                         <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         <div className="flex items-center gap-3 text-gray-400">
-                            <span className="hover:text-white cursor-pointer font-bold">FB</span>
-                            <span className="hover:text-white cursor-pointer font-bold">X</span>
-                            <span className="hover:text-white cursor-pointer font-bold">IG</span>
-                            <span className="hover:text-white cursor-pointer font-bold">YT</span>
+                            <a href="https://facebook.com/KosofeInsideOut" target="_blank" rel="noopener noreferrer" className="hover:text-white cursor-pointer"><FaFacebook /></a>
+                            <a href="https://x.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="hover:text-white cursor-pointer"><FaTwitter /></a>
+                            <a href="https://instagram.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="hover:text-white cursor-pointer"><FaInstagram /></a>
+                            <a href="https://youtube.com/@kosofeinsideout" target="_blank" rel="noopener noreferrer" className="hover:text-white cursor-pointer"><FaYoutube /></a>
                         </div>
                     </div>
                     <div className="flex items-center gap-4 text-gray-400">
                         <a href="#" className="hover:text-white">About Us</a>
                         <a href="#" className="hover:text-white">Contact Us</a>
-                        <span className="hover:text-white cursor-pointer">🔍</span>
+                        {/* Prominent Search Pill */}
+                        <Link href="/search" className="bg-gray-800 text-white px-3 py-1.5 rounded-full text-xs flex items-center gap-1 hover:bg-gray-700 transition">
+                            <span className="font-bold">🔍</span> <span className="hidden sm:inline">Search</span>
+                        </Link>
                     </div>
                 </div>
             </div>
 
-            {/* --- LOGO & AD BANNER (Ad Banner Removed, Logo Bigger) --- */}
+            {/* --- LOGO --- */}
             <div className="bg-white py-4 border-b">
-                <div className="w-full px-4 mx-auto px-4 flex justify-center md:justify-start">
+                <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
                         <Image
                             src="/img/kio-logo.jpg"
@@ -41,7 +45,7 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* --- MAIN NAVIGATION (Added Advertise Button) --- */}
+            {/* --- MAIN NAVIGATION --- */}
             <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-between overflow-x-auto py-3 gap-6">
                     <div className="flex items-center gap-6 text-sm font-bold text-gray-700 whitespace-nowrap">
@@ -55,12 +59,11 @@ export default function Header() {
                         <Link href="/categories/opinion" className="hover:text-[#c41e3a]">OPINION</Link>
                     </div>
                     <div className="flex items-center gap-4 whitespace-nowrap">
-                        {/* New Advertise Button */}
                         <Link href="/advertise" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] shadow-sm">
-                            📢 Advertise With Us
+                            📢 Advertise
                         </Link>
                         <Link href="/" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e]">
-                            🔥 TRENDING
+                            🔥 Trending
                         </Link>
                     </div>
                 </div>
