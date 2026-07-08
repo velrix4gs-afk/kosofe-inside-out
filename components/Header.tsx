@@ -19,7 +19,6 @@ export default function Header() {
                         </div>
                     </div>
                     <div className="flex items-center gap-4 text-gray-400">
-                        <a href="#" className="hover:text-white">Advertise With Us</a>
                         <a href="#" className="hover:text-white">About Us</a>
                         <a href="#" className="hover:text-white">Contact Us</a>
                         <span className="hover:text-white cursor-pointer">🔍</span>
@@ -27,34 +26,22 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* --- LOGO & AD BANNER --- */}
-            <div className="bg-white py-6 border-b">
-                <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
-                    {/* Logo Image */}
-                    <div className="w-full md:w-auto flex justify-center md:justify-start">
-                        <Link href="/">
-                            <Image
-                                src="/img/kio-logo.jpg"
-                                alt="Kosofe Inside Out Logo"
-                                width={260}
-                                height={70}
-                                className="h-16 md:h-20 w-auto object-contain cursor-pointer"
-                            />
-                        </Link>
-                    </div>
-                    {/* Ad Banner Image */}
-                    <div className="w-full md:w-[500px] h-[80px] relative rounded overflow-hidden shrink-0">
+            {/* --- LOGO & AD BANNER (Ad Banner Removed, Logo Bigger) --- */}
+            <div className="bg-white py-4 border-b">
+                <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
+                    <Link href="/">
                         <Image
-                            src="/img/kio-banner.jpg"
-                            alt="Advertise with Kosofe Inside Out"
-                            fill
-                            className="object-contain"
+                            src="/img/kio-logo.jpg"
+                            alt="Kosofe Inside Out Logo"
+                            width={280}
+                            height={70}
+                            className="h-14 md:h-20 w-auto object-contain cursor-pointer"
                         />
-                    </div>
+                    </Link>
                 </div>
             </div>
 
-            {/* --- MAIN NAVIGATION --- */}
+            {/* --- MAIN NAVIGATION (Added Advertise Button) --- */}
             <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-between overflow-x-auto py-3 gap-6">
                     <div className="flex items-center gap-6 text-sm font-bold text-gray-700 whitespace-nowrap">
@@ -68,9 +55,15 @@ export default function Header() {
                         <Link href="/categories/opinion" className="hover:text-[#c41e3a]">OPINION</Link>
                         <a href="#" className="hover:text-[#c41e3a]">MORE</a>
                     </div>
-                    <Link href="/" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap">
-                        🔥 TRENDING
-                    </Link>
+                    <div className="flex items-center gap-4 whitespace-nowrap">
+                        {/* New Advertise Button */}
+                        <Link href="/advertise" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] shadow-sm">
+                            📢 Advertise With Us
+                        </Link>
+                        <Link href="/" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e]">
+                            🔥 TRENDING
+                        </Link>
+                    </div>
                 </div>
             </nav>
         </>

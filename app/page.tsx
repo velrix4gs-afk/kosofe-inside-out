@@ -60,13 +60,18 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- BREAKING NEWS TICKER (Animated now) --- */}
-      <div className="max-w-6xl mx-auto px-4 py-4 overflow-hidden"> {/* Added overflow-hidden */}
+      {/* --- BREAKING NEWS TICKER (Fixed Overlap) --- */}
+      <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
-          <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap">Breaking News</span>
-          <p className="text-sm font-medium truncate animate-ticker whitespace-nowrap"> {/* Added animate-ticker */}
-            {articles[0]?.title || "No breaking news at the moment."}
-          </p>
+          <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10 relative">
+            Breaking News
+          </span>
+          {/* The animated text is now restricted to this flex-1 div */}
+          <div className="flex-1 overflow-hidden whitespace-nowrap">
+            <div className="animate-ticker inline-block w-max">
+              {articles[0]?.title || "No breaking news at the moment."}
+            </div>
+          </div>
         </div>
       </div>
 
