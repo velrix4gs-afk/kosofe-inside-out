@@ -61,16 +61,19 @@ export default async function Home() {
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
       {/* --- FULL WIDTH IMAGE AD BANNER (Right below the nav) --- */}
-      <div className="w-full bg-white border-b">
-        <div className="w-full">
-          <Image
-            src="/img/kio-banner.jpg"
-            alt="Advertise with Kosofe Inside Out"
-            width={1200}
-            height={150}
-            className="w-full h-auto max-h-[120px] object-cover"
-          />
-        </div>
+      {/* --- FULL WIDTH IMAGE AD BANNER (LINKED TO /ADVERTISE) --- */}
+      <div className="w-full bg-white border-b cursor-pointer hover:opacity-95 transition-opacity">
+        <Link href="/advertise" className="block w-full">
+          <div className="w-full">
+            <Image
+              src="/img/kio-banner.jpg"
+              alt="Advertise with Kosofe Inside Out"
+              width={1200}
+              height={150}
+              className="w-full h-auto max-h-[120px] object-cover"
+            />
+          </div>
+        </Link>
       </div>
 
       {/* --- BREAKING NEWS TICKER (Full width wrapper, centered content) --- */}
@@ -179,7 +182,7 @@ export default async function Home() {
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Explore By Category</h3>
-          <a href="#" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Categories &rarr;</a>
+          <Link href="/categories" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Categories &rarr;</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {[
@@ -213,7 +216,7 @@ export default async function Home() {
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-4 border-b pb-2 flex items-center justify-between">
             TRENDING NOW
-            <Link href="/" className="text-xs text-[#c41e3a] font-normal hover:underline">View All &rarr;</Link>
+            <Link href="/trending" className="text-xs text-[#c41e3a] font-normal hover:underline">View All &rarr;</Link>
           </h3>
           <ul className="space-y-3 text-sm">
             {articles.slice(0, 5).map((story, idx) => (
@@ -229,7 +232,7 @@ export default async function Home() {
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
-          <a href="#" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</a>
+          <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {[
