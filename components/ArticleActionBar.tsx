@@ -32,22 +32,22 @@ export default function ArticleActionBar({ articleId }: { articleId: string }) {
     };
 
     return (
-        <div className="mt-6 bg-white p-4 rounded shadow-sm flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4 border border-gray-100">
-            {/* Left side: Action Buttons */}
-            <div className="flex flex-wrap gap-3 text-sm w-full sm:w-auto">
-                <button onClick={handleShare} className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-4 py-2 rounded">
+        <div className="mt-6 bg-white p-4 rounded shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Left: Action Buttons */}
+            <div className="flex flex-wrap gap-3 justify-center sm:justify-start w-full sm:w-auto">
+                <button onClick={handleShare} className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded">
                     <span>📤</span> Share
                 </button>
-                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-4 py-2 rounded">
+                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded">
                     <span>💬</span> Comment
                 </button>
-                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 px-4 py-2 rounded">
+                <button className="flex items-center gap-2 text-gray-700 hover:text-[#c41e3a] transition-colors font-medium bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded">
                     <span>🔖</span> Bookmark
                 </button>
             </div>
 
-            {/* Right side: Back Button */}
-            <Link href="/" className="text-sm text-gray-500 hover:text-[#c41e3a] underline font-medium transition-colors">
+            {/* Right: Back Link */}
+            <Link href="/" className="text-sm text-gray-500 hover:text-[#c41e3a] underline transition-colors font-medium whitespace-nowrap">
                 ← Back to Home
             </Link>
         </div>
