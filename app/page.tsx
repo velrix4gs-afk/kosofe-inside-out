@@ -5,15 +5,33 @@ import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
 
 export default async function Home() {
-  // --- FETCH LIVE WEATHER ---
-  let weather = { temp: 28, desc: "Partly Cloudy", wind: 12, humidity: 75 };
+  // --- FETCH WEATHER & UV INDEX TOGETHER ---
+  let weather = { temp: 28, desc: "Clouds", feels_like: 28, humidity: 75, wind: 12, rain: 0, sunrise: 0, sunset: 0, uvIndex: 0 };
+
   try {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
     if (apiKey) {
-      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Lagos&units=metric&appid=${apiKey}`, { next: { revalidate: 600 } });
-      const data = await res.json();
-      if (data.main) {
-        weather = { temp: Math.round(data.main.temp), desc: data.weather[0].main, wind: Math.round(data.wind.speed), humidity: data.main.humidity };
+      // Fetch weather and UV Index in parallel
+      const [weatherRes, uvRes] = await Promise.all([
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=Lagos&units=metric&appid=${apiKey}`, { next: { revalidate: 600 } }),
+        fetch(`https://api.openweathermap.org/data/2.5/uvi?lat=6.5244&lon=3.3792&appid=${apiKey}`, { next: { revalidate: 600 } })
+      ]);
+
+      const weatherData = await weatherRes.json();
+      const uvData = await uvRes.json();
+
+      if (weatherData.main) {
+        weather = {
+          temp: Math.round(weatherData.main.temp),
+          desc: weatherData.weather[0].main,
+          feels_like: Math.round(weatherData.main.feels_like),
+          humidity: weatherData.main.humidity,
+          wind: Math.round(weatherData.wind.speed),
+          rain: weatherData.rain ? Math.round(weatherData.rain['1h'] || 0) : 0,
+          sunrise: weatherData.sys.sunrise,
+          sunset: weatherData.sys.sunset,
+          uvIndex: Math.round(uvData.value || 0)
+        };
       }
     }
   } catch (e) { console.log("Weather API failed"); }
@@ -26,7 +44,6 @@ export default async function Home() {
     .order('created_at', { ascending: false })
     .limit(10);
 
-  // --- EMPTY STATE ---
   if (!articles || articles.length === 0) {
     return (
       <main className="min-h-screen bg-[#f5f5f5] font-sans flex items-center justify-center p-10">
@@ -43,18 +60,20 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- BREAKING NEWS TICKER --- */}
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a]">
-          <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm">Breaking News</span>
-          <p className="text-sm font-medium truncate">{articles[0]?.title || "No breaking news at the moment."}</p>
+      {/* --- BREAKING NEWS TICKER (Animated now) --- */}
+      <div className="max-w-6xl mx-auto px-4 py-4 overflow-hidden"> {/* Added overflow-hidden */}
+        <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
+          <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap">Breaking News</span>
+          <p className="text-sm font-medium truncate animate-ticker whitespace-nowrap"> {/* Added animate-ticker */}
+            {articles[0]?.title || "No breaking news at the moment."}
+          </p>
         </div>
       </div>
 
-      {/* --- HERO SECTION --- */}
+      {/* --- HERO SECTION (Height increased to 550px) --- */}
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8">
         <div className="lg:col-span-2 relative group cursor-pointer">
-          <div className="relative h-[400px] bg-gray-200 rounded overflow-hidden">
+          <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden"> {/* Changed h-[400px] to h-[550px] */}
             <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-6 w-full">
@@ -79,23 +98,57 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- WEATHER & STAY INFORMED --- */}
+      {/* --- WEATHER & STAY INFORMED (Fully Upgraded) --- */}
       <div className="max-w-6xl mx-auto px-4 pb-8">
-        <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-6 justify-between items-start">
-          <div className="flex-1">
-            <h3 className="font-bold text-[#c41e3a] mb-4">KOSOFE WEATHER</h3>
-            <div className="flex items-center gap-4 mb-2">
-              <span className="text-4xl font-bold">{weather.temp}°C</span>
-              <span className="text-sm text-gray-600">{weather.desc}</span>
+        <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-8 justify-between items-start">
+          {/* Left: Weather Card */}
+          <div className="flex-1 w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-[#c41e3a] text-lg">Weather Update</h3>
+              <span className="text-xs text-gray-500 font-medium">📍Kosofe, Lagos</span>
             </div>
-            <div className="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-2 border-t pt-4">
-              <span>Humidity: {weather.humidity}%</span>
-              <span>Wind: {weather.wind} km/h</span>
-              <span>Feels like: {weather.temp}°C</span>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 mb-4">
+              <div className="flex items-center gap-4">
+                <span className="text-5xl font-bold">{weather.temp}°C</span>
+                <div>
+                  <p className="font-bold text-gray-700 text-lg">{weather.desc}</p>
+                  <p className="text-xs text-gray-500">Feels Like {weather.feels_like}°C</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 text-sm text-gray-600">
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase font-bold">Sunrise</span>
+                <span>{new Date(weather.sunrise * 1000).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase font-bold">Sunset</span>
+                <span>{new Date(weather.sunset * 1000).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase font-bold">UV Index</span>
+                <span className="font-medium text-yellow-600">{weather.uvIndex} (Moderate)</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase font-bold">Rain %</span>
+                <span>{weather.rain} mm/h</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase font-bold">Humidity</span>
+                <span>{weather.humidity}%</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase font-bold">Wind</span>
+                <span>{weather.wind} km/h</span>
+              </div>
             </div>
           </div>
-          <div className="flex-1 border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6">
-            <h3 className="font-bold mb-2">STAY INFORMED</h3>
+
+          {/* Right: Subscribe */}
+          <div className="flex-1 w-full border-t md:border-t-0 md:border-l pt-6 md:pt-0 md:pl-8">
+            <h3 className="font-bold mb-2 text-lg">STAY INFORMED</h3>
             <p className="text-sm text-gray-600 mb-4">Get the latest news and updates from Kosofe delivered to your inbox.</p>
             <NewsletterForm />
           </div>
@@ -131,40 +184,10 @@ export default async function Home() {
       <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
-          {/* Left: Follow Us */}
-          <div className="bg-white p-6 rounded shadow-sm">
-            <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
-            <div className="flex flex-wrap gap-4">
-              {/* Facebook */}
-              <a
-                href="https://facebook.com/KosofeInsideOut"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
-              >
-                Facebook
-              </a>
-
-              {/* X (Twitter) */}
-              <a
-                href="https://x.com/kosofeinsideout"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
-              >
-                X (Twitter)
-              </a>
-
-              {/* Instagram */}
-              <a
-                href="https://instagram.com/kosofeinsideout"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
-              >
-                Instagram
-              </a>
-            </div>
+          <div className="flex flex-wrap gap-4">
+            <a href="https://facebook.com/KosofeInsideOut" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity">Facebook</a>
+            <a href="https://x.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity">X (Twitter)</a>
+            <a href="https://instagram.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity">Instagram</a>
           </div>
         </div>
         <div className="bg-white p-6 rounded shadow-sm">
@@ -218,6 +241,7 @@ export default async function Home() {
           <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
         </div>
       </div>
+
     </main>
   );
 }
