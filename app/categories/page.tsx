@@ -10,6 +10,9 @@ export default function CategoriesPage() {
         { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️', slug: 'opinion' },
         { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽', slug: 'sports' },
         { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿', slug: 'lifestyle' },
+        { name: 'TECHNOLOGY', desc: 'Innovation, gadgets, and digital trends', icon: '💻', slug: 'technology' },
+        { name: 'ENVIRONMENT', desc: 'Climate, nature, and local sustainability', icon: '🌍', slug: 'environment' },
+        { name: 'AGRICULTURE', desc: 'Farming, food security, and agribusiness', icon: '🌾', slug: 'agriculture' },
     ];
 
     return (
