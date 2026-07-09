@@ -1,24 +1,51 @@
+"use client";
+
 import { supabase } from "@/lib/supabase";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { approveBusiness, rejectBusiness } from "./actions";
 
-export default async function AdminDirectoryPage() {
-    // 1. Protect route
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect('/admin/login');
+export default function AdminDirectoryPage() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const [pending, setPending] = useState<any[]>([]);
+    const [approved, setApproved] = useState<any[]>([]);
 
-    // 2. Fetch pending and approved businesses
-    const { data: pending } = await supabase
-        .from('directory_entries')
-        .select('*')
-        .eq('approved', false);
+    useEffect(() => {
+        const checkUserAndFetch = async () => {
+            // 1. Check session client-side (this bypasses the server cookie bug)
+            const { data: { user } } = await supabase.auth.getUser();
 
-    const { data: approved } = await supabase
-        .from('directory_entries')
-        .select('*')
-        .eq('approved', true)
-        .order('created_at', { ascending: false });
+            // If not logged in, push back to login
+            if (!user) {
+                router.push('/admin/login');
+                return;
+            }
+
+            // 2. Fetch pending and approved businesses
+            const { data: pendingData } = await supabase
+                .from('directory_entries')
+                .select('*')
+                .eq('approved', false);
+            setPending(pendingData || []);
+
+            const { data: approvedData } = await supabase
+                .from('directory_entries')
+                .select('*')
+                .eq('approved', true)
+                .order('created_at', { ascending: false });
+            setApproved(approvedData || []);
+
+            setLoading(false);
+        };
+
+        checkUserAndFetch();
+    }, [router]);
+
+    if (loading) {
+        return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center font-bold text-gray-500">Loading Directory Panel...</div>;
+    }
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-6">
@@ -43,7 +70,6 @@ export default async function AdminDirectoryPage() {
                                         {biz.email && <p className="text-xs text-gray-500">{biz.email}</p>}
                                     </div>
                                     <div className="flex gap-2">
-                                        {/* FIX: Using the `.bind()` method to pass the ID securely */}
                                         <form action={approveBusiness.bind(null, biz.id)}>
                                             <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-green-700 transition">Approve</button>
                                         </form>
