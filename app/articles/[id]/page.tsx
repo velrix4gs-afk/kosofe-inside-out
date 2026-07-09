@@ -18,6 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
+
+    // Fetch the Article
     const { data: article } = await supabase
         .from('articles')
         .select('*')
@@ -25,6 +27,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         .single();
 
     if (!article) notFound();
+
+    // Fetch Comments for this Article
+    const { data: comments } = await supabase
+        .from('article_comments')
+        .select('*')
+        .eq('article_id', id)
+        .order('created_at', { ascending: false });
 
     // Calculate Reading Time
     const wordCount = article.content.split(' ').length;
@@ -56,6 +65,24 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     {article.content}
                 </div>
             </article>
+
+            {/* --- DISPLAY EXISTING COMMENTS --- */}
+            {comments && comments.length > 0 && (
+                <div className="mt-6 bg-white p-4 rounded shadow-sm border border-gray-100">
+                    <h4 className="font-bold text-gray-800 border-b pb-2 mb-4">Community Discussion ({comments.length})</h4>
+                    <div className="space-y-4">
+                        {comments.map((c) => (
+                            <div key={c.id} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold text-sm text-gray-800">{c.name}</span>
+                                    <span className="text-[10px] text-gray-400">{new Date(c.created_at).toLocaleDateString()}</span>
+                                </div>
+                                <p className="text-sm text-gray-600 mt-1">{c.comment}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* The Interactive Action Bar */}
             <ArticleActionBar articleId={article.id} />
