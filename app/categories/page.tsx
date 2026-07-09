@@ -8,6 +8,8 @@ export default function CategoriesPage() {
         { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈', slug: 'business' },
         { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐', slug: 'entertainment' },
         { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️', slug: 'opinion' },
+        { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽', slug: 'sports' },
+        { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿', slug: 'lifestyle' },
     ];
 
     return (

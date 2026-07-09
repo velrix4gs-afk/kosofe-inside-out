@@ -57,6 +57,9 @@ export default function Header() {
                         <Link href="/categories/business" className="hover:text-[#c41e3a]">BUSINESS</Link>
                         <Link href="/categories/entertainment" className="hover:text-[#c41e3a]">ENTERTAINMENT</Link>
                         <Link href="/categories/opinion" className="hover:text-[#c41e3a]">OPINION</Link>
+                        {/* NEW LINKS BELOW */}
+                        <Link href="/directory" className="hover:text-[#c41e3a]">DIRECTORY</Link>
+                        <Link href="/notices" className="hover:text-[#c41e3a]">NOTICES</Link>
                     </div>
                     <div className="flex items-center gap-4 whitespace-nowrap">
                         <Link href="/advertise" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] shadow-sm">

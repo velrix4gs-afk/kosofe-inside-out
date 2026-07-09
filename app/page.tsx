@@ -193,6 +193,8 @@ export default async function Home() {
             { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' },
             { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' },
             { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' },
+            { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' },
+            { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },
           ].map((cat, idx) => (
             <div key={idx} className="bg-white p-6 rounded shadow-sm border-t-4 border-[#c41e3a] text-center cursor-pointer hover:shadow-md transition-all duration-200">
               <div className="text-3xl mb-2">{cat.icon}</div>
