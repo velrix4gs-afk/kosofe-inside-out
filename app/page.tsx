@@ -122,6 +122,11 @@ export default async function Home() {
         </div>
       </div>
 
+      {/* --- ADSENSE AD PLACEMENT --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-6">
+        <AdSense />
+      </div>
+
       {/* --- WEATHER & STAY INFORMED --- */}
       <div className="max-w-6xl mx-auto px-4 pb-8">
         <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-8 justify-between items-start">
