@@ -1,28 +1,44 @@
-import { supabase } from "@/lib/supabase";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { approveBusiness, rejectBusiness } from "./actions";
+"use client";
 
-export default async function AdminDirectoryPage() {
-    // 1. Protect route
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect('/admin/login');
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-    // 2. Fetch pending and approved businesses
-    const { data: pending } = await supabase
-        .from('directory_entries')
-        .select('*')
-        .eq('approved', false);
+export default function AdminDashboard() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const [articles, setArticles] = useState<any[]>([]);
 
-    const { data: approved } = await supabase
-        .from('directory_entries')
-        .select('*')
-        .eq('approved', true)
-        .order('created_at', { ascending: false });
+    useEffect(() => {
+        const checkUserAndFetch = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                router.push('/admin/login');
+                return;
+            }
+
+            const { data } = await supabase
+                .from('articles')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            setArticles(data || []);
+            setLoading(false);
+        };
+
+        checkUserAndFetch();
+    }, [router]);
+
+    if (loading) {
+        return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center">Loading dashboard...</div>;
+    }
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-6">
             <div className="max-w-6xl mx-auto bg-white p-6 rounded shadow-sm">
+
+                {/* --- UPDATED HEADER WITH NEW BUTTON --- */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4">
                     <h1 className="text-2xl font-bold text-gray-800">Manage Stories</h1>
                     <div className="flex gap-2">
@@ -33,51 +49,36 @@ export default async function AdminDirectoryPage() {
                     </div>
                 </div>
 
-                {/* PENDING APPROVALS SECTION */}
-                <div className="mb-10">
-                    <h2 className="text-lg font-bold text-orange-600 mb-4">Pending Approvals ({pending?.length || 0})</h2>
-                    {(!pending || pending.length === 0) ? (
-                        <p className="text-sm text-gray-500 bg-gray-50 p-4 rounded border border-gray-200">No businesses waiting for approval.</p>
-                    ) : (
-                        <div className="grid grid-cols-1 gap-4">
-                            {pending.map((biz) => (
-                                <div key={biz.id} className="border-l-4 border-orange-500 bg-orange-50 p-4 rounded shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                    <div>
-                                        <h4 className="font-bold text-gray-800">{biz.business_name}</h4>
-                                        <p className="text-sm text-gray-600">{biz.category} • {biz.phone}</p>
-                                        {biz.email && <p className="text-xs text-gray-500">{biz.email}</p>}
-                                    </div>
-                                    <div className="flex gap-2">
-                                        {/* Using Server Actions directly in the button */}
-                                        <form action={async () => { 'use server'; await approveBusiness(biz.id); }}>
-                                            <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-green-700 transition">Approve</button>
-                                        </form>
-                                        <form action={async () => { 'use server'; await rejectBusiness(biz.id); }}>
-                                            <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-red-700 transition">Reject</button>
-                                        </form>
-                                    </div>
-                                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-gray-100 text-gray-700 font-bold">
+                            <tr>
+                                <th className="p-3">Title</th>
+                                <th className="p-3">Category</th>
+                                <th className="p-3">Status</th>
+                                <th className="p-3">Date</th>
+                                <th className="p-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {articles.map((article) => (
+                                <tr key={article.id} className="hover:bg-gray-50">
+                                    <td className="p-3 font-medium max-w-[200px] truncate">{article.title}</td>
+                                    <td className="p-3">{article.category}</td>
+                                    <td className="p-3">
+                                        <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${article.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                            {article.published ? 'Published' : 'Draft'}
+                                        </span>
+                                    </td>
+                                    <td className="p-3 text-gray-500">{new Date(article.created_at).toLocaleDateString()}</td>
+                                    <td className="p-3 flex gap-2">
+                                        <button className="text-blue-600 hover:underline text-xs">Edit</button>
+                                        <button className="text-red-600 hover:underline text-xs">Delete</button>
+                                    </td>
+                                </tr>
                             ))}
-                        </div>
-                    )}
-                </div>
-
-                {/* APPROVED / ACTIVE SECTION */}
-                <div>
-                    <h2 className="text-lg font-bold text-green-600 mb-4">Active Listings ({approved?.length || 0})</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {approved?.map((biz) => (
-                            <div key={biz.id} className="bg-gray-50 p-4 rounded border border-gray-200 flex justify-between items-center">
-                                <div>
-                                    <h4 className="font-bold text-gray-800">{biz.business_name}</h4>
-                                    <p className="text-xs text-gray-500">{biz.category} • {biz.phone}</p>
-                                </div>
-                                {biz.is_premium && (
-                                    <span className="bg-[#c41e3a] text-white text-[10px] font-bold uppercase px-2 py-1 rounded">Premium</span>
-                                )}
-                            </div>
-                        ))}
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
