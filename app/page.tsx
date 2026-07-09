@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
+import AdSense from "@/components/AdSense";
 
 export default async function Home() {
   // --- FETCH WEATHER & UV INDEX TOGETHER ---
