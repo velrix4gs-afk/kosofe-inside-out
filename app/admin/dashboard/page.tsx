@@ -1,4 +1,3 @@
-// app/admin/dashboard/page.tsx
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -13,16 +12,12 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         const checkUserAndFetch = async () => {
-            // 1. Check if user is logged in
             const { data: { user } } = await supabase.auth.getUser();
-
-            // If not logged in, push back to login
             if (!user) {
                 router.push('/admin/login');
                 return;
             }
 
-            // 2. Fetch all articles if logged in
             const { data } = await supabase
                 .from('articles')
                 .select('*')
@@ -42,9 +37,17 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-6">
             <div className="max-w-6xl mx-auto bg-white p-6 rounded shadow-sm">
-                <div className="flex justify-between items-center mb-6 border-b pb-4">
+
+                {/* --- HEADER WITH THE MISSING BUTTON --- */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4">
                     <h1 className="text-2xl font-bold text-gray-800">Manage Stories</h1>
-                    <Link href="/admin/dashboard/create" className="bg-[#c41e3a] text-white px-4 py-2 rounded text-sm font-bold hover:bg-[#a0152e]">+ Write New Story</Link>
+                    <div className="flex gap-2 flex-wrap">
+                        {/* The Manage Directory button is right here! */}
+                        <Link href="/admin/directory" className="bg-gray-100 text-gray-700 px-4 py-2 rounded text-sm font-bold hover:bg-gray-200 transition flex items-center gap-1">
+                            📂 Manage Directory
+                        </Link>
+                        <Link href="/admin/dashboard/create" className="bg-[#c41e3a] text-white px-4 py-2 rounded text-sm font-bold hover:bg-[#a0152e]">+ Write New Story</Link>
+                    </div>
                 </div>
 
                 <div className="overflow-x-auto">
