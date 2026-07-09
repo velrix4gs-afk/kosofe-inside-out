@@ -9,14 +9,43 @@ export default function SubmitDirectoryPage() {
     const [form, setForm] = useState({
         business_name: '', category: '', phone: '', email: '', address: '', website: '', whatsapp: ''
     });
+    const [logoFile, setLogoFile] = useState<File | null>(null);
+    const [coverFile, setCoverFile] = useState<File | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        // Insert with approved = false (Must be manually approved by you)
+        let logoUrl = '';
+        let coverUrl = '';
+
+        // 1. Upload Logo if selected
+        if (logoFile) {
+            const fileExt = logoFile.name.split('.').pop();
+            const fileName = `logo_${Date.now()}.${fileExt}`;
+            const { error } = await supabase.storage.from('directory-images').upload(fileName, logoFile);
+            if (!error) {
+                const { data } = supabase.storage.from('directory-images').getPublicUrl(fileName);
+                logoUrl = data.publicUrl;
+            }
+        }
+
+        // 2. Upload Cover Photo if selected
+        if (coverFile) {
+            const fileExt = coverFile.name.split('.').pop();
+            const fileName = `cover_${Date.now()}.${fileExt}`;
+            const { error } = await supabase.storage.from('directory-images').upload(fileName, coverFile);
+            if (!error) {
+                const { data } = supabase.storage.from('directory-images').getPublicUrl(fileName);
+                coverUrl = data.publicUrl;
+            }
+        }
+
+        // 3. Insert with approved = false
         const { error } = await supabase.from('directory_entries').insert({
             ...form,
+            logo_url: logoUrl,
+            cover_photo: coverUrl,
             approved: false,
             verified_level: 0,
             is_premium: false
@@ -82,6 +111,17 @@ export default function SubmitDirectoryPage() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Website / Social Media Link</label>
                         <input type="url" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.website} onChange={e => setForm({ ...form, website: e.target.value })} />
                     </div>
+
+                    {/* New Image Upload Fields */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Business Logo</label>
+                        <input type="file" accept="image/*" className="w-full border p-1.5 rounded" onChange={e => setLogoFile(e.target.files?.[0] || null)} />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Cover Photo (Banner Image)</label>
+                        <input type="file" accept="image/*" className="w-full border p-1.5 rounded" onChange={e => setCoverFile(e.target.files?.[0] || null)} />
+                    </div>
+
                     <button type="submit" disabled={loading} className="w-full bg-[#c41e3a] text-white py-3 rounded font-bold hover:bg-[#a0152e] disabled:opacity-50 transition">
                         {loading ? 'Submitting...' : 'Submit for Review'}
                     </button>
