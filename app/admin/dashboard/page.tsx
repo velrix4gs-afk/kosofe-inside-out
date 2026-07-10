@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { deleteArticle } from './actions';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -30,22 +31,15 @@ export default function AdminDashboard() {
         checkUserAndFetch();
     }, [router]);
 
-    if (loading) {
-        return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center">Loading dashboard...</div>;
-    }
+    if (loading) return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center">Loading dashboard...</div>;
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-6">
             <div className="max-w-6xl mx-auto bg-white p-6 rounded shadow-sm">
-
-                {/* --- HEADER WITH THE MISSING BUTTON --- */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4">
                     <h1 className="text-2xl font-bold text-gray-800">Manage Stories</h1>
                     <div className="flex gap-2 flex-wrap">
-                        {/* The Manage Directory button is right here! */}
-                        <Link href="/admin/directory" className="bg-gray-100 text-gray-700 px-4 py-2 rounded text-sm font-bold hover:bg-gray-200 transition flex items-center gap-1">
-                            📂 Manage Directory
-                        </Link>
+                        <Link href="/admin/directory" className="bg-gray-100 text-gray-700 px-4 py-2 rounded text-sm font-bold hover:bg-gray-200 transition flex items-center gap-1">📂 Manage Directory</Link>
                         <Link href="/admin/dashboard/create" className="bg-[#c41e3a] text-white px-4 py-2 rounded text-sm font-bold hover:bg-[#a0152e]">+ Write New Story</Link>
                     </div>
                 </div>
@@ -73,8 +67,17 @@ export default function AdminDashboard() {
                                     </td>
                                     <td className="p-3 text-gray-500">{new Date(article.created_at).toLocaleDateString()}</td>
                                     <td className="p-3 flex gap-2">
-                                        <button className="text-blue-600 hover:underline text-xs">Edit</button>
-                                        <button className="text-red-600 hover:underline text-xs">Delete</button>
+                                        {/* Edit Link */}
+                                        <Link href={`/admin/dashboard/edit/${article.id}`} className="text-blue-600 hover:underline text-xs font-bold">Edit</Link>
+
+                                        {/* Delete Form (with confirmation) */}
+                                        <form action={async () => {
+                                            if (confirm("Are you sure you want to delete this story?")) {
+                                                await deleteArticle(article.id);
+                                            }
+                                        }}>
+                                            <button type="submit" className="text-red-600 hover:underline text-xs font-bold">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             ))}
