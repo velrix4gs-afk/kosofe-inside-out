@@ -100,16 +100,20 @@ export default async function Home() {
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 relative group cursor-pointer">
-            <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
-              <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-6 w-full">
-                <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-                <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
-                <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
-                <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
+            {/* --- HERO TOP STORY FIX --- */}
+            {/* Wrap the entire hero in a Link so users can tap to read */}
+            <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group block cursor-pointer">
+              <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
+                <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 p-6 w-full">
+                  <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
+                  <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
+                  <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
+                  <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
           <div className="flex flex-col gap-4">
             {articles.slice(1, 4).map((story, idx) => (
@@ -248,12 +252,34 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {[
-            { title: "Community Voices", desc: "Hear stories from real people in Kosofe.", img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400", slug: "community-voices" },
-            { title: "Business Spotlight", desc: "Highlighting local businesses making an impact.", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400", slug: "business-spotlight" },
-            { title: "Photos of the Week", desc: "A visual recap of Kosofe through our lens.", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400", slug: "photos-of-the-week" },
-            { title: "Weekend Interview", desc: "In-depth conversations with influential personalities.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400", slug: "weekend-interview" }
+            {
+              title: "Community Voices",
+              desc: "Hear stories from real people in Kosofe.",
+              // Change this to: src="/img/kosofe-community.jpg" or your Supabase URL
+              img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400",
+              slug: "community-voices"
+            },
+            {
+              title: "Business Spotlight",
+              desc: "Highlighting local businesses making an impact.",
+              img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400",
+              slug: "business-spotlight"
+            },
+            {
+              title: "Photos of the Week",
+              desc: "A visual recap of Kosofe through our lens.",
+              img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400",
+              slug: "photos-of-the-week"
+            },
+            {
+              title: "Weekend Interview",
+              desc: "In-depth conversations with influential personalities.",
+              img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+              slug: "weekend-interview"
+            }
           ].map((feature, idx) => (
             <Link key={idx} href={`/features/${feature.slug}`} className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group">
+              {/* Swap the src below for your Kosofe images */}
               <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
               <div className="p-4">
                 <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
