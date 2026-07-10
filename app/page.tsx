@@ -256,7 +256,7 @@ export default async function Home() {
               title: "Community Voices",
               desc: "Hear stories from real people in Kosofe.",
               // Change this to: src="/img/kosofe-community.jpg" or your Supabase URL
-              img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=400",
+              img: "https://kosofeinsideout.com.ng/wp-content/uploads/2024/01/83FEE674-5269-491C-868B-D907D28B638C.jpeg",
               slug: "community-voices"
             },
             {
