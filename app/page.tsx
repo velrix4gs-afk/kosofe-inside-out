@@ -262,7 +262,7 @@ export default async function Home() {
             {
               title: "Business Spotlight",
               desc: "Highlighting local businesses making an impact.",
-              img: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=400",
+              img: "https://kosofeinsideout.com.ng/wp-content/uploads/2024/02/IMG-20240209-WA0022.jpg",
               slug: "business-spotlight"
             },
             {
