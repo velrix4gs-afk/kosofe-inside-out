@@ -1,4 +1,5 @@
 // app/page.tsx
+import { featureData } from "@/lib/featureData";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -251,36 +252,10 @@ export default async function Home() {
           <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {[
-            {
-              title: "Community Voices",
-              desc: "Hear stories from real people in Kosofe.",
-              // Change this to: src="/img/kosofe-community.jpg" or your Supabase URL
-              img: "https://kosofeinsideout.com.ng/wp-content/uploads/2024/01/83FEE674-5269-491C-868B-D907D28B638C.jpeg",
-              slug: "community-voices"
-            },
-            {
-              title: "Business Spotlight",
-              desc: "Highlighting local businesses making an impact.",
-              img: "https://kosofeinsideout.com.ng/wp-content/uploads/2024/02/IMG-20240209-WA0022.jpg",
-              slug: "business-spotlight"
-            },
-            {
-              title: "Photos of the Week",
-              desc: "A visual recap of Kosofe through our lens.",
-              img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400",
-              slug: "photos-of-the-week"
-            },
-            {
-              title: "Weekend Interview",
-              desc: "In-depth conversations with influential personalities.",
-              img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
-              slug: "weekend-interview"
-            }
-          ].map((feature, idx) => (
+          {featureData.map((feature, idx) => (
             <Link key={idx} href={`/features/${feature.slug}`} className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group">
-              {/* Swap the src below for your Kosofe images */}
-              <img src={feature.img} alt={feature.title} className="w-full h-40 object-cover" />
+              {/* Changed h-40 to h-56 so the image is much taller */}
+              <img src={feature.img} alt={feature.title} className="w-full h-56 object-cover" />
               <div className="p-4">
                 <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
                 <p className="text-xs text-gray-500">{feature.desc}</p>
