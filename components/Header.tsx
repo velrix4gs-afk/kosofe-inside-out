@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaTimes } from "react-icons/fa";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+    const pathname = usePathname();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const moreLinks = [
@@ -39,16 +41,16 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* --- LOGO --- */}
-            <div className="bg-white py-4 border-b">
+            {/* --- LOGO (SHIMMER & SLIMMER PADDING) --- */}
+            <div className="bg-white py-2 md:py-4 border-b">
                 <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
                         <Image
                             src="/img/kio-logo.jpg"
                             alt="Kosofe Inside Out Logo"
-                            width={280}
-                            height={70}
-                            className="h-14 md:h-20 w-auto object-contain cursor-pointer"
+                            width={240}
+                            height={60}
+                            className="h-12 md:h-20 w-auto object-contain cursor-pointer"
                         />
                     </Link>
                 </div>
@@ -59,17 +61,25 @@ export default function Header() {
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-between py-3 gap-4 md:gap-6">
 
                     <div className="flex items-center gap-4 md:gap-6 text-sm font-bold text-gray-700 whitespace-nowrap overflow-x-auto pb-1 pr-4 no-scrollbar">
-                        <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
-                        <Link href="/" className="bg-[#c41e3a] text-white px-3 py-1 rounded">News</Link>
-                        <Link href="/categories/politics" className="hover:text-[#c41e3a]">Politics</Link>
-                        <Link href="/categories/governance" className="hover:text-[#c41e3a]">Governance</Link>
-                        <Link href="/categories/community" className="hover:text-[#c41e3a]">Community</Link>
-                        <Link href="/categories/business" className="hover:text-[#c41e3a]">Business</Link>
-                        <Link href="/categories/sports" className="hover:text-[#c41e3a]">Sports</Link>
-                        <Link href="/categories/entertainment" className="hover:text-[#c41e3a]">Entertainment</Link>
-                        <Link href="/directory" className="hover:text-[#c41e3a]">Directory</Link>
 
-                        {/* --- BUTTON TO OPEN SLIDE-OUT DRAWER --- */}
+                        {/* Home */}
+                        <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
+
+                        {/* News: ONLY red if pathname is exactly '/' */}
+                        <Link href="/" className={`px-3 py-1 rounded transition-colors ${pathname === '/' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>
+                            News
+                        </Link>
+
+                        {/* Politics */}
+                        <Link href="/categories/politics" className={`${pathname.startsWith('/categories/politics') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
+                        <Link href="/categories/governance" className={`${pathname.startsWith('/categories/governance') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Governance</Link>
+                        <Link href="/categories/community" className={`${pathname.startsWith('/categories/community') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Community</Link>
+                        <Link href="/categories/business" className={`${pathname.startsWith('/categories/business') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Business</Link>
+                        <Link href="/categories/sports" className={`${pathname.startsWith('/categories/sports') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Sports</Link>
+                        <Link href="/categories/entertainment" className={`${pathname.startsWith('/categories/entertainment') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Entertainment</Link>
+                        <Link href="/directory" className={`${pathname.startsWith('/directory') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Directory</Link>
+
+                        {/* More Button */}
                         <button
                             onClick={() => setDrawerOpen(true)}
                             className="flex items-center gap-1 font-bold text-gray-700 hover:text-[#c41e3a] px-2 py-1 border border-transparent hover:border-[#c41e3a] rounded transition"
@@ -86,20 +96,14 @@ export default function Header() {
 
             {/* --- RIGHT-SIDE SLIDE-OUT DRAWER --- */}
             <div className={`fixed inset-0 z-[999] ${drawerOpen ? 'visible' : 'invisible'}`}>
-                {/* Dark Backdrop Overlay */}
                 <div className="fixed inset-0 bg-black/50 transition-opacity duration-300" onClick={() => setDrawerOpen(false)}></div>
-
-                {/* The Sliding Menu */}
                 <div className={`fixed top-0 right-0 h-full w-72 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                    {/* Drawer Header */}
                     <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                         <span className="font-bold text-lg text-[#c41e3a]">More</span>
                         <button onClick={() => setDrawerOpen(false)} className="text-gray-500 hover:text-[#c41e3a] p-1 rounded hover:bg-gray-100 transition">
                             <FaTimes size={20} />
                         </button>
                     </div>
-
-                    {/* Drawer Links */}
                     <div className="overflow-y-auto h-full pb-10">
                         {moreLinks.map((link) => {
                             const slug = link.toLowerCase().replace(/ /g, '-');
@@ -112,12 +116,7 @@ export default function Header() {
                                 href = `/categories/${slug}`;
                             }
                             return (
-                                <Link
-                                    key={link}
-                                    href={href}
-                                    onClick={() => setDrawerOpen(false)}
-                                    className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors"
-                                >
+                                <Link key={link} href={href} onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
                                     {link}
                                 </Link>
                             );

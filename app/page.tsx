@@ -63,7 +63,7 @@ export default async function Home() {
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
       {/* --- FULL WIDTH IMAGE AD BANNER --- */}
-      <div className="w-full bg-white border-b cursor-pointer hover:opacity-95 transition-opacity">
+      <div className="w-full bg-white border-b cursor-pointer hover:opacity-95 transition-opacity py-2 md:py-4">
         <Link href="/advertise" className="block w-full">
           <div className="w-full">
             <Image
@@ -71,7 +71,7 @@ export default async function Home() {
               alt="Advertise with Kosofe Inside Out"
               width={1200}
               height={150}
-              className="w-full h-auto max-h-[120px] object-cover"
+              className="w-full h-auto max-h-[80px] md:max-h-[120px] object-cover"
             />
           </div>
         </Link>
