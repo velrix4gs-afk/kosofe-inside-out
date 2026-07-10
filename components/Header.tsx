@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaTimes } from "react-icons/fa";
 import { useState } from "react";
 
 export default function Header() {
-    const [moreOpen, setMoreOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const moreLinks = [
         "Education", "Health", "Lifestyle", "Opinion",
@@ -69,44 +69,13 @@ export default function Header() {
                         <Link href="/categories/entertainment" className="hover:text-[#c41e3a]">Entertainment</Link>
                         <Link href="/directory" className="hover:text-[#c41e3a]">Directory</Link>
 
-                        {/* --- MORE DROPDOWN (Fixed Conditional Render) --- */}
-                        <div className="relative inline-block text-left">
-                            <button
-                                onClick={() => setMoreOpen(!moreOpen)}
-                                className="flex items-center gap-1 font-bold text-gray-700 hover:text-[#c41e3a] px-2 py-1 border border-transparent hover:border-[#c41e3a] rounded transition"
-                            >
-                                More <span className="text-[10px]">▾</span>
-                            </button>
-
-                            {/* Guaranteed Dropdown using Conditional Rendering */}
-                            {moreOpen && (
-                                <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-[999]">
-                                    <div className="py-1 flex flex-col text-sm text-gray-700">
-                                        {moreLinks.map((link) => {
-                                            const slug = link.toLowerCase().replace(/ /g, '-');
-                                            let href = `/${slug}`;
-                                            if (link === 'Contact') href = '/contact';
-                                            if (link === 'Public Notices') href = '/notices';
-                                            if (link === 'Opinion') href = '/categories/opinion';
-                                            if (link === 'Lifestyle') href = '/categories/lifestyle';
-                                            if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
-                                                href = `/categories/${slug}`;
-                                            }
-                                            return (
-                                                <Link
-                                                    key={link}
-                                                    href={href}
-                                                    onClick={() => setMoreOpen(false)}
-                                                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#c41e3a] transition-colors"
-                                                >
-                                                    {link}
-                                                </Link>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                        {/* --- BUTTON TO OPEN SLIDE-OUT DRAWER --- */}
+                        <button
+                            onClick={() => setDrawerOpen(true)}
+                            className="flex items-center gap-1 font-bold text-gray-700 hover:text-[#c41e3a] px-2 py-1 border border-transparent hover:border-[#c41e3a] rounded transition"
+                        >
+                            More <span className="text-[10px]">▾</span>
+                        </button>
                     </div>
 
                     <Link href="/" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap shrink-0 hidden sm:block">
@@ -114,6 +83,48 @@ export default function Header() {
                     </Link>
                 </div>
             </nav>
+
+            {/* --- RIGHT-SIDE SLIDE-OUT DRAWER --- */}
+            <div className={`fixed inset-0 z-[999] ${drawerOpen ? 'visible' : 'invisible'}`}>
+                {/* Dark Backdrop Overlay */}
+                <div className="fixed inset-0 bg-black/50 transition-opacity duration-300" onClick={() => setDrawerOpen(false)}></div>
+
+                {/* The Sliding Menu */}
+                <div className={`fixed top-0 right-0 h-full w-72 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                    {/* Drawer Header */}
+                    <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <span className="font-bold text-lg text-[#c41e3a]">More</span>
+                        <button onClick={() => setDrawerOpen(false)} className="text-gray-500 hover:text-[#c41e3a] p-1 rounded hover:bg-gray-100 transition">
+                            <FaTimes size={20} />
+                        </button>
+                    </div>
+
+                    {/* Drawer Links */}
+                    <div className="overflow-y-auto h-full pb-10">
+                        {moreLinks.map((link) => {
+                            const slug = link.toLowerCase().replace(/ /g, '-');
+                            let href = `/${slug}`;
+                            if (link === 'Contact') href = '/contact';
+                            if (link === 'Public Notices') href = '/notices';
+                            if (link === 'Opinion') href = '/categories/opinion';
+                            if (link === 'Lifestyle') href = '/categories/lifestyle';
+                            if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
+                                href = `/categories/${slug}`;
+                            }
+                            return (
+                                <Link
+                                    key={link}
+                                    href={href}
+                                    onClick={() => setDrawerOpen(false)}
+                                    className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors"
+                                >
+                                    {link}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
         </>
     );
 }
