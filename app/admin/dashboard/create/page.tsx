@@ -1,4 +1,3 @@
-// app/admin/dashboard/create/page.tsx
 "use client";
 
 import { useState } from 'react';
@@ -11,47 +10,84 @@ export default function CreateStory() {
     const [form, setForm] = useState({
         title: '', excerpt: '', content: '', category: 'News', published: false
     });
-    const [imageFile, setImageFile] = useState<File | null>(null);
+
+    // Allow multiple files
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
 
     const handleUploadAndSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        let imageUrl = '';
-        // 1. Upload Image if selected
-        if (imageFile) {
-            const fileExt = imageFile.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-            const { error: uploadError } = await supabase.storage
-                .from('article-images')
-                .upload(fileName, imageFile);
+        let mainImageUrl = '';
+        const galleryUrls: string[] = [];
 
-            if (uploadError) {
-                alert("Image upload failed: " + uploadError.message);
-                setLoading(false);
-                return;
+        // 1. Upload all images if selected
+        if (imageFiles.length > 0) {
+            for (let i = 0; i < imageFiles.length; i++) {
+                const file = imageFiles[i];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${i}.${fileExt}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('article-images')
+                    .upload(fileName, file);
+
+                if (uploadError) {
+                    alert("Image upload failed: " + uploadError.message);
+                    setLoading(false);
+                    return;
+                }
+
+                const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
+                const url = data.publicUrl;
+
+                // First image is the Main Display image
+                if (i === 0) {
+                    mainImageUrl = url;
+                }
+                galleryUrls.push(url);
             }
-            // Get public URL
-            const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
-            imageUrl = data.publicUrl;
         }
 
-        // 2. Insert article into database
-        const { error } = await supabase.from('articles').insert({
-            title: form.title,
-            excerpt: form.excerpt,
-            content: form.content,
-            category: form.category,
-            image_url: imageUrl,
-            published: form.published,
-        });
+        // 2. Insert the article into the database
+        const { data: articleData, error: articleError } = await supabase
+            .from('articles')
+            .insert({
+                title: form.title,
+                excerpt: form.excerpt,
+                content: form.content,
+                category: form.category,
+                image_url: mainImageUrl, // The main display image
+                published: form.published,
+            })
+            .select()
+            .single();
 
-        if (error) {
-            alert("Failed to save story: " + error.message);
-        } else {
-            router.push('/admin/dashboard'); // Go back to dashboard on success
+        if (articleError) {
+            alert("Failed to save story: " + articleError.message);
+            setLoading(false);
+            return;
         }
+
+        // 3. Insert the rest of the images into the new gallery table
+        if (galleryUrls.length > 1) {
+            const galleryInserts = galleryUrls.slice(1).map(url => ({
+                article_id: articleData.id,
+                image_url: url,
+                is_main: false
+            }));
+
+            const { error: galleryError } = await supabase
+                .from('article_gallery')
+                .insert(galleryInserts);
+
+            if (galleryError) {
+                alert("Article saved, but gallery images failed: " + galleryError.message);
+            }
+        }
+
         setLoading(false);
+        router.push('/admin/dashboard');
     };
 
     return (
@@ -72,13 +108,27 @@ export default function CreateStory() {
                                 <option>Governance</option>
                                 <option>Community</option>
                                 <option>Business</option>
+                                <option>Sports</option>
                                 <option>Entertainment</option>
                                 <option>Opinion</option>
+                                <option>Lifestyle</option>
+                                <option>Technology</option>
+                                <option>Environment</option>
+                                <option>Agriculture</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
-                            <input type="file" accept="image/*" className="w-full border p-1.5 rounded" onChange={e => setImageFile(e.target.files?.[0] || null)} />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Upload Images (Select multiple)</label>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="w-full border p-1.5 rounded"
+                                onChange={e => setImageFiles(Array.from(e.target.files || []))}
+                            />
+                            {imageFiles.length > 0 && (
+                                <p className="text-xs text-gray-500 mt-1">{imageFiles.length} images selected. The first one will be the Main Display image.</p>
+                            )}
                         </div>
                     </div>
                     <div>
@@ -102,4 +152,4 @@ export default function CreateStory() {
             </div>
         </div>
     );
-}
+}   
