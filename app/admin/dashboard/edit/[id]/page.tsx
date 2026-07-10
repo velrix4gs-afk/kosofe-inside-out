@@ -47,8 +47,8 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (selectedTags.length < 5) {
-            alert("Please select at least 5 category tags for this story.");
+        if (selectedTags.length < 2) {
+            alert("Please select at least 2 category tags for this story.");
             return;
         }
         setSaving(true);
