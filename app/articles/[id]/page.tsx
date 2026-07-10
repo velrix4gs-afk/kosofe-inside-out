@@ -38,7 +38,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         <div className="max-w-3xl mx-auto px-4 py-8">
             <article className="bg-white p-6 md:p-10 rounded shadow-sm">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{article.title}</h1>
-                {/* Meta Data Row (Fixed to include Author) */}
+                {/* Meta Data Row */}
                 <div className="flex flex-wrap items-center text-xs md:text-sm text-gray-500 mb-6 border-b pb-4 gap-3">
                     <span className="text-[#c41e3a] font-bold uppercase">{article.category}</span>
                     <span>•</span>
