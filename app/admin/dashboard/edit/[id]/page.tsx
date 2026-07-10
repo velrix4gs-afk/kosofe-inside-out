@@ -10,10 +10,9 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({
-        title: '', excerpt: '', content: '', category: 'News', published: false
+        title: '', excerpt: '', content: '', category: 'News', published: false, author: '' // Added author
     });
 
-    // Wait for params to resolve
     useEffect(() => {
         const fetchData = async () => {
             const resolvedParams = await params;
@@ -32,6 +31,7 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                     content: data.content || '',
                     category: data.category || 'News',
                     published: data.published || false,
+                    author: data.author || '', // Load existing author
                 });
             }
             setLoading(false);
@@ -53,6 +53,7 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                 content: form.content,
                 category: form.category,
                 published: form.published,
+                author: form.author || 'Admin', // Update author or fallback to Admin
             })
             .eq('id', id);
 
@@ -77,6 +78,13 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                         <label className="block text-sm font-medium text-gray-700 mb-1">Story Title</label>
                         <input type="text" required className="w-full border p-2 rounded" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                     </div>
+
+                    {/* NEW AUTHOR INPUT FIELD IN EDIT FORM */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Author Name</label>
+                        <input type="text" placeholder="e.g. John Doe" className="w-full border p-2 rounded" value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} />
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>

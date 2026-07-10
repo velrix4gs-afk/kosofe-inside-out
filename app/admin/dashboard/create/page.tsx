@@ -8,10 +8,9 @@ export default function CreateStory() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
-        title: '', excerpt: '', content: '', category: 'News', published: false
+        title: '', excerpt: '', content: '', category: 'News', published: false, author: '' // Added author
     });
 
-    // Allow multiple files
     const [imageFiles, setImageFiles] = useState<File[]>([]);
 
     const handleUploadAndSubmit = async (e: React.FormEvent) => {
@@ -21,7 +20,6 @@ export default function CreateStory() {
         let mainImageUrl = '';
         const galleryUrls: string[] = [];
 
-        // 1. Upload all images if selected
         if (imageFiles.length > 0) {
             for (let i = 0; i < imageFiles.length; i++) {
                 const file = imageFiles[i];
@@ -41,15 +39,12 @@ export default function CreateStory() {
                 const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
                 const url = data.publicUrl;
 
-                // First image is the Main Display image
-                if (i === 0) {
-                    mainImageUrl = url;
-                }
+                if (i === 0) mainImageUrl = url;
                 galleryUrls.push(url);
             }
         }
 
-        // 2. Insert the article into the database
+        // Insert with the author field
         const { data: articleData, error: articleError } = await supabase
             .from('articles')
             .insert({
@@ -57,8 +52,9 @@ export default function CreateStory() {
                 excerpt: form.excerpt,
                 content: form.content,
                 category: form.category,
-                image_url: mainImageUrl, // The main display image
+                image_url: mainImageUrl,
                 published: form.published,
+                author: form.author || 'Admin', // Defaults to Admin if left blank
             })
             .select()
             .single();
@@ -69,21 +65,13 @@ export default function CreateStory() {
             return;
         }
 
-        // 3. Insert the rest of the images into the new gallery table
         if (galleryUrls.length > 1) {
             const galleryInserts = galleryUrls.slice(1).map(url => ({
                 article_id: articleData.id,
                 image_url: url,
                 is_main: false
             }));
-
-            const { error: galleryError } = await supabase
-                .from('article_gallery')
-                .insert(galleryInserts);
-
-            if (galleryError) {
-                alert("Article saved, but gallery images failed: " + galleryError.message);
-            }
+            await supabase.from('article_gallery').insert(galleryInserts);
         }
 
         setLoading(false);
@@ -99,6 +87,13 @@ export default function CreateStory() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Story Title</label>
                         <input type="text" required className="w-full border p-2 rounded" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                     </div>
+
+                    {/* NEW AUTHOR INPUT FIELD */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Author Name</label>
+                        <input type="text" placeholder="e.g. John Doe" className="w-full border p-2 rounded" value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} />
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
@@ -119,16 +114,7 @@ export default function CreateStory() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Upload Images (Select multiple)</label>
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                className="w-full border p-1.5 rounded"
-                                onChange={e => setImageFiles(Array.from(e.target.files || []))}
-                            />
-                            {imageFiles.length > 0 && (
-                                <p className="text-xs text-gray-500 mt-1">{imageFiles.length} images selected. The first one will be the Main Display image.</p>
-                            )}
+                            <input type="file" multiple accept="image/*" className="w-full border p-1.5 rounded" onChange={e => setImageFiles(Array.from(e.target.files || []))} />
                         </div>
                     </div>
                     <div>
@@ -152,4 +138,4 @@ export default function CreateStory() {
             </div>
         </div>
     );
-}   
+}
