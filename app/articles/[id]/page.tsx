@@ -38,24 +38,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         <div className="max-w-3xl mx-auto px-4 py-8">
             <article className="bg-white p-6 md:p-10 rounded shadow-sm">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{article.title}</h1>
+                {/* Meta Data Row (Fixed to include Author) */}
                 <div className="flex flex-wrap items-center text-xs md:text-sm text-gray-500 mb-6 border-b pb-4 gap-3">
                     <span className="text-[#c41e3a] font-bold uppercase">{article.category}</span>
-                    {/* Render the full list of tags */}
-                    {article.tags && article.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            {article.tags.map((tag: string) => (
-                                <span key={tag} className="bg-gray-100 text-[#c41e3a] text-[10px] font-bold px-2 py-1 rounded uppercase border border-gray-200">
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                    )}
                     <span>•</span>
                     <span>{new Date(article.created_at).toLocaleDateString()}</span>
                     <span>•</span>
+                    <span>By {article.author || 'Admin'}</span>
+                    <span>•</span>
                     <span>{readTime} min read</span>
                     <span>•</span>
-                    <span className="flex items-center gap-1"><span className="font-bold">👁️</span> {article.views || 0} views</span>
+                    <span className="flex items-center gap-1">
+                        <span className="font-bold">👁️</span> {article.views || 0} views
+                    </span>
                 </div>
 
                 {/* Main Display Image */}
