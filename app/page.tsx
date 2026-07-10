@@ -86,7 +86,10 @@ export default async function Home() {
             </span>
             <div className="flex-1 overflow-hidden whitespace-nowrap">
               <div className="animate-ticker inline-block w-max">
-                {articles[0]?.title || "No breaking news at the moment."}
+                {articles && articles.length > 0
+                  ? articles.slice(0, 5).map((a, i) => `📰 ${a.title}`).join('  •  ')
+                  : "No breaking news at the moment."
+                }
               </div>
             </div>
           </div>

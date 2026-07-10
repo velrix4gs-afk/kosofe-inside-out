@@ -58,7 +58,6 @@ export default function Header() {
             <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-between py-3 gap-4 md:gap-6">
 
-                    {/* Scrollable Menu Wrapper (isolated to prevent z-index issues) */}
                     <div className="flex items-center gap-4 md:gap-6 text-sm font-bold text-gray-700 whitespace-nowrap overflow-x-auto pb-1 pr-4 no-scrollbar">
                         <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
                         <Link href="/" className="bg-[#c41e3a] text-white px-3 py-1 rounded">News</Link>
@@ -70,41 +69,46 @@ export default function Header() {
                         <Link href="/categories/entertainment" className="hover:text-[#c41e3a]">Entertainment</Link>
                         <Link href="/directory" className="hover:text-[#c41e3a]">Directory</Link>
 
-                        {/* MORE DROPDOWN */}
-                        <div className="relative inline-block text-left group">
+                        {/* --- MORE DROPDOWN (Fixed Conditional Render) --- */}
+                        <div className="relative inline-block text-left">
                             <button
                                 onClick={() => setMoreOpen(!moreOpen)}
-                                onBlur={() => setMoreOpen(false)}
-                                className="hover:text-[#c41e3a] border border-transparent hover:border-[#c41e3a] px-2 py-1 rounded transition flex items-center gap-1 font-bold outline-none"
+                                className="flex items-center gap-1 font-bold text-gray-700 hover:text-[#c41e3a] px-2 py-1 border border-transparent hover:border-[#c41e3a] rounded transition"
                             >
                                 More <span className="text-[10px]">▾</span>
                             </button>
 
-                            {/* Dropdown Menu */}
-                            <div className={`absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50 transition-opacity duration-200 ${moreOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-                                <div className="py-1 flex flex-col text-sm text-gray-700">
-                                    {moreLinks.map((link) => {
-                                        const slug = link.toLowerCase().replace(/ /g, '-');
-                                        let href = `/${slug}`;
-                                        if (link === 'Contact') href = '/contact';
-                                        if (link === 'Public Notices') href = '/notices';
-                                        if (link === 'Opinion') href = '/categories/opinion';
-                                        if (link === 'Lifestyle') href = '/categories/lifestyle';
-                                        if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
-                                            href = `/categories/${slug}`;
-                                        }
-                                        return (
-                                            <Link key={link} href={href} className="block px-4 py-2 hover:bg-gray-100 hover:text-[#c41e3a] transition-colors">
-                                                {link}
-                                            </Link>
-                                        );
-                                    })}
+                            {/* Guaranteed Dropdown using Conditional Rendering */}
+                            {moreOpen && (
+                                <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-[999]">
+                                    <div className="py-1 flex flex-col text-sm text-gray-700">
+                                        {moreLinks.map((link) => {
+                                            const slug = link.toLowerCase().replace(/ /g, '-');
+                                            let href = `/${slug}`;
+                                            if (link === 'Contact') href = '/contact';
+                                            if (link === 'Public Notices') href = '/notices';
+                                            if (link === 'Opinion') href = '/categories/opinion';
+                                            if (link === 'Lifestyle') href = '/categories/lifestyle';
+                                            if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
+                                                href = `/categories/${slug}`;
+                                            }
+                                            return (
+                                                <Link
+                                                    key={link}
+                                                    href={href}
+                                                    onClick={() => setMoreOpen(false)}
+                                                    className="block px-4 py-2 hover:bg-gray-100 hover:text-[#c41e3a] transition-colors"
+                                                >
+                                                    {link}
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Trending Button (Outside scrollable area to stay visible) */}
                     <Link href="/" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap shrink-0 hidden sm:block">
                         🔥 Trending
                     </Link>
