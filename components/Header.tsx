@@ -41,7 +41,7 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* --- LOGO (SHIMMER & SLIMMER PADDING) --- */}
+            {/* --- LOGO --- */}
             <div className="bg-white py-2 md:py-4 border-b">
                 <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
@@ -61,21 +61,21 @@ export default function Header() {
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-between py-3 gap-4 md:gap-6">
 
                     <div className="flex items-center gap-4 md:gap-6 text-sm font-bold text-gray-700 whitespace-nowrap overflow-x-auto pb-1 pr-4 no-scrollbar">
-
-                        {/* Home */}
                         <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
 
-                        {/* News: ONLY red if pathname is exactly '/' */}
-                        <Link href="/categories/news" className="bg-[#c41e3a] text-white px-3 py-1 rounded">News</Link>
+                        {/* Dynamic Active State for News */}
+                        <Link href="/categories/news" className={`px-3 py-1 rounded transition-colors ${pathname === '/categories/news' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>
+                            News
+                        </Link>
 
-                        {/* Politics */}
-                        <Link href="/categories/politics" className={`${pathname.startsWith('/categories/politics') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
-                        <Link href="/categories/governance" className={`${pathname.startsWith('/categories/governance') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Governance</Link>
-                        <Link href="/categories/community" className={`${pathname.startsWith('/categories/community') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Community</Link>
-                        <Link href="/categories/business" className={`${pathname.startsWith('/categories/business') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Business</Link>
-                        <Link href="/categories/sports" className={`${pathname.startsWith('/categories/sports') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Sports</Link>
-                        <Link href="/categories/entertainment" className={`${pathname.startsWith('/categories/entertainment') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Entertainment</Link>
-                        <Link href="/directory" className={`${pathname.startsWith('/directory') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Directory</Link>
+                        {/* Dynamic Active States for All Categories */}
+                        <Link href="/categories/politics" className={`${pathname === '/categories/politics' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
+                        <Link href="/categories/governance" className={`${pathname === '/categories/governance' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Governance</Link>
+                        <Link href="/categories/community" className={`${pathname === '/categories/community' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Community</Link>
+                        <Link href="/categories/business" className={`${pathname === '/categories/business' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Business</Link>
+                        <Link href="/categories/sports" className={`${pathname === '/categories/sports' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Sports</Link>
+                        <Link href="/categories/entertainment" className={`${pathname === '/categories/entertainment' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Entertainment</Link>
+                        <Link href="/directory" className={`${pathname === '/directory' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Directory</Link>
 
                         {/* More Button */}
                         <button

@@ -26,19 +26,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             .eq('published', true)
             .order('created_at', { ascending: false });
 
-        // THE MAGIC FIX: If slug is 'news', show EVERYTHING!
+        // If slug is 'news', show ALL stories
         if (slug === 'news') {
-            // Don't add any category filters, just fetch the latest 50
+            // Don't add any category filters
         } else {
-            // Format the slug to match the tags (e.g., "politics" -> "Politics")
             const categorySlug = slug.replace(/-/g, ' ');
             const formattedCategory = categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1);
 
-            // THE FIX: We filter by the 'tags' array instead of 'category'
+            // Search the 'tags' array for the formatted category
             query = query.contains('tags', [formattedCategory]);
         }
 
-        const { data, error } = await query.limit(50); // Limit to 50 for neatness
+        const { data, error } = await query.limit(50);
 
         if (error) errorMessage = error.message;
         else articles = data as Article[];
@@ -46,7 +45,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         errorMessage = err.message;
     }
 
-    // Determine the page title
     let pageTitle = slug === 'news' ? 'Latest News' : slug.replace(/-/g, ' ');
     if (slug !== 'news') {
         pageTitle = pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
