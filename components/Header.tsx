@@ -66,9 +66,7 @@ export default function Header() {
                         <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
 
                         {/* News: ONLY red if pathname is exactly '/' */}
-                        <Link href="/" className={`px-3 py-1 rounded transition-colors ${pathname === '/' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>
-                            News
-                        </Link>
+                        <Link href="/categories/news" className="bg-[#c41e3a] text-white px-3 py-1 rounded">News</Link>
 
                         {/* Politics */}
                         <Link href="/categories/politics" className={`${pathname.startsWith('/categories/politics') ? 'text-[#c41e3a] font-bold' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
