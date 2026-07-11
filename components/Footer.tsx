@@ -48,7 +48,9 @@ export default function Footer() {
                     <ul className="space-y-3 text-xs">
                         <li className="flex flex-col">
                             <span className="text-gray-500">Address:</span>
-                            <span className="text-gray-300">31, Adetoro Adelaja Street, Magodo Phase 2, Lagos.</span>
+                            <span className="text-gray-300">31, Adetoro Adelaja Street,
+                                Magodo Phase 2,
+                                Lagos.</span>
                         </li>
                         <li className="flex flex-col">
                             <span className="text-gray-500">Email:</span>
