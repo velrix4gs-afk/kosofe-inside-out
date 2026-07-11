@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import RichTextEditor from "@/components/RichTextEditor";
 
 // Predefined list of available tags for Kosofe
 const AVAILABLE_TAGS = [
@@ -131,12 +132,22 @@ export default function CreateStory() {
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Short Excerpt (Summary)</label>
-                        <textarea rows={2} className="w-full border p-2 rounded" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
+                        <RichTextEditor
+                            value={form.content}
+                            onChange={(newContent) => setForm({ ...form, content: newContent })}
+                        />
+                        <div className="h-12"></div>
                     </div>
+                    {/* Update the Full Content section */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
-                        <textarea rows={8} required className="w-full border p-2 rounded" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
+                        <RichTextEditor
+                            value={form.content}
+                            onChange={(newContent) => setForm({ ...form, content: newContent })}
+                        />
+                        {/* Add bottom padding because the editor toolbar floats */}
+                        <div className="h-12"></div>
                     </div>
                     <div className="flex items-center gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer">

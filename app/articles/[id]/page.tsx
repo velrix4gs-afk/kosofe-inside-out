@@ -59,9 +59,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 )}
 
                 {/* Article Content */}
-                <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
-                    {article.content}
-                </div>
+                <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
 
                 {/* --- Gallery Sub-Section (The other images) --- */}
                 {galleryImages && galleryImages.length > 0 && (
