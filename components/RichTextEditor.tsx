@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 import { useRef, useEffect } from "react";
 
-// Cast to 'any' to bypass the strict TypeScript ref conflict
 const QuillEditor = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
 
 const toolbarOptions = [
@@ -18,22 +17,19 @@ const toolbarOptions = [
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     const quillRef = useRef<any>(null);
 
-    // When the editor mounts, safely render the existing HTML
+    // Only runs once when the editor mounts. Safely parses the HTML into formatting.
     useEffect(() => {
-        if (quillRef.current) {
-            if (value && value.trim() !== "") {
-                quillRef.current.clipboard.dangerouslyPasteHTML(value);
-            }
+        if (quillRef.current && value) {
+            quillRef.current.clipboard.dangerouslyPasteHTML(value);
         }
-    }, []);
+    }, []); // Empty array is crucial here!
 
     return (
         <div className="bg-white border rounded">
             <QuillEditor
-                ref={quillRef}  // Now works because 'any' bypasses the type check
+                ref={quillRef}
                 theme="snow"
-                value={value}
-                onChange={onChange}
+                onChange={(content: string) => onChange(content)} // Triggers on every keypress
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
