@@ -156,11 +156,11 @@ export default async function Home() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 text-sm text-gray-600">
               <div className="flex flex-col">
                 <span className="text-[10px] text-gray-400 uppercase font-bold">Sunrise</span>
-                <span>{new Date(weather.sunrise * 1000).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' })}</span>
+                <span>{new Date(weather.sunrise * 1000).toLocaleTimeString('en-NG', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' })}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] text-gray-400 uppercase font-bold">Sunset</span>
-                <span>{new Date(weather.sunset * 1000).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' })}</span>
+                <span>{new Date(weather.sunset * 1000).toLocaleTimeString('en-NG', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' })}</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] text-gray-400 uppercase font-bold">UV Index</span>
