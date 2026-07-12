@@ -1,12 +1,15 @@
 "use client";
 import { useEffect } from "react";
 
-const PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXX"; // Replace with your actual ID
+// Your verified Publisher ID
+const PUBLISHER_ID = "ca-pub-6800852746478554";
+// The Ad Slot ID he just sent you
+const AD_SLOT_ID = "7655535836";
 
 export default function AdSense() {
     useEffect(() => {
         try {
-            // The fix: using 'as any' to bypass TypeScript's strictness on the global window
+            // Tell Google to load the ad
             (window as any).adsbygoogle = (window as any).adsbygoogle || [];
             (window as any).adsbygoogle.push({});
         } catch (err) {
@@ -20,7 +23,7 @@ export default function AdSense() {
                 className="adsbygoogle"
                 style={{ display: "block" }}
                 data-ad-client={PUBLISHER_ID}
-                data-ad-slot="YOUR_AD_SLOT_ID"
+                data-ad-slot={AD_SLOT_ID}
                 data-ad-format="auto"
                 data-full-width-responsive="true"
             ></ins>
