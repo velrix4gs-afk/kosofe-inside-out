@@ -86,7 +86,7 @@ export default function Header() {
                         </button>
                     </div>
 
-                    <Link href="/" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap shrink-0 hidden sm:block">
+                    <Link href="/trending" className="bg-[#c41e3a] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#a0152e] whitespace-nowrap shrink-0 hidden sm:block">
                         🔥 Trending
                     </Link>
                 </div>

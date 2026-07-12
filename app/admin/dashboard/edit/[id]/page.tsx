@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import RichTextEditor from "@/components/RichTextEditor";
 
 const AVAILABLE_TAGS = [
     'Politics', 'Governance', 'Community', 'Business', 'Sports',
@@ -81,7 +82,7 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                         <input type="text" className="w-full border p-2 rounded" value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Select Category Tags (Choose at least 5)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Select Category Tags (Choose at least 2)</label>
                         <div className="flex flex-wrap gap-2">
                             {AVAILABLE_TAGS.map((tag) => {
                                 const isSelected = selectedTags.includes(tag);
@@ -90,16 +91,25 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                                 );
                             })}
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">Selected: {selectedTags.length} / 5 required minimum</p>
+                        <p className="text-xs text-gray-500 mt-2">Selected: {selectedTags.length} / 2 required minimum</p>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Short Excerpt</label>
                         <textarea rows={2} className="w-full border p-2 rounded" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
+
+                    {/* --- THE EDITOR FIX REPLACES THIS SECTION --- */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
-                        <textarea rows={8} required className="w-full border p-2 rounded" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
+                        <RichTextEditor
+                            value={form.content}
+                            onChange={(newContent) => setForm({ ...form, content: newContent })}
+                        />
+                        {/* Padding to handle Quill's toolbar floating */}
+                        <div className="h-12"></div>
                     </div>
+                    {/* -------------------------------------------------- */}
+
                     <div className="flex items-center gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} /> Publish immediately</label>
                         <div className="flex gap-2 ml-auto">
