@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 
 const QuillEditor = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
 
@@ -17,19 +17,14 @@ const toolbarOptions = [
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     const quillRef = useRef<any>(null);
 
-    // Only runs once when the editor mounts. Safely parses the HTML into formatting.
-    useEffect(() => {
-        if (quillRef.current && value) {
-            quillRef.current.clipboard.dangerouslyPasteHTML(value);
-        }
-    }, []); // Empty array is crucial here!
-
     return (
         <div className="bg-white border rounded">
             <QuillEditor
+                key={value} // 🔥 CRITICAL: Forces a fresh mount when the story finishes loading
                 ref={quillRef}
                 theme="snow"
-                onChange={(content: string) => onChange(content)} // Triggers on every keypress
+                value={value} // Now uses native controlled logic
+                onChange={(content: string) => onChange(content)}
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {

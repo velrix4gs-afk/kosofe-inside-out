@@ -98,17 +98,14 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                         <textarea rows={2} className="w-full border p-2 rounded" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
 
-                    {/* --- THE EDITOR FIX REPLACES THIS SECTION --- */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
                             value={form.content}
                             onChange={(newContent) => setForm({ ...form, content: newContent })}
                         />
-                        {/* Padding to handle Quill's toolbar floating */}
                         <div className="h-12"></div>
                     </div>
-                    {/* -------------------------------------------------- */}
 
                     <div className="flex items-center gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} /> Publish immediately</label>
