@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 import { useRef, useEffect } from "react";
 
-// Dynamically import Quill to avoid SSR issues
 const QuillEditor = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const toolbarOptions = [
@@ -18,13 +17,12 @@ const toolbarOptions = [
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     const quillRef = useRef<any>(null);
 
-    // FORCE HTML RENDERING ON MOUNT
+    // Mount the editor and paste the HTML safely
     useEffect(() => {
         if (quillRef.current) {
-            const quill = quillRef.current.getEditor();
-            // If the value is HTML, we safely paste it into the editor
+            // quillRef.current is now the Quill instance directly
             if (value && value.trim() !== "") {
-                quill.clipboard.dangerouslyPasteHTML(value);
+                quillRef.current.clipboard.dangerouslyPasteHTML(value);
             }
         }
     }, []);
@@ -32,14 +30,15 @@ export default function RichTextEditor({ value, onChange }: { value: string; onC
     return (
         <div className="bg-white border rounded">
             <QuillEditor
-                ref={quillRef}
+                // FIX: Use 'onRef' instead of 'ref' and save the instance directly
+                onRef={(instance) => { quillRef.current = instance; }}
                 theme="snow"
                 value={value}
                 onChange={onChange}
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
-                        matchVisual: false, // This prevents raw HTML from getting corrupted by Quill's visual matching
+                        matchVisual: false,
                     },
                 }}
                 className="h-64 md:h-80"
