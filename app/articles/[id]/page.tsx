@@ -23,12 +23,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
     if (!article) notFound();
 
-    const wordCount = article.content.split(' ').length;
+    // --- THE FIX: STRIP MARKDOWN & COUNT REAL WORDS ---
+    const rawContent = article.content || '';
+    // 1. Remove HTML tags (just in case)
+    const noHtml = rawContent.replace(/<[^>]*>?/gm, '');
+    // 2. Decode weird HTML entities like &nbsp;
+    const noEntities = noHtml.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    // 3. Strip Markdown symbols (*, **, _, #) so they don't get counted as words
+    const plainText = noEntities.replace(/[*_`~#|>]/g, '').replace(/\n/g, ' ').trim();
+    // 4. Count the actual words
+    const wordCount = plainText.split(/\s+/).filter(word => word.length > 0).length;
     const readTime = Math.ceil(wordCount / 200);
+    // -----------------------------------------------
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
-            {/* Added w-full and overflow-hidden to the article card */}
             <article className="bg-white p-6 md:p-10 rounded shadow-sm w-full overflow-hidden">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{article.title}</h1>
 
@@ -48,7 +57,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
 
-                {/* Added w-full and break-words to force the text to wrap inside the box */}
                 <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full break-words" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }} />
 
             </article>
