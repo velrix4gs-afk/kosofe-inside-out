@@ -31,8 +31,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     const noEntities = noHtml.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
     // 3. Strip Markdown symbols (*, **, _, #) so they don't get counted as words
     const plainText = noEntities.replace(/[*_`~#|>]/g, '').replace(/\n/g, ' ').trim();
-    // 4. Count the actual words
-    const wordCount = plainText.split(/\s+/).filter(word => word.length > 0).length;
+    // 4. Count the actual words (Added :string type annotation to fix the build error)
+    const wordCount = plainText.split(/\s+/).filter((word: string) => word.length > 0).length;
     const readTime = Math.ceil(wordCount / 200);
     // -----------------------------------------------
 
