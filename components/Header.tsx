@@ -63,12 +63,10 @@ export default function Header() {
                     <div className="flex items-center gap-4 md:gap-6 text-sm font-bold text-gray-700 whitespace-nowrap overflow-x-auto pb-1 pr-4 no-scrollbar">
                         <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
 
-                        {/* Dynamic Active State for News */}
                         <Link href="/categories/news" className={`px-3 py-1 rounded transition-colors ${pathname === '/categories/news' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>
                             News
                         </Link>
 
-                        {/* Dynamic Active States for All Categories */}
                         <Link href="/categories/politics" className={`${pathname === '/categories/politics' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
                         <Link href="/categories/governance" className={`${pathname === '/categories/governance' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Governance</Link>
                         <Link href="/categories/community" className={`${pathname === '/categories/community' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Community</Link>
@@ -77,7 +75,6 @@ export default function Header() {
                         <Link href="/categories/entertainment" className={`${pathname === '/categories/entertainment' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Entertainment</Link>
                         <Link href="/directory" className={`${pathname === '/directory' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Directory</Link>
 
-                        {/* More Button */}
                         <button
                             onClick={() => setDrawerOpen(true)}
                             className="flex items-center gap-1 font-bold text-gray-700 hover:text-[#c41e3a] px-2 py-1 border border-transparent hover:border-[#c41e3a] rounded transition"
@@ -119,6 +116,18 @@ export default function Header() {
                                 </Link>
                             );
                         })}
+
+                        {/* 🔐 NEW ADMIN LOGIN BUTTON (Added at the bottom) */}
+                        <div className="border-t-2 border-[#c41e3a] mt-2">
+                            <Link
+                                href="/admin/login"
+                                onClick={() => setDrawerOpen(false)}
+                                className="block px-6 py-4 bg-[#fdf2f2] text-[#c41e3a] font-bold hover:bg-[#c41e3a] hover:text-white transition-colors text-center border-b border-gray-100"
+                            >
+                                🔐 Admin Login
+                            </Link>
+                        </div>
+
                     </div>
                 </div>
             </div>
