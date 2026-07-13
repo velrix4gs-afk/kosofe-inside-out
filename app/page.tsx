@@ -43,8 +43,7 @@ export default async function Home() {
     .from('articles')
     .select('*')
     .eq('published', true)
-    .order('views', { ascending: false, nullsFirst: false })
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }) // Newest first!
     .limit(10);
 
   if (!articles || articles.length === 0) {
