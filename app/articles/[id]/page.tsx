@@ -23,18 +23,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
     if (!article) notFound();
 
-    // --- THE FIX: STRIP MARKDOWN & COUNT REAL WORDS ---
     const rawContent = article.content || '';
-    // 1. Remove HTML tags (just in case)
     const noHtml = rawContent.replace(/<[^>]*>?/gm, '');
-    // 2. Decode weird HTML entities like &nbsp;
     const noEntities = noHtml.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-    // 3. Strip Markdown symbols (*, **, _, #) so they don't get counted as words
     const plainText = noEntities.replace(/[*_`~#|>]/g, '').replace(/\n/g, ' ').trim();
-    // 4. Count the actual words (Added :string type annotation to fix the build error)
     const wordCount = plainText.split(/\s+/).filter((word: string) => word.length > 0).length;
     const readTime = Math.ceil(wordCount / 200);
-    // -----------------------------------------------
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
@@ -57,13 +51,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
 
+                {/* --- FIXED TEXT RENDERER --- */}
                 <div
-                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full"
-                    style={{ hyphens: 'none', wordBreak: 'normal' }}
+                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
+                    style={{
+                        hyphens: 'none',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word'
+                    }}
                     dangerouslySetInnerHTML={{
-                        __html: marked.parse(article.content.replace(/&shy;/g, ''))
+                        __html: marked.parse(
+                            article.content.replace(/&shy;|\u00AD/g, '').replace(/&nbsp;/g, ' ')
+                        )
                     }}
                 />
+                {/* ------------------------ */}
 
             </article>
 
