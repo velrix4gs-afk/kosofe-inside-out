@@ -101,15 +101,21 @@ export default function Header() {
                     </div>
                     <div className="overflow-y-auto h-full pb-10">
                         {moreLinks.map((link) => {
-                            const slug = link.toLowerCase().replace(/ /g, '-');
-                            let href = `/${slug}`;
+                            // --- FIXED ROUTING LOGIC ---
+                            let href = `/${link.toLowerCase().replace(/ /g, '-')}`;
                             if (link === 'Contact') href = '/contact';
                             if (link === 'Public Notices') href = '/notices';
                             if (link === 'Opinion') href = '/categories/opinion';
                             if (link === 'Lifestyle') href = '/categories/lifestyle';
+                            if (link === 'Photo Gallery') href = '/gallery';
+                            if (link === 'Videos') href = '/videos';
+                            if (link === 'Podcasts') href = '/podcasts';
+                            if (link === 'Obituaries') href = '/obituaries';
+                            if (link === 'Emergency') href = '/emergency'; // reserved for future
                             if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
-                                href = `/categories/${slug}`;
+                                href = `/categories/${link.toLowerCase()}`;
                             }
+                            // ----------------------------
                             return (
                                 <Link key={link} href={href} onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
                                     {link}
@@ -117,7 +123,7 @@ export default function Header() {
                             );
                         })}
 
-                        {/* 🔐 NEW ADMIN LOGIN BUTTON (Added at the bottom) */}
+                        {/* 🔐 ADMIN LOGIN BUTTON */}
                         <div className="border-t-2 border-[#c41e3a] mt-2">
                             <Link
                                 href="/admin/login"
@@ -127,7 +133,6 @@ export default function Header() {
                                 🔐 Admin Login
                             </Link>
                         </div>
-
                     </div>
                 </div>
             </div>
