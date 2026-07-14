@@ -28,7 +28,6 @@ export default async function VideosPage() {
                     {videos.map((video) => (
                         <div key={video.id} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden">
                             <div className="aspect-video bg-black relative">
-                                {/* Safely render the iframe using the embed URL stored in the DB */}
                                 <iframe
                                     src={video.video_url}
                                     className="absolute inset-0 w-full h-full border-0"

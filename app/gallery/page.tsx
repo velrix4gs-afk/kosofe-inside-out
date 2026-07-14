@@ -34,7 +34,7 @@ export default async function GalleryPage() {
                                     alt={photo.title || 'Gallery photo'}
                                     fill
                                     className="object-cover"
-                                    unoptimized={true} // Add this to avoid sizing errors with remote URLs
+                                    unoptimized={true}
                                 />
                             </div>
                             <div className="p-3">

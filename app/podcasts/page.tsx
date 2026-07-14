@@ -34,8 +34,6 @@ export default async function PodcastsPage() {
                             {ep.host && <p className="text-sm text-gray-500 mb-2">Hosted by: {ep.host}</p>}
                             {ep.description && <p className="text-sm text-gray-700 mb-4 leading-relaxed">{ep.description}</p>}
                             {ep.duration && <p className="text-xs text-gray-400 mb-2">Duration: {ep.duration}</p>}
-
-                            {/* Audio Player */}
                             <audio controls className="w-full mt-2 outline-none rounded bg-gray-50">
                                 <source src={ep.audio_url} type="audio/mpeg" />
                                 Your browser does not support the audio element.
