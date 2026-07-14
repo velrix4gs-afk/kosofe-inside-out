@@ -57,7 +57,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
 
-                <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full break-words" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }} />
+                <div
+                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full"
+                    style={{ hyphens: 'none', wordBreak: 'normal' }}
+                    dangerouslySetInnerHTML={{
+                        __html: marked.parse(article.content.replace(/&shy;/g, ''))
+                    }}
+                />
 
             </article>
 
