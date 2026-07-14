@@ -44,12 +44,12 @@ export default function Header() {
             <div className="bg-white py-2 md:py-3 border-b">
                 <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
-                        <Image
-                            src="/img/kio-logo.svg" // <-- Change to .svg if you have it, or keep .jpg
+                        {/* Standard img tag bypasses Next.js image quirks. 
+                Ensures it works whether you have .jpg, .png, or .svg */}
+                        <img
+                            src="/img/kio-logo.jpg"
                             alt="Kosofe Inside Out Logo"
-                            width={200}             // Smaller width for a better PC fit
-                            height={50}             // Adjusted height
-                            className="h-10 md:h-16 w-auto object-contain cursor-pointer" // Height shrinks on PC to balance the layout
+                            className="h-10 md:h-16 w-auto object-contain cursor-pointer"
                         />
                     </Link>
                 </div>
