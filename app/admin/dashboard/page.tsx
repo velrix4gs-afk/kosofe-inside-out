@@ -94,6 +94,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Recent Stories Table */}
+
             <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
                 <div className="flex justify-between items-center border-b pb-2 mb-4">
                     <h3 className="font-bold text-gray-800">Recent Stories</h3>
