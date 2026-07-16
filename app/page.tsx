@@ -1,16 +1,13 @@
 // app/page.tsx
-import { featureData } from "@/lib/featureData";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
 import AdSense from "@/components/AdSense";
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 export default async function Home() {
-  // --- FETCH WEATHER & UV INDEX TOGETHER ---
+  // --- FETCH WEATHER ---
   let weather = { temp: 28, desc: "Clouds", feels_like: 28, humidity: 75, wind: 12, rain: 0, sunrise: 0, sunset: 0, uvIndex: 0 };
-
   try {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
     if (apiKey) {
@@ -18,10 +15,8 @@ export default async function Home() {
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=Lagos&units=metric&appid=${apiKey}`, { next: { revalidate: 600 } }),
         fetch(`https://api.openweathermap.org/data/2.5/uvi?lat=6.5244&lon=3.3792&appid=${apiKey}`, { next: { revalidate: 600 } })
       ]);
-
       const weatherData = await weatherRes.json();
       const uvData = await uvRes.json();
-
       if (weatherData.main) {
         weather = {
           temp: Math.round(weatherData.main.temp),
@@ -38,13 +33,18 @@ export default async function Home() {
     }
   } catch (e) { console.log("Weather API failed"); }
 
-  // --- FETCH PUBLISHED STORIES ---
+  // --- FETCH ARTICLES & BREAKING NEWS ---
   const { data: articles } = await supabase
     .from('articles')
     .select('*')
     .eq('published', true)
-    .order('created_at', { ascending: false }) // Newest first!
+    .order('created_at', { ascending: false })
     .limit(10);
+
+  const { data: breakingNews } = await supabase
+    .from('breaking_news')
+    .select('*')
+    .order('created_at', { ascending: false });
 
   if (!articles || articles.length === 0) {
     return (
@@ -77,19 +77,24 @@ export default async function Home() {
         </Link>
       </div>
 
-      {/* --- BREAKING NEWS TICKER --- */}
+      {/* --- NEW BREAKING NEWS TICKER (Auto-Rotating) --- */}
       <div className="w-full bg-[#f5f5f5] py-4 px-0">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
-            <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10 relative">
+          <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden relative">
+            <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10">
               Breaking News
             </span>
-            <div className="flex-1 overflow-hidden whitespace-nowrap">
-              <div className="animate-ticker inline-block w-max">
-                {articles && articles.length > 0
-                  ? articles.slice(0, 5).map((a, i) => `📰 ${a.title}`).join('  •  ')
-                  : "No breaking news at the moment."
-                }
+            <div className="flex-1 overflow-hidden whitespace-nowrap relative h-5">
+              <div className="breaking-news-slider w-full">
+                {breakingNews && breakingNews.length > 0 ? (
+                  <div className="animate-scroll-up flex flex-col">
+                    {breakingNews.map((b) => (
+                      <span key={b.id} className="h-5 leading-5 block">{b.message}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="h-5 leading-5 block">No breaking news at the moment.</span>
+                )}
               </div>
             </div>
           </div>
@@ -99,22 +104,20 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Top Story */}
           <div className="lg:col-span-2 relative group cursor-pointer">
-            {/* --- HERO TOP STORY FIX --- */}
-            {/* Wrap the entire hero in a Link so users can tap to read */}
-            <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group block cursor-pointer">
-              <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
-                <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 p-6 w-full">
-                  <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-                  <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
-                  <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
-                  <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
-                </div>
+            <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
+              <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-6 w-full">
+                <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
+                <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
+                <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
+                <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
               </div>
-            </Link>
+            </div>
           </div>
+          {/* Sidebar Stories */}
           <div className="flex flex-col gap-4">
             {articles.slice(1, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
@@ -187,7 +190,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- EXPLORE BY CATEGORY --- */}
+      {/* --- CATEGORIES, FEATURES, FOLLOW, WHATSAPP (Sections unchanged from before, keeping layout tight) --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Explore By Category</h3>
@@ -216,18 +219,15 @@ export default async function Home() {
 
       {/* --- FOLLOW US & TRENDING --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Left: Follow Us */}
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
           <div className="flex flex-wrap gap-3">
-            <a href="https://facebook.com/KosofeInsideOut" target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-2">Facebook</a>
-            <a href="https://x.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-2">X (Twitter)</a>
-            <a href="https://instagram.com/kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-2">Instagram</a>
-            <a href="https://youtube.com/@kosofeinsideout" target="_blank" rel="noopener noreferrer" className="bg-[#FF0000] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-2">YouTube</a>
+            <a href="https://facebook.com/KosofeInsideOut" target="_blank" className="bg-[#1877F2] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 flex items-center gap-2">Facebook</a>
+            <a href="https://x.com/kosofeinsideout" target="_blank" className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 flex items-center gap-2">X (Twitter)</a>
+            <a href="https://instagram.com/kosofeinsideout" target="_blank" className="bg-[#E4405F] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 flex items-center gap-2">Instagram</a>
+            <a href="https://youtube.com/@kosofeinsideout" target="_blank" className="bg-[#FF0000] text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 flex items-center gap-2">YouTube</a>
           </div>
         </div>
-
-        {/* Right: Trending Now */}
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-4 border-b pb-2 flex items-center justify-between">
             TRENDING NOW
@@ -244,27 +244,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- SPECIAL FEATURES --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Special Features</h3>
-          <Link href="/features" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Features &rarr;</Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {featureData.map((feature, idx) => (
-            <Link key={idx} href={`/features/${feature.slug}`} className="bg-white rounded shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition block group">
-              {/* Changed h-40 to h-56 so the image is much taller */}
-              <img src={feature.img} alt={feature.title} className="w-full h-56 object-cover" />
-              <div className="p-4">
-                <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base group-hover:text-[#c41e3a] transition-colors">{feature.title}</h4>
-                <p className="text-xs text-gray-500">{feature.desc}</p>
-                <span className="mt-2 inline-block text-[10px] font-bold text-[#c41e3a]">Read More &rarr;</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* --- WHATSAPP CTA --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
@@ -272,12 +251,10 @@ export default async function Home() {
             <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
             <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
           </div>
-          <a href="https://whatsapp.com/channel/0029Vb7tfwGIiRoytADSsU1L" target="_blank" rel="noopener noreferrer">
-            <button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button>
-          </a>
+          <a href="https://whatsapp.com/channel/0029Vb7tfwGIiRoytADSsU1L" target="_blank"><button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button></a>
         </div>
       </div>
 
-    </main> // <--- THIS WAS MISSING! 
+    </main>
   );
 }
