@@ -5,17 +5,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.supabase.co', // For future uploads
+        hostname: '**.supabase.co',
       },
       {
         protocol: 'https',
-        hostname: '**.unsplash.com', // For test images
+        hostname: 'images.unsplash.com',
       },
-      // ⬇️ ADD YOUR OLD WORDPRESS DOMAIN HERE ⬇️
-      {
-        protocol: 'https',
-        hostname: 'your-old-wordpress-domain.com', // Replace with your actual old domain
-      }
     ],
   },
 };

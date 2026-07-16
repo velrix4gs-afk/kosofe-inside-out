@@ -6,7 +6,6 @@ import NewsletterForm from "@/components/NewsletterForm";
 import AdSense from "@/components/AdSense";
 
 export default async function Home() {
-  // --- FETCH WEATHER ---
   let weather = { temp: 28, desc: "Clouds", feels_like: 28, humidity: 75, wind: 12, rain: 0, sunrise: 0, sunset: 0, uvIndex: 0 };
   try {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
@@ -33,7 +32,6 @@ export default async function Home() {
     }
   } catch (e) { console.log("Weather API failed"); }
 
-  // --- FETCH ARTICLES & BREAKING NEWS ---
   const { data: articles } = await supabase
     .from('articles')
     .select('*')
@@ -62,22 +60,35 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- FULL WIDTH IMAGE AD BANNER --- */}
-      <div className="w-full bg-white border-b cursor-pointer hover:opacity-95 transition-opacity py-2 md:py-4">
-        <Link href="/advertise" className="block w-full">
-          <div className="w-full">
-            <Image
-              src="/img/kio-banner.jpg"
-              alt="Advertise with Kosofe Inside Out"
-              width={1200}
-              height={150}
-              className="w-full h-auto max-h-[80px] md:max-h-[120px] object-cover"
-            />
-          </div>
-        </Link>
+      {/* --- SPLIT MAIN BANNER (1 Big, 1 Small) --- */}
+      <div className="w-full bg-white border-b py-2 md:py-4 px-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Main Big Banner (Takes up 2 columns on desktop) */}
+          <Link href="/advertise" className="md:col-span-2 cursor-pointer hover:opacity-95 transition-opacity">
+            <div className="w-full relative rounded overflow-hidden h-[60px] md:h-[100px]">
+              <Image
+                src="/img/kio-banner-main.jpg"
+                alt="Advertise with Kosofe Inside Out"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </Link>
+          {/* Small Banner (Takes up 1 column) */}
+          <Link href="/advertise" className="cursor-pointer hover:opacity-95 transition-opacity">
+            <div className="w-full relative rounded overflow-hidden h-[60px] md:h-[100px]">
+              <Image
+                src="/img/kio-banner-side.jpg"
+                alt="Advertise with Kosofe Inside Out"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </Link>
+        </div>
       </div>
 
-      {/* --- NEW BREAKING NEWS TICKER (Auto-Rotating) --- */}
+      {/* --- BREAKING NEWS TICKER --- */}
       <div className="w-full bg-[#f5f5f5] py-4 px-0">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden relative">
@@ -104,7 +115,7 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Top Story */}
+          {/* Top Story (Takes up 2 columns) */}
           <div className="lg:col-span-2 relative group cursor-pointer">
             <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
               <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
@@ -117,9 +128,28 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          {/* Sidebar Stories */}
+
+          {/* Sidebar Stories + SIDE AD SPACE (Takes up 1 column) */}
           <div className="flex flex-col gap-4">
-            {articles.slice(1, 4).map((story, idx) => (
+            {/* Side Stories */}
+            {articles.slice(1, 3).map((story, idx) => (
+              <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
+                <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
+                <div>
+                  <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
+                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
+                  <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* --- NEW SIDE AD SPACE --- */}
+            <div className="bg-white p-2 rounded shadow-sm border border-gray-200 flex justify-center items-center min-h-[120px]">
+              <AdSense />
+            </div>
+
+            {/* Remaining Side Stories */}
+            {articles.slice(3, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
                 <div>
@@ -131,11 +161,6 @@ export default async function Home() {
             ))}
           </div>
         </div>
-      </div>
-
-      {/* --- ADSENSE AD PLACEMENT --- */}
-      <div className="max-w-7xl mx-auto px-4 pb-6">
-        <AdSense />
       </div>
 
       {/* --- WEATHER & STAY INFORMED --- */}
@@ -156,30 +181,12 @@ export default async function Home() {
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 text-sm text-gray-600">
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">Sunrise</span>
-                <span>{new Date(weather.sunrise * 1000).toLocaleTimeString('en-NG', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' })}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">Sunset</span>
-                <span>{new Date(weather.sunset * 1000).toLocaleTimeString('en-NG', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' })}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">UV Index</span>
-                <span className="font-medium text-yellow-600">{weather.uvIndex} (Moderate)</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">Rain %</span>
-                <span>{weather.rain} mm/h</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">Humidity</span>
-                <span>{weather.humidity}%</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">Wind</span>
-                <span>{weather.wind} km/h</span>
-              </div>
+              <div className="flex flex-col"><span className="text-[10px] text-gray-400 uppercase font-bold">Sunrise</span><span>{new Date(weather.sunrise * 1000).toLocaleTimeString('en-NG', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' })}</span></div>
+              <div className="flex flex-col"><span className="text-[10px] text-gray-400 uppercase font-bold">Sunset</span><span>{new Date(weather.sunset * 1000).toLocaleTimeString('en-NG', { timeZone: 'Africa/Lagos', hour: '2-digit', minute: '2-digit' })}</span></div>
+              <div className="flex flex-col"><span className="text-[10px] text-gray-400 uppercase font-bold">UV Index</span><span className="font-medium text-yellow-600">{weather.uvIndex} (Moderate)</span></div>
+              <div className="flex flex-col"><span className="text-[10px] text-gray-400 uppercase font-bold">Rain %</span><span>{weather.rain} mm/h</span></div>
+              <div className="flex flex-col"><span className="text-[10px] text-gray-400 uppercase font-bold">Humidity</span><span>{weather.humidity}%</span></div>
+              <div className="flex flex-col"><span className="text-[10px] text-gray-400 uppercase font-bold">Wind</span><span>{weather.wind} km/h</span></div>
             </div>
           </div>
           <div className="flex-1 w-full border-t md:border-t-0 md:border-l pt-6 md:pt-0 md:pl-8">
@@ -190,23 +197,14 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- CATEGORIES, FEATURES, FOLLOW, WHATSAPP (Sections unchanged from before, keeping layout tight) --- */}
+      {/* --- CATEGORIES, FEATURES, FOLLOW, WHATSAPP --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Explore By Category</h3>
           <Link href="/categories" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Categories &rarr;</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[
-            { name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️' },
-            { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️' },
-            { name: 'COMMUNITY', desc: 'Stories that celebrate our everyday life', icon: '👥' },
-            { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' },
-            { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' },
-            { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' },
-            { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' },
-            { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },
-          ].map((cat, idx) => (
+          {[{ name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️' }, { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️' }, { name: 'COMMUNITY', desc: 'Stories that celebrate our everyday life', icon: '👥' }, { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' }, { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' }, { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' }, { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' }, { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },].map((cat, idx) => (
             <div key={idx} className="bg-white p-6 rounded shadow-sm border-t-4 border-[#c41e3a] text-center cursor-pointer hover:shadow-md transition-all duration-200">
               <div className="text-3xl mb-2">{cat.icon}</div>
               <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base">{cat.name}</h4>
@@ -217,7 +215,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- FOLLOW US & TRENDING --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
@@ -244,7 +241,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- WHATSAPP CTA --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>

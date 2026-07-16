@@ -18,7 +18,7 @@ export default function Header() {
     ];
 
     return (
-        <>
+        <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
             {/* --- TOP BAR --- */}
             <div className="bg-[#1a1a1a] text-white text-[11px] py-2">
                 <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
@@ -40,12 +40,11 @@ export default function Header() {
                     </div>
                 </div>
             </div>
+
             {/* --- LOGO --- */}
-            <div className="bg-white py-2 md:py-3 border-b">
+            <div className="py-2 md:py-3 border-b border-gray-100 bg-white">
                 <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
-                        {/* Standard img tag bypasses Next.js image quirks. 
-                Ensures it works whether you have .jpg, .png, or .svg */}
                         <img
                             src="/img/kio-logo.jpg"
                             alt="Kosofe Inside Out Logo"
@@ -56,7 +55,7 @@ export default function Header() {
             </div>
 
             {/* --- MAIN NAVIGATION --- */}
-            <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
+            <nav className="bg-white border-b shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-between py-3 gap-4 md:gap-6">
 
                     <div className="flex items-center gap-4 md:gap-6 text-sm font-bold text-gray-700 whitespace-nowrap overflow-x-auto pb-1 pr-4 no-scrollbar">
@@ -100,7 +99,6 @@ export default function Header() {
                     </div>
                     <div className="overflow-y-auto h-full pb-10">
                         {moreLinks.map((link) => {
-                            // --- FIXED ROUTING LOGIC ---
                             let href = `/${link.toLowerCase().replace(/ /g, '-')}`;
                             if (link === 'Contact') href = '/contact';
                             if (link === 'Public Notices') href = '/notices';
@@ -110,31 +108,24 @@ export default function Header() {
                             if (link === 'Videos') href = '/videos';
                             if (link === 'Podcasts') href = '/podcasts';
                             if (link === 'Obituaries') href = '/obituaries';
-                            if (link === 'Emergency') href = '/emergency'; // reserved for future
+                            if (link === 'Emergency') href = '/emergency';
                             if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
                                 href = `/categories/${link.toLowerCase()}`;
                             }
-                            // ----------------------------
                             return (
                                 <Link key={link} href={href} onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
                                     {link}
                                 </Link>
                             );
                         })}
-
-                        {/* 🔐 ADMIN LOGIN BUTTON */}
                         <div className="border-t-2 border-[#c41e3a] mt-2">
-                            <Link
-                                href="/admin/login"
-                                onClick={() => setDrawerOpen(false)}
-                                className="block px-6 py-4 bg-[#fdf2f2] text-[#c41e3a] font-bold hover:bg-[#c41e3a] hover:text-white transition-colors text-center border-b border-gray-100"
-                            >
+                            <Link href="/admin/login" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 bg-[#fdf2f2] text-[#c41e3a] font-bold hover:bg-[#c41e3a] hover:text-white transition-colors text-center border-b border-gray-100">
                                 🔐 Admin Login
                             </Link>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </header>
     );
 }
