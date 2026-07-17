@@ -1,24 +1,33 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-// Your verified Publisher ID
 const PUBLISHER_ID = "ca-pub-6800852746478554";
-// The Ad Slot ID he just sent you
 const AD_SLOT_ID = "7655535836";
 
 export default function AdSense() {
+    const adRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         try {
-            // Tell Google to load the ad
-            (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-            (window as any).adsbygoogle.push({});
+            // Add a tiny 100ms delay to allow the DOM layout to fully finish painting.
+            const timer = setTimeout(() => {
+                if (adRef.current && adRef.current.offsetWidth > 0) {
+                    (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+                    (window as any).adsbygoogle.push({});
+                } else {
+                    console.log("AdSense skipped: container width is 0 (likely due to adblocker or staging env)");
+                }
+            }, 100); // 100ms is enough for the layout to settle
+
+            // Clean up the timer if the component unmounts before it fires
+            return () => clearTimeout(timer);
         } catch (err) {
             console.error("AdSense error:", err);
         }
     }, []);
 
     return (
-        <div className="w-full bg-white flex justify-center items-center py-4 border-b">
+        <div ref={adRef} className="w-full bg-white flex justify-center items-center py-4 border-b">
             <ins
                 className="adsbygoogle"
                 style={{ display: "block" }}
