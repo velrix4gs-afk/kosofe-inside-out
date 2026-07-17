@@ -116,7 +116,7 @@ export default async function Home() {
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Top Story (Takes up 2 columns) */}
-          <div className="lg:col-span-2 relative group cursor-pointer">
+          <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
             <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
               <img src={articles[0]?.image_url || ''} alt={articles[0]?.title || 'Top Story'} className="w-full h-full object-cover bg-gray-300" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
@@ -127,7 +127,7 @@ export default async function Home() {
                 <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Sidebar Stories + SIDE AD SPACE (Takes up 1 column) */}
           <div className="flex flex-col gap-4">
