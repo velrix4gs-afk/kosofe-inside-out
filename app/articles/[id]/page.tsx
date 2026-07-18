@@ -51,6 +51,32 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
                 <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left" style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: marked.parse(article.content.replace(/&shy;|\u00AD/g, '').replace(/&nbsp;/g, ' ')) }} />
+                {/* --- SEO STRUCTURED DATA (JSON-LD) --- */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "NewsArticle",
+                            "headline": article.title,
+                            "image": [article.image_url],
+                            "datePublished": article.created_at,
+                            "dateModified": article.created_at,
+                            "author": {
+                                "@type": "Person",
+                                "name": article.author || "Admin"
+                            },
+                            "publisher": {
+                                "@type": "Organization",
+                                "name": "Kosofe Inside Out",
+                                "logo": {
+                                    "@type": "ImageObject",
+                                    "url": "https://kosofeinsideout.com/img/kio-logo.jpg"
+                                }
+                            }
+                        })
+                    }}
+                />
             </article>
 
             {/* --- ACTION BAR & METRICS / CTA SECTION --- */}

@@ -144,7 +144,7 @@ export default async function Home() {
             ))}
 
             {/* --- NEW SIDE AD SPACE --- */}
-            <div className="bg-white p-2 rounded shadow-sm border border-gray-200 flex justify-center items-center min-h-[120px]">
+            <div className="flex justify-center items-center w-full">
               <AdSense />
             </div>
 
