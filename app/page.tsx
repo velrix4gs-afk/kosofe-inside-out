@@ -61,7 +61,7 @@ export default async function Home() {
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
       {/* --- SPLIT MAIN BANNER (1 Big, 1 Small) --- */}
-      <div className="w-full bg-white border-b py-2 md:py-4 px-4">
+      <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Main Big Banner (Takes up 2 columns on desktop) */}
           <Link href="/advertise" className="md:col-span-2 cursor-pointer hover:opacity-95 transition-opacity">
