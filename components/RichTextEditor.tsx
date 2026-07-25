@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 const QuillEditor = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
 
@@ -17,21 +17,28 @@ const toolbarOptions = [
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     const quillRef = useRef<any>(null);
 
+    // Force the editor to interpret the HTML correctly without crashing
+    useEffect(() => {
+        if (quillRef.current && value && value.trim() !== "") {
+            quillRef.current.clipboard.dangerouslyPasteHTML(value);
+        }
+    }, []);
+
     return (
-        <div className="bg-white border rounded">
+        <div className="bg-white border rounded overflow-hidden w-full">
             <QuillEditor
-                key={value} // 🔥 CRITICAL: Forces a fresh mount when the story finishes loading
                 ref={quillRef}
                 theme="snow"
-                value={value} // Now uses native controlled logic
+                // Do NOT pass 'value' as a prop to avoid the paste conflict loop
+                // We use dangerouslyPasteHTML in the effect to safely load it
                 onChange={(content: string) => onChange(content)}
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
-                        matchVisual: false,
+                        matchVisual: false, // Crucial fix for PC copy/paste crashes
                     },
                 }}
-                className="h-64 md:h-80"
+                className="h-64 md:h-80 w-full"
             />
         </div>
     );

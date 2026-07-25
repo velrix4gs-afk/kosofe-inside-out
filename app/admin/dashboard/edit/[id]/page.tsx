@@ -69,17 +69,17 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
     if (loading) return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center">Loading...</div>;
 
     return (
-        <div className="min-h-screen bg-[#f5f5f5] p-6">
-            <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-sm">
+        <div className="min-h-screen bg-[#f5f5f5] p-4 md:p-6">
+            <div className="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded shadow-sm">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">Edit Story</h1>
                 <form onSubmit={handleUpdate} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Story Title</label>
-                        <input type="text" required className="w-full border p-2 rounded" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+                        <input type="text" required className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Author Name</label>
-                        <input type="text" className="w-full border p-2 rounded" value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} />
+                        <input type="text" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Select Category Tags (Choose at least 2)</label>
@@ -87,7 +87,9 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                             {AVAILABLE_TAGS.map((tag) => {
                                 const isSelected = selectedTags.includes(tag);
                                 return (
-                                    <button key={tag} type="button" onClick={() => toggleTag(tag)} className={`px-3 py-1.5 rounded text-xs font-bold transition-colors border ${isSelected ? 'bg-[#c41e3a] text-white border-[#c41e3a]' : 'bg-white text-gray-700 border-gray-300 hover:border-[#c41e3a] hover:text-[#c41e3a]'}`}>{tag}</button>
+                                    <button key={tag} type="button" onClick={() => toggleTag(tag)} className={`px-3 py-1.5 rounded text-xs font-bold transition-colors border ${isSelected ? 'bg-[#c41e3a] text-white border-[#c41e3a]' : 'bg-white text-gray-700 border-gray-300 hover:border-[#c41e3a] hover:text-[#c41e3a]'}`}>
+                                        {tag}
+                                    </button>
                                 );
                             })}
                         </div>
@@ -95,9 +97,8 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Short Excerpt</label>
-                        <textarea rows={2} className="w-full border p-2 rounded" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
+                        <textarea rows={2} className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
@@ -106,16 +107,15 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                         />
                         <div className="h-12"></div>
                     </div>
-
-                    <div className="flex items-center gap-4 pt-2">
+                    <div className="flex flex-col sm:flex-row gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} /> Publish immediately</label>
-                        <div className="flex gap-2 ml-auto">
-                            <button type="button" onClick={() => router.push('/admin/dashboard')} className="bg-gray-200 text-gray-700 py-2 px-4 rounded font-bold hover:bg-gray-300">Cancel</button>
-                            <button type="submit" disabled={saving} className="bg-[#c41e3a] text-white py-2 px-6 rounded font-bold hover:bg-[#a0152e] disabled:opacity-50">{saving ? 'Updating...' : 'Update Story'}</button>
+                        <div className="flex flex-col sm:flex-row gap-2 ml-auto w-full sm:w-auto">
+                            <button type="button" onClick={() => router.push('/admin/dashboard')} className="bg-gray-200 text-gray-700 py-2 px-4 rounded font-bold hover:bg-gray-300 w-full sm:w-auto">Cancel</button>
+                            <button type="submit" disabled={saving} className="bg-[#c41e3a] text-white py-2 px-6 rounded font-bold hover:bg-[#a0152e] disabled:opacity-50 w-full sm:w-auto">{saving ? 'Updating...' : 'Update Story'}</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     );
-}
+}   
