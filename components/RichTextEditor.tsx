@@ -1,7 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
-import { useRef, useEffect } from "react";
 
 const QuillEditor = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
 
@@ -15,27 +14,16 @@ const toolbarOptions = [
 ];
 
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-    const quillRef = useRef<any>(null);
-
-    // Force the editor to interpret the HTML correctly without crashing
-    useEffect(() => {
-        if (quillRef.current && value && value.trim() !== "") {
-            quillRef.current.clipboard.dangerouslyPasteHTML(value);
-        }
-    }, []);
-
     return (
         <div className="bg-white border rounded overflow-hidden w-full">
             <QuillEditor
-                ref={quillRef}
                 theme="snow"
-                // Do NOT pass 'value' as a prop to avoid the paste conflict loop
-                // We use dangerouslyPasteHTML in the effect to safely load it
+                value={value}
                 onChange={(content: string) => onChange(content)}
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
-                        matchVisual: false, // Crucial fix for PC copy/paste crashes
+                        matchVisual: false, // This is what stops the PC paste crash!
                     },
                 }}
                 className="h-64 md:h-80 w-full"
