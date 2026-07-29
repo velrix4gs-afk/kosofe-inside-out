@@ -7,7 +7,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     const { id } = await params;
     const { data: article } = await supabase.from('articles').select('title, excerpt, image_url, category').eq('id', id).single();
 
-    // Fallback if no article is found
     if (!article) {
         return {
             title: "Kosofe Inside Out",
@@ -20,7 +19,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         };
     }
 
-    // Ensure we have a valid absolute URL for the image (Fallback to brand image if missing)
     const imageUrl = article.image_url || "https://kosofeinsideout.com/img/kio-og-image.jpg";
 
     return {
@@ -34,20 +32,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             images: [
                 {
                     url: imageUrl,
-                    width: 1200,  // Standard Open Graph width
-                    height: 630,  // Standard Open Graph height
+                    width: 1200,
+                    height: 630,
                     alt: article.title,
                 },
             ],
             type: "article",
-            publishedTime: new Date().toISOString(), // Uses today's date for the share
+            publishedTime: new Date().toISOString(),
             section: article.category || "News",
         },
         twitter: {
-            card: "summary_large_image", // Forces X/Twitter to use the large image card
+            card: "summary_large_image",
             title: article.title,
             description: article.excerpt || "Read the latest news from Kosofe.",
-            images: [imageUrl], // Twitter uses the same high-res image
+            images: [imageUrl],
         },
     };
 }
@@ -82,12 +80,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 {article.image_url && (
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
+
+                {/* Fixed: Cast marked.parse output to string before replacing */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
-                        __html: marked.parse(article.content.replace(/&shy;|\u00AD/g, '').replace(/&nbsp;/g, ' '))
-                            .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"')
+                        __html: (() => {
+                            const parsedContent = marked.parse(article.content || '') as string;
+                            return parsedContent
+                                .replace(/&shy;|\u00AD/g, '')
+                                .replace(/&nbsp;/g, ' ')
+                                .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                        })()
                     }}
                 />
             </article>
