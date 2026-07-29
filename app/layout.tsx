@@ -3,14 +3,37 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Script from "next/script"; // <--- ADD THIS
-import { Analytics } from "@vercel/analytics/next"; // <-- ADDED THIS IMPORT
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
   description: "News that shape our community",
+  icons: {
+    icon: "/favicon.ico", // Points to your favicon in the public folder
+  },
+  openGraph: {
+    title: "Kosofe Inside Out",
+    description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
+    url: "https://kosofeinsideout.com",
+    siteName: "Kosofe Inside Out",
+    images: [
+      {
+        url: "https://kosofeinsideout.com/img/kio-og-image.jpg", // Make sure this image exists in public/img/
+        width: 1200,
+        height: 630,
+        alt: "Kosofe Inside Out - News that shape our community",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kosofe Inside Out",
+    description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
+    images: ["https://kosofeinsideout.com/img/kio-og-image.jpg"],
+  },
 };
 
 export default function RootLayout({
@@ -20,31 +43,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        {/* Google Site Verification */}
-        <meta name="google-site-verification" content="Dy8-16e6P7Hk-fhzzv_XBi8EPvnSQZ-ITT60BSDSzq0" />
-        {/* Google AdSense Script (Already here) */}
-        {/* AdSense Verification Snippet */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6800852746478554"
-          crossOrigin="anonymous"
-        ></script>
-
-        {/* Google Analytics 4 Script */}
-        <Script
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXX`}
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXX');
-          `}
-        </Script>
-      </head>
       <body className={`${inter.className} bg-[#f5f5f5]`}>
         <Header />
         {children}
