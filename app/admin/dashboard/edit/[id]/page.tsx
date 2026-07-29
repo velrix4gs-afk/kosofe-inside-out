@@ -20,8 +20,6 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
         title: '', excerpt: '', content: '', author: '', published: false
     });
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
-    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,13 +41,6 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
         fetchData();
     }, [params]);
 
-    // Image Preview Logic
-    useEffect(() => {
-        const urls = imageFiles.map(file => URL.createObjectURL(file));
-        setPreviewUrls(urls);
-        return () => urls.forEach(url => URL.revokeObjectURL(url));
-    }, [imageFiles]);
-
     const toggleTag = (tag: string) => {
         if (selectedTags.includes(tag)) setSelectedTags(selectedTags.filter(t => t !== tag));
         else setSelectedTags([...selectedTags, tag]);
@@ -64,8 +55,6 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
         setSaving(true);
         if (!id) return;
 
-        // For now, we keep the old image URLs. 
-        // We'll handle editing image galleries in a future upgrade.
         const { error } = await supabase.from('articles').update({
             title: form.title, excerpt: form.excerpt, content: form.content,
             author: form.author || 'Admin', published: form.published,
@@ -77,7 +66,14 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
         else { alert("Story updated!"); router.push('/admin/dashboard'); }
     };
 
-    if (loading) return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center">Loading...</div>;
+    // Prevents the React #185 error by stopping the render until data is ready
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center font-bold text-gray-500">
+                Loading story content...
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-4 md:p-6">
@@ -111,35 +107,16 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                         <textarea rows={2} className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
 
-                    {/* IMAGE PREVIEW WINDOW FOR NEWLY SELECTED FILES */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Add New Images (Optional)</label>
-                        <input type="file" multiple accept="image/*" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={e => setImageFiles(Array.from(e.target.files || []))} />
-                        {previewUrls.length > 0 && (
-                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                {previewUrls.map((url, idx) => (
-                                    <div key={idx} className="relative aspect-square bg-gray-100 rounded overflow-hidden border-2 border-transparent shadow-sm">
-                                        <img src={url} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
-                                        {idx === 0 && (
-                                            <span className="absolute top-1 left-1 bg-[#c41e3a] text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase z-10">
-                                                New Main
-                                            </span>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
+                    {/* Removed 'key={form.content}' to prevent the React crash */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
-                            key={form.content}
                             value={form.content}
                             onChange={(newContent) => setForm({ ...form, content: newContent })}
                         />
                         <div className="h-12"></div>
                     </div>
+
                     <div className="flex flex-col sm:flex-row gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} /> Publish immediately</label>
                         <div className="flex flex-col sm:flex-row gap-2 ml-auto w-full sm:w-auto">
