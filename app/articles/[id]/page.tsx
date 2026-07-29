@@ -2,6 +2,8 @@ import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import ArticleActionBar from "@/components/ArticleActionBar";
 import { marked } from "marked";
+import { useState } from "react";
+import ImageLightbox from "@/components/ImageLightbox";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -50,10 +52,26 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     };
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
+export default function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const { data: article } = await supabase.from('articles').select('*').eq('id', id).single();
     if (!article) notFound();
+
+    // Fetch gallery images
+    const { data: galleryImages } = await supabase
+        .from('article_gallery')
+        .select('*')
+        .eq('article_id', id)
+        .order('created_at', { ascending: true });
+
+    // Lightbox State
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [lightboxImage, setLightboxImage] = useState({ url: '', alt: '' });
+
+    const openLightbox = (url: string, alt: string) => {
+        setLightboxImage({ url, alt });
+        setLightboxOpen(true);
+    };
 
     const rawContent = article.content || '';
     const noHtml = rawContent.replace(/<[^>]*>?/gm, '');
@@ -64,6 +82,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
+            {/* Lightbox Component */}
+            <ImageLightbox
+                isOpen={lightboxOpen}
+                imageUrl={lightboxImage.url}
+                altText={lightboxImage.alt}
+                onClose={() => setLightboxOpen(false)}
+            />
+
             <article className="bg-white p-6 md:p-10 rounded shadow-sm w-full overflow-hidden">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{article.title}</h1>
                 <div className="flex flex-wrap items-center text-xs md:text-sm text-gray-500 mb-6 border-b pb-4 gap-3">
@@ -77,11 +103,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                     <span>•</span>
                     <span className="flex items-center gap-1">👁️ {article.views || 0} views</span>
                 </div>
+
+                {/* Main Image with Lightbox Click */}
                 {article.image_url && (
-                    <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
+                    <div
+                        className="w-full h-64 md:h-96 bg-gray-200 rounded mb-6 overflow-hidden relative cursor-pointer group"
+                        onClick={() => openLightbox(article.image_url, article.title)}
+                    >
+                        <img src={article.image_url} alt={article.title} className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="bg-white/80 text-gray-800 px-3 py-1 rounded text-sm font-bold">🔍 View Full</span>
+                        </div>
+                    </div>
                 )}
 
-                {/* Fixed: Cast marked.parse output to string before replacing */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
@@ -95,6 +130,27 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                         })()
                     }}
                 />
+
+                {/* Gallery Section with Lightbox Clicks */}
+                {galleryImages && galleryImages.length > 0 && (
+                    <div className="mt-10 pt-8 border-t border-gray-200">
+                        <h3 className="font-bold text-xl text-gray-800 mb-4">Photo Gallery</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {galleryImages.map((img) => (
+                                <div
+                                    key={img.id}
+                                    className="relative h-48 md:h-64 rounded overflow-hidden bg-gray-100 shadow-sm cursor-pointer group"
+                                    onClick={() => openLightbox(img.image_url, 'Gallery image')}
+                                >
+                                    <img src={img.image_url} alt="Gallery image" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span className="bg-white/80 text-gray-800 px-3 py-1 rounded text-sm font-bold">🔍 View Full</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </article>
 
             <ArticleActionBar articleId={article.id} />
