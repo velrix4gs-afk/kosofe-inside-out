@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import RichTextEditor from "@/components/RichTextEditor";
@@ -19,6 +19,15 @@ export default function CreateStory() {
     });
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+    // Generate local preview URLs
+    useEffect(() => {
+        const urls = imageFiles.map(file => URL.createObjectURL(file));
+        setPreviewUrls(urls);
+        // Cleanup memory when component unmounts
+        return () => urls.forEach(url => URL.revokeObjectURL(url));
+    }, [imageFiles]);
 
     const toggleTag = (tag: string) => {
         if (selectedTags.includes(tag)) {
@@ -116,6 +125,22 @@ export default function CreateStory() {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Upload Images (Select multiple)</label>
                         <input type="file" multiple accept="image/*" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={e => setImageFiles(Array.from(e.target.files || []))} />
+
+                        {/* IMAGE PREVIEW WINDOW */}
+                        {previewUrls.length > 0 && (
+                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {previewUrls.map((url, idx) => (
+                                    <div key={idx} className="relative aspect-square bg-gray-100 rounded overflow-hidden border-2 border-transparent shadow-sm">
+                                        <img src={url} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                                        {idx === 0 && (
+                                            <span className="absolute top-1 left-1 bg-[#c41e3a] text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase z-10">
+                                                Main Display
+                                            </span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div>

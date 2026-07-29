@@ -5,10 +5,50 @@ import { marked } from "marked";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const { data: article } = await supabase.from('articles').select('title, image_url').eq('id', id).single();
+    const { data: article } = await supabase.from('articles').select('title, excerpt, image_url, category').eq('id', id).single();
+
+    // Fallback if no article is found
+    if (!article) {
+        return {
+            title: "Kosofe Inside Out",
+            description: "News that shape our community.",
+            openGraph: {
+                title: "Kosofe Inside Out",
+                description: "Read the latest news from Kosofe.",
+                images: ['/img/kio-og-image.jpg']
+            }
+        };
+    }
+
+    // Ensure we have a valid absolute URL for the image (Fallback to brand image if missing)
+    const imageUrl = article.image_url || "https://kosofeinsideout.com/img/kio-og-image.jpg";
+
     return {
-        title: article?.title || "Kosofe Inside Out",
-        openGraph: { title: article?.title, description: "Read the latest news from Kosofe.", images: [article?.image_url || '/img/kio-logo.jpg'] },
+        title: article.title,
+        description: article.excerpt || "Read the latest news from Kosofe.",
+        openGraph: {
+            title: article.title,
+            description: article.excerpt || "Read the latest news from Kosofe.",
+            url: `https://kosofeinsideout.com/articles/${id}`,
+            siteName: "Kosofe Inside Out",
+            images: [
+                {
+                    url: imageUrl,
+                    width: 1200,  // Standard Open Graph width
+                    height: 630,  // Standard Open Graph height
+                    alt: article.title,
+                },
+            ],
+            type: "article",
+            publishedTime: new Date().toISOString(), // Uses today's date for the share
+            section: article.category || "News",
+        },
+        twitter: {
+            card: "summary_large_image", // Forces X/Twitter to use the large image card
+            title: article.title,
+            description: article.excerpt || "Read the latest news from Kosofe.",
+            images: [imageUrl], // Twitter uses the same high-res image
+        },
     };
 }
 
@@ -42,14 +82,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 {article.image_url && (
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
-
-                {/* Updated to make embedded images and videos fully responsive */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: marked.parse(article.content.replace(/&shy;|\u00AD/g, '').replace(/&nbsp;/g, ' '))
-                            // Make embedded iframes responsive
                             .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"')
                     }}
                 />

@@ -16,13 +16,11 @@ export default function AdminDashboard() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) { router.push('/admin/login'); return; }
 
-            // Fetch stories
             const { data: storyData } = await supabase
                 .from('articles')
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            // Fetch directory count
             const { count: dirCount } = await supabase
                 .from('directory_entries')
                 .select('*', { count: 'exact', head: true })
@@ -49,7 +47,6 @@ export default function AdminDashboard() {
                 <h1 className="text-2xl font-bold text-gray-800">Admin Command Center</h1>
             </div>
 
-            {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-4 rounded shadow-sm border border-gray-200 text-center">
                     <p className="text-2xl font-bold text-[#c41e3a]">{stats.total}</p>
@@ -69,31 +66,24 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Quick Action Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link href="/admin/dashboard/create" className="bg-[#c41e3a] hover:bg-[#a0152e] text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">✍️</span>
                     <span className="font-bold text-lg">Write New Story</span>
-                    <span className="text-xs opacity-90">Create & publish content instantly</span>
                 </Link>
                 <Link href="/admin/directory" className="bg-gray-800 hover:bg-gray-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">📂</span>
                     <span className="font-bold text-lg">Manage Directory</span>
-                    <span className="text-xs opacity-90">Approve, edit, or reject business listings</span>
                 </Link>
                 <Link href="/admin/dashboard/breaking" className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">📢</span>
                     <span className="font-bold text-lg">Breaking News</span>
-                    <span className="text-xs opacity-90">Post real-time alerts to the homepage</span>
                 </Link>
                 <Link href="/" className="bg-green-600 hover:bg-green-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">👁️</span>
                     <span className="font-bold text-lg">View Live Site</span>
-                    <span className="text-xs opacity-90">See your site exactly as readers see it</span>
                 </Link>
             </div>
-
-            {/* Recent Stories Table */}
 
             <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
                 <div className="flex justify-between items-center border-b pb-2 mb-4">
