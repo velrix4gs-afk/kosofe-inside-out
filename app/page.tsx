@@ -1,9 +1,31 @@
 // app/page.tsx
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
 import AdSense from "@/components/AdSense";
+
+
+export const metadata: Metadata = {
+  title: "Kosofe Inside Out",
+  description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
+  openGraph: {
+    title: "Kosofe Inside Out",
+    description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
+    url: "https://kosofeinsideout.com",
+    siteName: "Kosofe Inside Out",
+    images: [
+      {
+        url: "https://kosofeinsideout.com/img/kio-og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kosofe Inside Out - News that shape our community",
+      },
+    ],
+    type: "website",
+  },
+};
 
 export default async function Home() {
   let weather = { temp: 28, desc: "Clouds", feels_like: 28, humidity: 75, wind: 12, rain: 0, sunrise: 0, sunset: 0, uvIndex: 0 };
