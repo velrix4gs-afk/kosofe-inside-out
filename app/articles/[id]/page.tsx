@@ -1,29 +1,21 @@
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import ArticleActionBar from "@/components/ArticleActionBar";
-import Link from "next/link";
 import { marked } from "marked";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const { data: article } = await supabase.from('articles').select('title, image_url').eq('id', id).single();
-    return { title: article?.title || "Kosofe Inside Out", openGraph: { title: article?.title, images: [article?.image_url || '/img/kio-logo.jpg'] } };
+    return {
+        title: article?.title || "Kosofe Inside Out",
+        openGraph: { title: article?.title, description: "Read the latest news from Kosofe.", images: [article?.image_url || '/img/kio-logo.jpg'] },
+    };
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const { data: article } = await supabase.from('articles').select('*').eq('id', id).single();
     if (!article) notFound();
-
-    // Fetch Related Stories (Same category, exclude current)
-    const { data: related } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .eq('category', article.category)
-        .neq('id', id)
-        .order('created_at', { ascending: false })
-        .limit(3);
 
     const rawContent = article.content || '';
     const noHtml = rawContent.replace(/<[^>]*>?/gm, '');
@@ -50,75 +42,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 {article.image_url && (
                     <img src={article.image_url} alt={article.title} className="w-full h-64 md:h-96 object-cover rounded mb-6 bg-gray-200" />
                 )}
-                <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left" style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: marked.parse(article.content.replace(/&shy;|\u00AD/g, '').replace(/&nbsp;/g, ' ')) }} />
-                {/* --- SEO STRUCTURED DATA (JSON-LD) --- */}
-                <script
-                    type="application/ld+json"
+
+                {/* Updated to make embedded images and videos fully responsive */}
+                <div
+                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
+                    style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "NewsArticle",
-                            "headline": article.title,
-                            "image": [article.image_url],
-                            "datePublished": article.created_at,
-                            "dateModified": article.created_at,
-                            "author": {
-                                "@type": "Person",
-                                "name": article.author || "Admin"
-                            },
-                            "publisher": {
-                                "@type": "Organization",
-                                "name": "Kosofe Inside Out",
-                                "logo": {
-                                    "@type": "ImageObject",
-                                    "url": "https://kosofeinsideout.com/img/kio-logo.jpg"
-                                }
-                            }
-                        })
+                        __html: marked.parse(article.content.replace(/&shy;|\u00AD/g, '').replace(/&nbsp;/g, ' '))
+                            // Make embedded iframes responsive
+                            .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"')
                     }}
                 />
             </article>
 
-            {/* --- ACTION BAR & METRICS / CTA SECTION --- */}
             <ArticleActionBar articleId={article.id} />
-
-            {/* Related Stories & Site Stats */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                {/* Related Stories (Takes up 2 columns) */}
-                <div className="md:col-span-2 bg-white p-6 rounded shadow-sm border border-gray-200">
-                    <h3 className="font-bold text-lg text-gray-800 border-b pb-2 mb-4">Related Stories</h3>
-                    <div className="space-y-4">
-                        {related && related.length > 0 ? (
-                            related.map((story) => (
-                                <Link key={story.id} href={`/articles/${story.id}`} className="block border-b border-gray-100 pb-3 last:border-0 last:pb-0 hover:bg-gray-50 p-2 rounded transition">
-                                    <h4 className="font-bold text-gray-800 hover:text-[#c41e3a] text-sm">{story.title}</h4>
-                                    <p className="text-xs text-gray-500 mt-1">{story.category} • {new Date(story.created_at).toLocaleDateString()}</p>
-                                </Link>
-                            ))
-                        ) : (
-                            <p className="text-sm text-gray-500 italic">No related stories found.</p>
-                        )}
-                    </div>
-                </div>
-
-                {/* Stats & CTA (Takes up 1 column) */}
-                <div className="bg-gray-50 p-6 rounded shadow-sm border border-gray-200 flex flex-col gap-4">
-                    <div className="space-y-2 pb-4 border-b border-gray-200">
-                        <h4 className="font-bold text-[#c41e3a] uppercase text-xs">Kosofe Inside Out</h4>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                            <div><span className="block font-bold text-gray-800">25,000+</span><span className="text-gray-500">Monthly Readers</span></div>
-                            <div><span className="block font-bold text-gray-800">18,000+</span><span className="text-gray-500">Facebook Followers</span></div>
-                            <div><span className="block font-bold text-gray-800">6,000+</span><span className="text-gray-500">WhatsApp Subscribers</span></div>
-                            <div><span className="block font-bold text-gray-800">2026</span><span className="text-gray-500">Serving Kosofe Since</span></div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <a href="https://whatsapp.com/channel/0029Vb7tfwGIiRoytADSsU1L" target="_blank" className="bg-[#25D366] text-white text-center py-2 rounded font-bold text-sm hover:opacity-90">Follow WhatsApp Channel</a>
-                        <Link href="/advertise" className="border border-[#c41e3a] text-[#c41e3a] text-center py-2 rounded font-bold text-sm hover:bg-[#c41e3a] hover:text-white transition">Advertise Here</Link>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }

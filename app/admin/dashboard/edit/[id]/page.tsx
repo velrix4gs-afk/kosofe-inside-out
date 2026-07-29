@@ -100,7 +100,6 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                         <textarea rows={2} className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
 
-                    {/* --- THE FIX IS HERE (key={form.content}) --- */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
