@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     siteName: "Kosofe Inside Out",
     images: [
       {
-        url: "https://kosofeinsideout.com/img/kio-og-image.jpg",
+        url: "https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png",
         width: 1200,
         height: 630,
         alt: "Kosofe Inside Out - News that shape our community",
