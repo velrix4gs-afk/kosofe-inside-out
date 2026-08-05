@@ -21,11 +21,9 @@ export default function CreateStory() {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-    // Generate local preview URLs
     useEffect(() => {
         const urls = imageFiles.map(file => URL.createObjectURL(file));
         setPreviewUrls(urls);
-        // Cleanup memory when component unmounts
         return () => urls.forEach(url => URL.revokeObjectURL(url));
     }, [imageFiles]);
 
@@ -50,8 +48,7 @@ export default function CreateStory() {
         if (imageFiles.length > 0) {
             for (let i = 0; i < imageFiles.length; i++) {
                 const file = imageFiles[i];
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}_${i}.${fileExt}`;
+                const fileName = `${Date.now()}_${i}.${file.name.split('.').pop()}`;
                 const { error } = await supabase.storage.from('article-images').upload(fileName, file);
                 if (error) { alert("Image upload failed: " + error.message); setLoading(false); return; }
                 const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
@@ -125,8 +122,6 @@ export default function CreateStory() {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Upload Images (Select multiple)</label>
                         <input type="file" multiple accept="image/*" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={e => setImageFiles(Array.from(e.target.files || []))} />
-
-                        {/* IMAGE PREVIEW WINDOW */}
                         {previewUrls.length > 0 && (
                             <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                 {previewUrls.map((url, idx) => (

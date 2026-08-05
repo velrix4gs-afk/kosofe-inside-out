@@ -20,15 +20,15 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
         title: '', excerpt: '', content: '', author: '', published: false
     });
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+    const [galleryImages, setGalleryImages] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             const resolvedParams = await params;
             setId(resolvedParams.id);
-
-            // Fetch the Article
             const { data: articleData } = await supabase.from('articles').select('*').eq('id', resolvedParams.id).single();
-
             if (articleData) {
                 setForm({
                     title: articleData.title || '',
@@ -38,19 +38,19 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                     published: articleData.published || false,
                 });
                 setSelectedTags(articleData.tags || []);
-
-                // Fetch existing gallery images so we don't overwrite them on update
-                const { data: galleryData } = await supabase
-                    .from('article_gallery')
-                    .select('*')
-                    .eq('article_id', resolvedParams.id);
-
-                // Store galleryData in a variable to preserve it on save (optional logic added below)
+                const { data: galleryData } = await supabase.from('article_gallery').select('*').eq('article_id', resolvedParams.id);
+                setGalleryImages(galleryData || []);
             }
             setLoading(false);
         };
         fetchData();
     }, [params]);
+
+    useEffect(() => {
+        const urls = imageFiles.map(file => URL.createObjectURL(file));
+        setPreviewUrls(urls);
+        return () => urls.forEach(url => URL.revokeObjectURL(url));
+    }, [imageFiles]);
 
     const toggleTag = (tag: string) => {
         if (selectedTags.includes(tag)) setSelectedTags(selectedTags.filter(t => t !== tag));
@@ -66,17 +66,37 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
         setSaving(true);
         if (!id) return;
 
-        // Update text, tags, and metadata only. 
-        // (To add new images to the gallery, we need a separate upload flow, but for now, we preserve the old ones).
+        // 1. Update basic text fields
         const { error } = await supabase.from('articles').update({
             title: form.title, excerpt: form.excerpt, content: form.content,
             author: form.author || 'Admin', published: form.published,
             category: selectedTags[0] || 'News', tags: selectedTags
         }).eq('id', id);
 
+        if (error) { alert("Failed to update: " + error.message); setSaving(false); return; }
+
+        // 2. Handle new image uploads
+        if (imageFiles.length > 0) {
+            for (let i = 0; i < imageFiles.length; i++) {
+                const file = imageFiles[i];
+                const fileName = `${Date.now()}_${i}.${file.name.split('.').pop()}`;
+                const { error: uploadError } = await supabase.storage.from('article-images').upload(fileName, file);
+                if (uploadError) continue;
+                const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
+                const url = data.publicUrl;
+                await supabase.from('article_gallery').insert({ article_id: id, image_url: url, is_main: false });
+            }
+        }
+
         setSaving(false);
-        if (error) alert("Failed to update: " + error.message);
-        else { alert("Story updated!"); router.push('/admin/dashboard'); }
+        alert("Story updated!");
+        router.push('/admin/dashboard');
+    };
+
+    const removeGalleryImage = async (galleryId: string, imageUrl: string) => {
+        if (!confirm("Delete this gallery image?")) return;
+        await supabase.from('article_gallery').delete().eq('id', galleryId);
+        setGalleryImages(galleryImages.filter(img => img.id !== galleryId));
     };
 
     if (loading) return <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-center font-bold text-gray-500">Loading story content...</div>;
@@ -116,10 +136,47 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
+                            key={form.content} // Forces stable remount on load
                             value={form.content}
                             onChange={(newContent) => setForm({ ...form, content: newContent })}
                         />
                         <div className="h-12"></div>
+                    </div>
+
+                    {/* --- EXISTING GALLERY IMAGES --- */}
+                    {galleryImages.length > 0 && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Current Gallery Images</label>
+                            <div className="flex flex-wrap gap-2">
+                                {galleryImages.map((img) => (
+                                    <div key={img.id} className="relative w-24 h-24 border rounded overflow-hidden group">
+                                        <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeGalleryImage(img.id, img.image_url)}
+                                            className="absolute inset-0 bg-red-600/80 text-white font-bold group-hover:flex hidden items-center justify-center"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- ADD NEW IMAGES --- */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Add New Images</label>
+                        <input type="file" multiple accept="image/*" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={e => setImageFiles(Array.from(e.target.files || []))} />
+                        {previewUrls.length > 0 && (
+                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {previewUrls.map((url, idx) => (
+                                    <div key={idx} className="relative aspect-square bg-gray-100 rounded overflow-hidden border border-gray-200 shadow-sm">
+                                        <img src={url} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 pt-2">
