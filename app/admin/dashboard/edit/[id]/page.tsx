@@ -136,7 +136,6 @@ export default function EditStory({ params }: { params: Promise<{ id: string }> 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
-                            key={form.content} // Forces stable remount on load
                             value={form.content}
                             onChange={(newContent) => setForm({ ...form, content: newContent })}
                         />
