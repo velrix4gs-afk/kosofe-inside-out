@@ -2,7 +2,6 @@
 import { useState } from "react";
 import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
-import { marked } from "marked";
 
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
     // Lightbox State
@@ -51,17 +50,15 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     </div>
                 )}
 
+                {/* Direct HTML rendering - no Markdown parsing needed */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
-                        __html: (() => {
-                            const parsedContent = marked.parse(article.content || '') as string;
-                            return parsedContent
-                                .replace(/&shy;|\u00AD/g, '')
-                                .replace(/&nbsp;/g, ' ')
-                                .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
-                        })()
+                        __html: (article.content || '')
+                            .replace(/&shy;|\u00AD/g, '')
+                            .replace(/&nbsp;/g, ' ')
+                            .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"')
                     }}
                 />
 
