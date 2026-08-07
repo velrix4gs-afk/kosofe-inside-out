@@ -4,11 +4,6 @@ import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
 import { marked } from "marked";
 
-marked.setOptions({
-    gfm: true,      // GitHub Flavored Markdown (Supports lists, tables, etc)
-    breaks: true,   // Converts returns to <br>
-});
-
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxImage, setLightboxImage] = useState({ url: '', alt: '' });
@@ -55,27 +50,39 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE CLEAN REVERT: 
-          Strip out the odd HTML entities so the parser can read it cleanly.
-          Then pass it directly to marked.parse without ANY conditions.
+          THE FINAL FIX:
+          If it starts with an HTML tag (like <p> or <ol>), it's a new story. Render it RAW.
+          If it doesn't, it's an old Markdown story. Run marked.parse().
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
+                            // Clean up raw text
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ')
                                 .replace(/&lt;/g, '<')
                                 .replace(/&gt;/g, '>')
-                                .replace(/&amp;/g, '&');
+                                .replace(/&amp;/g, '&')
+                                .replace(/&#39;/g, "'")
+                                .replace(/&quot;/g, '"');
 
-                            // Parse it directly
-                            let parsed = marked.parse(content) as string;
+                            // Check if it starts with an HTML tag (Quill outputs HTML)
+                            const isRawHtml = /^<[a-zA-Z]/.test(content.trim());
+
+                            let finalHtml = content;
+                            if (isRawHtml) {
+                                // NEW STORY: Bypass marked completely so numbers like "1. " aren't stripped.
+                                finalHtml = content;
+                            } else {
+                                // OLD STORY: Parse the Markdown into HTML
+                                finalHtml = marked.parse(content) as string;
+                            }
 
                             // Fix video embed responsiveness
-                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                            return finalHtml.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
