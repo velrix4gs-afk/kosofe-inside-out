@@ -4,6 +4,12 @@ import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
 import { marked } from "marked";
 
+// Configure marked to preserve HTML that is already there
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
+
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxImage, setLightboxImage] = useState({ url: '', alt: '' });
@@ -50,30 +56,28 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE SMART FIX: 
-          Checks if the content contains Markdown symbols. 
-          If yes, runs marked.parse(). If not, assumes it's HTML and skips it.
+          THE 100% FIX: 
+          We parse the content ALWAYS, using marked.
+          We also decode common HTML entities so that both old and new stories render perfectly.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
-                            const content = (article.content || '')
+                            // Clean up the text before parsing
+                            let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
-                                .replace(/&nbsp;/g, ' ');
+                                .replace(/&nbsp;/g, ' ')
+                                .replace(/&lt;/g, '<')
+                                .replace(/&gt;/g, '>')
+                                .replace(/&amp;/g, '&');
 
-                            // DETECT MARKDOWN: Check for **, *, `, #, 1., -, or >
-                            const hasMarkdown = /(\*\*|__|[*_`#>]|^\s*[\d\-]\.)/m.test(content);
+                            // ALWAYS run marked.parse. It handles both Markdown and HTML gracefully.
+                            let parsed = marked.parse(content) as string;
 
-                            let finalHtml = content;
-                            if (hasMarkdown) {
-                                // If it looks like Markdown, parse it
-                                finalHtml = marked.parse(content) as string;
-                            }
-
-                            // Return the final HTML and fix any video embeds
-                            return finalHtml.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                            // Fix any video embeds
+                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
