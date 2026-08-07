@@ -2,9 +2,9 @@
 import { useState } from "react";
 import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
+import { marked } from "marked";
 
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
-    // Lightbox State
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxImage, setLightboxImage] = useState({ url: '', alt: '' });
 
@@ -15,7 +15,6 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
-            {/* Lightbox Component */}
             <ImageLightbox
                 isOpen={lightboxOpen}
                 imageUrl={lightboxImage.url}
@@ -37,7 +36,7 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     <span className="flex items-center gap-1">👁️ {article.views || 0} views</span>
                 </div>
 
-                {/* Main Image with Lightbox Click */}
+                {/* Main Image */}
                 {article.image_url && (
                     <div
                         className="w-full h-64 md:h-96 bg-gray-200 rounded mb-6 overflow-hidden relative cursor-pointer group"
@@ -50,19 +49,36 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     </div>
                 )}
 
-                {/* Direct HTML rendering - no Markdown parsing needed */}
+                {/* 
+          THE SMART FIX: 
+          Checks if the content contains Markdown symbols. 
+          If yes, runs marked.parse(). If not, assumes it's HTML and skips it.
+        */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
-                        __html: (article.content || '')
-                            .replace(/&shy;|\u00AD/g, '')
-                            .replace(/&nbsp;/g, ' ')
-                            .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"')
+                        __html: (() => {
+                            const content = (article.content || '')
+                                .replace(/&shy;|\u00AD/g, '')
+                                .replace(/&nbsp;/g, ' ');
+
+                            // DETECT MARKDOWN: Check for **, *, `, #, 1., -, or >
+                            const hasMarkdown = /(\*\*|__|[*_`#>]|^\s*[\d\-]\.)/m.test(content);
+
+                            let finalHtml = content;
+                            if (hasMarkdown) {
+                                // If it looks like Markdown, parse it
+                                finalHtml = marked.parse(content) as string;
+                            }
+
+                            // Return the final HTML and fix any video embeds
+                            return finalHtml.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                        })()
                     }}
                 />
 
-                {/* Gallery Section with Lightbox Clicks */}
+                {/* Gallery Section */}
                 {galleryImages && galleryImages.length > 0 && (
                     <div className="mt-10 pt-8 border-t border-gray-200">
                         <h3 className="font-bold text-xl text-gray-800 mb-4">Photo Gallery</h3>
