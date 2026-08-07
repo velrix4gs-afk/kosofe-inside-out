@@ -13,6 +13,19 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
         setLightboxOpen(true);
     };
 
+    // Function to extract clean text from Gmail's messy HTML wrappers
+    const stripGmailWrappers = (content: string) => {
+        // If it doesn't look like HTML, return as-is
+        if (!content.trim().startsWith('<')) return content;
+
+        // Try to find the actual body text inside Gmail's HTML wrappers
+        let match = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+        if (match) return match[1];
+
+        // Fallback: Strip all standard HTML tags to get the inner text
+        return content.replace(/<[^>]+>/g, ' ');
+    };
+
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
             <ImageLightbox
@@ -50,17 +63,18 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE FINAL FIX:
-          If it starts with an HTML tag (like <p> or <ol>), it's a new story. Render it RAW.
-          If it doesn't, it's an old Markdown story. Run marked.parse().
+          THE GMAIL-SPECIFIC FIX:
+          stripGmailWrappers() removes the invisible HTML tags Gmail pastes.
+          What's left is just the plain text paragraphs and lists.
+          marked.parse() then beautifully converts them into HTML lists.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
-                            // Clean up raw text
-                            let content = (article.content || '')
+                            // Extract the clean text
+                            let cleanContent = stripGmailWrappers(article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ')
                                 .replace(/&lt;/g, '<')
@@ -69,20 +83,11 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&#39;/g, "'")
                                 .replace(/&quot;/g, '"');
 
-                            // Check if it starts with an HTML tag (Quill outputs HTML)
-                            const isRawHtml = /^<[a-zA-Z]/.test(content.trim());
+                            // Run through marked parser to convert `1. The Accord...` into proper HTML lists
+                            let parsed = marked.parse(cleanContent) as string;
 
-                            let finalHtml = content;
-                            if (isRawHtml) {
-                                // NEW STORY: Bypass marked completely so numbers like "1. " aren't stripped.
-                                finalHtml = content;
-                            } else {
-                                // OLD STORY: Parse the Markdown into HTML
-                                finalHtml = marked.parse(content) as string;
-                            }
-
-                            // Fix video embed responsiveness
-                            return finalHtml.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                            // Fix video embeds
+                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
