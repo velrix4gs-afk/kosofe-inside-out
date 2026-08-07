@@ -4,10 +4,9 @@ import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
 import { marked } from "marked";
 
-// Configure marked to preserve HTML that is already there
 marked.setOptions({
-    gfm: true,
-    breaks: true,
+    gfm: true,      // GitHub Flavored Markdown (Supports lists, tables, etc)
+    breaks: true,   // Converts returns to <br>
 });
 
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
@@ -56,16 +55,15 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE 100% FIX: 
-          We parse the content ALWAYS, using marked.
-          We also decode common HTML entities so that both old and new stories render perfectly.
+          THE CLEAN REVERT: 
+          Strip out the odd HTML entities so the parser can read it cleanly.
+          Then pass it directly to marked.parse without ANY conditions.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
-                            // Clean up the text before parsing
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ')
@@ -73,10 +71,10 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&gt;/g, '>')
                                 .replace(/&amp;/g, '&');
 
-                            // ALWAYS run marked.parse. It handles both Markdown and HTML gracefully.
+                            // Parse it directly
                             let parsed = marked.parse(content) as string;
 
-                            // Fix any video embeds
+                            // Fix video embed responsiveness
                             return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
