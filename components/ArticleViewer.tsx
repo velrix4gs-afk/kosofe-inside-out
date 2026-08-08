@@ -13,19 +13,6 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
         setLightboxOpen(true);
     };
 
-    // Function to extract clean text from Gmail's messy HTML wrappers
-    const stripGmailWrappers = (content: string) => {
-        // If it doesn't look like HTML, return as-is
-        if (!content.trim().startsWith('<')) return content;
-
-        // Try to find the actual body text inside Gmail's HTML wrappers
-        let match = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-        if (match) return match[1];
-
-        // Fallback: Strip all standard HTML tags to get the inner text
-        return content.replace(/<[^>]+>/g, ' ');
-    };
-
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
             <ImageLightbox
@@ -63,18 +50,18 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE GMAIL-SPECIFIC FIX:
-          stripGmailWrappers() removes the invisible HTML tags Gmail pastes.
-          What's left is just the plain text paragraphs and lists.
-          marked.parse() then beautifully converts them into HTML lists.
+          THE CORRECT LOGIC:
+          1. If it starts with `<` and has `<body>` (Gmail paste), extract the plain text and parse as Markdown.
+          2. If it starts with `<` but has NO `<body>` (New Quill story), leave it ALONE as HTML.
+          3. If it doesn't start with `<` (Old 808 markdown), parse it with marked.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
-                            // Extract the clean text
-                            let cleanContent = stripGmailWrappers(article.content || '')
+                            // Clean up raw entities first
+                            let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ')
                                 .replace(/&lt;/g, '<')
@@ -83,11 +70,27 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&#39;/g, "'")
                                 .replace(/&quot;/g, '"');
 
-                            // Run through marked parser to convert `1. The Accord...` into proper HTML lists
-                            let parsed = marked.parse(cleanContent) as string;
+                            // Scenario 2 & 3 detection
+                            const startsWithTag = content.trim().startsWith('<');
+                            const isGmailWrapper = startsWithTag && content.includes('<body');
+
+                            let finalHtml = content;
+
+                            if (isGmailWrapper) {
+                                // Extract the inner text from Gmail's HTML
+                                const match = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+                                if (match) {
+                                    const innerText = match[1].replace(/<[^>]+>/g, ' ').trim();
+                                    finalHtml = marked.parse(innerText) as string;
+                                }
+                            } else if (!startsWithTag) {
+                                // It's an old Markdown story (808 import)
+                                finalHtml = marked.parse(content) as string;
+                            }
+                            // else: It's a valid HTML story from Quill. finalHtml stays as content.
 
                             // Fix video embeds
-                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                            return finalHtml.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
