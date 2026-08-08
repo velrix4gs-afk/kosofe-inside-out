@@ -2,13 +2,6 @@
 import { useState } from "react";
 import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
-import { marked } from "marked";
-
-// THE PERMANENT PARSER CONFIGURATION
-marked.setOptions({
-    gfm: true,      // GitHub Flavored Markdown (handles numbered lists)
-    breaks: true,   // CRUCIAL: Converts single newlines into <br>, preventing text merging
-});
 
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
     const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -56,11 +49,9 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE FINAL, PRODUCTION-READY PARSER:
-          ALWAYS runs marked.parse().
-          1. It converts `1. The Accord...` into a proper numbered `<ol>` list.
-          2. It preserves already existing `<ol>` lists from Quill perfectly.
-          3. `breaks: true` stops the text from merging into a single block.
+          RAW HTML RENDERER:
+          This simply takes the saved HTML and renders it exactly as the editor stored it.
+          No marked.parse(). No conditionals. Just raw HTML.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
@@ -69,18 +60,8 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                         __html: (() => {
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
-                                .replace(/&nbsp;/g, ' ')
-                                .replace(/&lt;/g, '<')
-                                .replace(/&gt;/g, '>')
-                                .replace(/&amp;/g, '&')
-                                .replace(/&#39;/g, "'")
-                                .replace(/&quot;/g, '"');
-
-                            // Let marked handle both Markdown and HTML flawlessly
-                            let parsed = marked.parse(content) as string;
-
-                            // Fix video embeds
-                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                                .replace(/&nbsp;/g, ' ');
+                            return content.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
