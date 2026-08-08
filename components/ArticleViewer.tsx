@@ -50,17 +50,16 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE CORRECT LOGIC:
-          1. If it starts with `<` and has `<body>` (Gmail paste), extract the plain text and parse as Markdown.
-          2. If it starts with `<` but has NO `<body>` (New Quill story), leave it ALONE as HTML.
-          3. If it doesn't start with `<` (Old 808 markdown), parse it with marked.
+          THE PRODUCTION-READY LOGIC:
+          1. Clean the bad entities.
+          2. If it starts with an HTML tag (<), it's a new story. Render it RAW.
+          3. If it doesn't start with an HTML tag, it's an old 808 story. Parse with marked.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
-                            // Clean up raw entities first
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ')
@@ -70,27 +69,14 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&#39;/g, "'")
                                 .replace(/&quot;/g, '"');
 
-                            // Scenario 2 & 3 detection
-                            const startsWithTag = content.trim().startsWith('<');
-                            const isGmailWrapper = startsWithTag && content.includes('<body');
-
-                            let finalHtml = content;
-
-                            if (isGmailWrapper) {
-                                // Extract the inner text from Gmail's HTML
-                                const match = content.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-                                if (match) {
-                                    const innerText = match[1].replace(/<[^>]+>/g, ' ').trim();
-                                    finalHtml = marked.parse(innerText) as string;
-                                }
-                            } else if (!startsWithTag) {
-                                // It's an old Markdown story (808 import)
-                                finalHtml = marked.parse(content) as string;
+                            // If it starts with an HTML tag, it's a new story. Don't touch it.
+                            if (content.trim().startsWith('<')) {
+                                return content.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                             }
-                            // else: It's a valid HTML story from Quill. finalHtml stays as content.
 
-                            // Fix video embeds
-                            return finalHtml.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                            // Otherwise, it's legacy markdown from the 808 import.
+                            const parsed = marked.parse(content) as string;
+                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
