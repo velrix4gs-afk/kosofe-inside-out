@@ -2,6 +2,12 @@
 import { useState } from "react";
 import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
+import { marked } from "marked";
+
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
 
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
     const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -21,7 +27,7 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 onClose={() => setLightboxOpen(false)}
             />
 
-            <article className="bg-white p-6 md:p-10 rounded shadow-sm w-full overflow-hidden">
+            <article className="bg-white p-6 md:p-10 rounded shadow-sm w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{article.title}</h1>
                 <div className="flex flex-wrap items-center text-xs md:text-sm text-gray-500 mb-6 border-b pb-4 gap-3">
                     <span className="text-[#c41e3a] font-bold uppercase">{article.category}</span>
@@ -49,9 +55,9 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          RAW HTML RENDERER:
-          This simply takes the saved HTML and renders it exactly as the editor stored it.
-          No marked.parse(). No conditionals. Just raw HTML.
+          THE "KEEP THE OLD ONE" FIX:
+          We strip Gmail's hidden <body> wrapper so marked only sees the raw text.
+          After that, marked.parse() handles `1.` and `2.` perfectly.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
@@ -61,7 +67,14 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ');
-                            return content.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+
+                            // STRIP OUT GMAIL'S FULL HTML WRAPPER
+                            content = content.replace(/<body[^>]*>([\s\S]*)<\/body>/i, '$1');
+                            content = content.replace(/<html[^>]*>([\s\S]*)<\/html>/i, '$1');
+
+                            // Let marked handle everything
+                            let parsed = marked.parse(content) as string;
+                            return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
                 />
