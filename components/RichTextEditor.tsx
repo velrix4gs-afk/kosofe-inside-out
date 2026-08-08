@@ -23,7 +23,7 @@ export default function RichTextEditor({ value, onChange }: { value: string; onC
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
-                        matchVisual: true, // Binds Gmail's hidden HTML into clean Quill formatting
+                        matchVisual: true, // Prevents Gmail's HTML from appearing as raw code in the editor
                     },
                 }}
                 className="h-64 md:h-80 w-full"

@@ -4,6 +4,12 @@ import ImageLightbox from "@/components/ImageLightbox";
 import ArticleActionBar from "@/components/ArticleActionBar";
 import { marked } from "marked";
 
+// THE PERMANENT PARSER CONFIGURATION
+marked.setOptions({
+    gfm: true,      // GitHub Flavored Markdown (handles numbered lists)
+    breaks: true,   // CRUCIAL: Converts single newlines into <br>, preventing text merging
+});
+
 export default function ArticleViewer({ article, galleryImages, readTime }: any) {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxImage, setLightboxImage] = useState({ url: '', alt: '' });
@@ -50,10 +56,11 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                 )}
 
                 {/* 
-          THE PRODUCTION-READY LOGIC:
-          1. Clean the bad entities.
-          2. If it starts with an HTML tag (<), it's a new story. Render it RAW.
-          3. If it doesn't start with an HTML tag, it's an old 808 story. Parse with marked.
+          THE FINAL, PRODUCTION-READY PARSER:
+          ALWAYS runs marked.parse().
+          1. It converts `1. The Accord...` into a proper numbered `<ol>` list.
+          2. It preserves already existing `<ol>` lists from Quill perfectly.
+          3. `breaks: true` stops the text from merging into a single block.
         */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
@@ -69,13 +76,10 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&#39;/g, "'")
                                 .replace(/&quot;/g, '"');
 
-                            // If it starts with an HTML tag, it's a new story. Don't touch it.
-                            if (content.trim().startsWith('<')) {
-                                return content.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
-                            }
+                            // Let marked handle both Markdown and HTML flawlessly
+                            let parsed = marked.parse(content) as string;
 
-                            // Otherwise, it's legacy markdown from the 808 import.
-                            const parsed = marked.parse(content) as string;
+                            // Fix video embeds
                             return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
