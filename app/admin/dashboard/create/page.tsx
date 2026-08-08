@@ -93,17 +93,14 @@ export default function CreateStory() {
             <div className="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded shadow-sm">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">Write a New Story</h1>
                 <form onSubmit={handleUploadAndSubmit} className="space-y-4">
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Story Title</label>
                         <input type="text" required className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                     </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Author Name</label>
                         <input type="text" placeholder="e.g. John Doe" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.author} onChange={e => setForm({ ...form, author: e.target.value })} />
                     </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Select Category Tags (Choose at least 2)</label>
                         <div className="flex flex-wrap gap-2">
@@ -118,7 +115,6 @@ export default function CreateStory() {
                         </div>
                         <p className="text-xs text-gray-500 mt-2">Selected: {selectedTags.length} / 2 required minimum</p>
                     </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Upload Images (Select multiple)</label>
                         <input type="file" multiple accept="image/*" className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" onChange={e => setImageFiles(Array.from(e.target.files || []))} />
@@ -137,12 +133,10 @@ export default function CreateStory() {
                             </div>
                         )}
                     </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Short Excerpt (Summary)</label>
                         <textarea rows={2} className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
@@ -151,7 +145,6 @@ export default function CreateStory() {
                         />
                         <div className="h-12"></div>
                     </div>
-
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer">
                             <input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} />
