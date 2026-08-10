@@ -10,12 +10,25 @@ export default function Header() {
     const pathname = usePathname();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
+    // Sorted alphabetically for easier reading
     const moreLinks = [
-        "Education", "Health", "Lifestyle", "Opinion",
-        "Public Notices", "Jobs", "Events", "Marketplace",
-        "Technology", "Environment", "Agriculture", "Obituaries",
-        "Photo Gallery", "Videos", "Podcasts", "Contact",
-        "Archives" // <--- ADDED THIS LINE
+        "Agriculture",
+        "Archives",
+        "Contact",
+        "Education",
+        "Environment",
+        "Events",
+        "Health",
+        "Jobs",
+        "Lifestyle",
+        "Marketplace",
+        "Obituaries",
+        "Opinion",
+        "Photo Gallery",
+        "Podcasts",
+        "Public Notices",
+        "Technology",
+        "Videos"
     ];
 
     return (
@@ -43,7 +56,7 @@ export default function Header() {
             </div>
 
             {/* --- LOGO --- */}
-            <div className="py-2 md:py-3 border-b border-gray-100 bg-white">
+            <div className="bg-white py-2 md:py-3 border-b border-gray-100 bg-white">
                 <div className="max-w-6xl mx-auto px-4 flex justify-center md:justify-start">
                     <Link href="/">
                         <img
@@ -109,7 +122,7 @@ export default function Header() {
                             if (link === 'Videos') href = '/videos';
                             if (link === 'Podcasts') href = '/podcasts';
                             if (link === 'Obituaries') href = '/obituaries';
-                            if (link === 'Emergency') href = '/emergency';
+                            if (link === 'Archives') href = '/archives';
                             if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
                                 href = `/categories/${link.toLowerCase()}`;
                             }
