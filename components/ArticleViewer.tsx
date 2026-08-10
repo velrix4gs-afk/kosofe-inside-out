@@ -54,24 +54,33 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     </div>
                 )}
 
+                {/* 
+          THE FINAL FIX:
+          Explicitly converted `<br>` tags into newline characters (`\n`)
+          This guarantees lists always start on their own line so `marked` catches them.
+        */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left whitespace-pre-wrap break-words"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
-                            // Entity decoder added back for proper Markdown handling
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ')
                                 .replace(/&lt;/g, '<')
-                                .replace(/&gt;/g, '>') // <--- FIXES BLOCKQUOTE DETECTION
+                                .replace(/&gt;/g, '>')
                                 .replace(/&amp;/g, '&')
                                 .replace(/&#39;/g, "'")
                                 .replace(/&quot;/g, '"');
 
                             content = content.replace(/<body[^>]*>([\s\S]*)<\/body>/i, '$1');
                             content = content.replace(/<html[^>]*>([\s\S]*)<\/html>/i, '$1');
+
+                            // FIX: Replace closing block tags AND <br> tags with newlines
                             content = content.replace(/<\/(p|div|h[1-6]|section|article)>/g, '\n');
+                            content = content.replace(/<br\s*\/?>/gi, '\n');
+
+                            // Strip other HTML tags but keep <img> and <iframe>
                             content = content.replace(/<(?!\/?(iframe|img))[^>]*>/g, '');
 
                             let parsed = marked.parse(content) as string;
