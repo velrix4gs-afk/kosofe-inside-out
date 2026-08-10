@@ -54,13 +54,9 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     </div>
                 )}
 
-                {/* 
-          THE "KEEP THE OLD ONE" FIX:
-          We strip Gmail's hidden <body> wrapper so marked only sees the raw text.
-          After that, marked.parse() handles `1.` and `2.` perfectly.
-        */}
+                {/* Clean Parser with Border Overflow Fix */}
                 <div
-                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left"
+                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left whitespace-pre-wrap break-words overflow-hidden"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
@@ -68,11 +64,9 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&shy;|\u00AD/g, '')
                                 .replace(/&nbsp;/g, ' ');
 
-                            // STRIP OUT GMAIL'S FULL HTML WRAPPER
                             content = content.replace(/<body[^>]*>([\s\S]*)<\/body>/i, '$1');
                             content = content.replace(/<html[^>]*>([\s\S]*)<\/html>/i, '$1');
 
-                            // Let marked handle everything
                             let parsed = marked.parse(content) as string;
                             return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()

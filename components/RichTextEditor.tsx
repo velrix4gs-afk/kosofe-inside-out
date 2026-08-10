@@ -15,7 +15,25 @@ const toolbarOptions = [
 
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     return (
-        <div className="bg-white border rounded overflow-hidden w-full">
+        <div className="bg-white border rounded overflow-hidden w-full relative">
+            {/* Custom Styling to inject Inter font, fix border overflow, and make toolbar sticky */}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+        .ql-editor {
+          font-family: 'Inter', sans-serif !important;
+          white-space: pre-wrap !important;
+          word-break: break-word !important;
+          overflow-wrap: break-word !important;
+          font-size: 16px;
+        }
+        .ql-toolbar.ql-snow {
+          position: sticky !important;
+          top: 0 !important;
+          z-index: 10 !important;
+          background: #ffffff !important;
+          border-bottom: 1px solid #e5e7eb !important;
+        }
+      `}} />
             <QuillEditor
                 theme="snow"
                 value={value}
@@ -23,7 +41,7 @@ export default function RichTextEditor({ value, onChange }: { value: string; onC
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
-                        matchVisual: false,
+                        matchVisual: true, // This makes pasting from Gmail perfectly convert to editor formatting
                     },
                 }}
                 className="h-64 md:h-80 w-full"
