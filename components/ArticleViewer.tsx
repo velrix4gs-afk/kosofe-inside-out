@@ -54,18 +54,25 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     </div>
                 )}
 
-                {/* Clean Parser with Border Overflow Fix */}
                 <div
-                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left whitespace-pre-wrap break-words overflow-hidden"
+                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left whitespace-pre-wrap break-words"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
                     dangerouslySetInnerHTML={{
                         __html: (() => {
+                            // Entity decoder added back for proper Markdown handling
                             let content = (article.content || '')
                                 .replace(/&shy;|\u00AD/g, '')
-                                .replace(/&nbsp;/g, ' ');
+                                .replace(/&nbsp;/g, ' ')
+                                .replace(/&lt;/g, '<')
+                                .replace(/&gt;/g, '>') // <--- FIXES BLOCKQUOTE DETECTION
+                                .replace(/&amp;/g, '&')
+                                .replace(/&#39;/g, "'")
+                                .replace(/&quot;/g, '"');
 
                             content = content.replace(/<body[^>]*>([\s\S]*)<\/body>/i, '$1');
                             content = content.replace(/<html[^>]*>([\s\S]*)<\/html>/i, '$1');
+                            content = content.replace(/<\/(p|div|h[1-6]|section|article)>/g, '\n');
+                            content = content.replace(/<(?!\/?(iframe|img))[^>]*>/g, '');
 
                             let parsed = marked.parse(content) as string;
                             return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');

@@ -16,7 +16,7 @@ const toolbarOptions = [
 export default function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     return (
         <div className="bg-white border rounded overflow-hidden w-full relative">
-            {/* Custom Styling to inject Inter font, fix border overflow, and make toolbar sticky */}
+            {/* Custom Styling */}
             <style dangerouslySetInnerHTML={{
                 __html: `
         .ql-editor {
@@ -41,10 +41,10 @@ export default function RichTextEditor({ value, onChange }: { value: string; onC
                 modules={{
                     toolbar: toolbarOptions,
                     clipboard: {
-                        matchVisual: true, // This makes pasting from Gmail perfectly convert to editor formatting
+                        matchVisual: true,
                     },
                 }}
-                className="h-64 md:h-80 w-full"
+                className="min-h-[250px] md:min-h-[350px] h-auto w-full"
             />
         </div>
     );
