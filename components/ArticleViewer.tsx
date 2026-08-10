@@ -54,11 +54,6 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                     </div>
                 )}
 
-                {/* 
-          THE FINAL FIX:
-          Explicitly converted `<br>` tags into newline characters (`\n`)
-          This guarantees lists always start on their own line so `marked` catches them.
-        */}
                 <div
                     className="prose prose-lg max-w-none text-gray-700 leading-relaxed w-full text-left whitespace-pre-wrap break-words"
                     style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }}
@@ -73,17 +68,18 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
                                 .replace(/&#39;/g, "'")
                                 .replace(/&quot;/g, '"');
 
+                            // Strip Gmail's outer HTML/BODY wrappers if present
                             content = content.replace(/<body[^>]*>([\s\S]*)<\/body>/i, '$1');
                             content = content.replace(/<html[^>]*>([\s\S]*)<\/html>/i, '$1');
 
-                            // FIX: Replace closing block tags AND <br> tags with newlines
-                            content = content.replace(/<\/(p|div|h[1-6]|section|article)>/g, '\n');
-                            content = content.replace(/<br\s*\/?>/gi, '\n');
+                            // If the remaining content starts with an HTML tag, it's a new story (Quill or Gmail)
+                            // Render it RAW – let the browser handle the lists and formatting.
+                            if (content.trim().startsWith('<')) {
+                                return content.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
+                            }
 
-                            // Strip other HTML tags but keep <img> and <iframe>
-                            content = content.replace(/<(?!\/?(iframe|img))[^>]*>/g, '');
-
-                            let parsed = marked.parse(content) as string;
+                            // Otherwise, it's plain Markdown (old 808 stories) – parse it with marked.
+                            const parsed = marked.parse(content) as string;
                             return parsed.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
                         })()
                     }}
