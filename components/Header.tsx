@@ -14,7 +14,8 @@ export default function Header() {
         "Education", "Health", "Lifestyle", "Opinion",
         "Public Notices", "Jobs", "Events", "Marketplace",
         "Technology", "Environment", "Agriculture", "Obituaries",
-        "Photo Gallery", "Videos", "Podcasts", "Contact"
+        "Photo Gallery", "Videos", "Podcasts", "Contact",
+        "Archives" // <--- ADDED THIS LINE
     ];
 
     return (
