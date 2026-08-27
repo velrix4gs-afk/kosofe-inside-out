@@ -137,11 +137,11 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Top Story (Hero Block) */}
+          {/* Top Story */}
           <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
             <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
               <img
-                src={articles[0].image_url || '/img/kio-og-image.jpg'}
+                src={articles[0].image_url}
                 alt={articles[0].title}
                 className="w-full h-full object-cover"
               />
