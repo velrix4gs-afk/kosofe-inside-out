@@ -137,33 +137,23 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Top Story */}
-        <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
-          <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
-            
-            {/* RELIABLE IMAGE TAG */}
-            {articles[0]?.image_url ? (
-              <img 
-                src={articles[0].image_url} 
-                alt={articles[0].title} 
-                className="w-full h-full object-cover bg-gray-300"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/img/kio-og-image.jpg'; // Fallback to brand image if broken
-                }}
+          {/* Top Story (Hero Block) */}
+          <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
+            <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
+              <img
+                src={articles[0].image_url || '/img/kio-og-image.jpg'}
+                alt={articles[0].title}
+                className="w-full h-full object-cover"
               />
-            ) : (
-              <img src="/img/kio-og-image.jpg" alt="Kosofe Inside Out" className="w-full h-full object-cover" />
-            )}
-
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-6 w-full">
-              <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-              <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
-              <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
-              <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-6 w-full">
+                <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
+                <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
+                <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
+                <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
 
           {/* Sidebar Stories + SIDE AD SPACE (Takes up 1 column) */}
           <div className="flex flex-col gap-4">
