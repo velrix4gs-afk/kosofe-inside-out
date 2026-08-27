@@ -1,9 +1,9 @@
 "use client";
-
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { deleteArticle } from './actions';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -75,14 +75,6 @@ export default function AdminDashboard() {
                     <span className="text-4xl mb-2">📂</span>
                     <span className="font-bold text-lg">Manage Directory</span>
                 </Link>
-                <Link href="/admin/dashboard/breaking" className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">📢</span>
-                    <span className="font-bold text-lg">Breaking News</span>
-                </Link>
-                <Link href="/" className="bg-green-600 hover:bg-green-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">👁️</span>
-                    <span className="font-bold text-lg">View Live Site</span>
-                </Link>
             </div>
 
             <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
@@ -106,7 +98,10 @@ export default function AdminDashboard() {
                                     <td className="p-2 text-gray-500 hidden sm:table-cell">{new Date(article.created_at).toLocaleDateString()}</td>
                                     <td className="p-2 flex gap-2">
                                         <Link href={`/admin/dashboard/edit/${article.id}`} className="text-blue-600 hover:underline text-xs font-bold">Edit</Link>
-                                        <button className="text-red-600 hover:underline text-xs font-bold">Delete</button>
+                                        {/* THE WORKING DELETE BUTTON */}
+                                        <form action={deleteArticle.bind(null, article.id)}>
+                                            <button type="submit" className="text-red-600 hover:underline text-xs font-bold">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             ))}

@@ -1,4 +1,5 @@
 // app/page.tsx
+export const dynamic = 'force-dynamic';
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -58,7 +59,7 @@ export default async function Home() {
     .from('articles')
     .select('*')
     .eq('published', true)
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false }) // Strictly newest first
     .limit(10);
 
   const { data: breakingNews } = await supabase
