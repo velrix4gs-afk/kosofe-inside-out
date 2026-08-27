@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { deleteArticle } from './actions';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -38,6 +37,24 @@ export default function AdminDashboard() {
 
         checkUserAndFetch();
     }, [router]);
+
+    // *** THE NEW CLICK TO CONFIRM DELETE FUNCTION ***
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this story?')) return;
+
+        const { error } = await supabase
+            .from('articles')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            alert('Failed to delete: ' + error.message);
+        } else {
+            // Instantly remove from the local list so the UI updates immediately
+            setArticles(articles.filter(a => a.id !== id));
+            alert('Story deleted successfully!');
+        }
+    };
 
     if (loading) return <div className="min-h-screen flex justify-center items-center font-bold text-gray-500">Loading Command Center...</div>;
 
@@ -98,10 +115,13 @@ export default function AdminDashboard() {
                                     <td className="p-2 text-gray-500 hidden sm:table-cell">{new Date(article.created_at).toLocaleDateString()}</td>
                                     <td className="p-2 flex gap-2">
                                         <Link href={`/admin/dashboard/edit/${article.id}`} className="text-blue-600 hover:underline text-xs font-bold">Edit</Link>
-                                        {/* THE WORKING DELETE BUTTON */}
-                                        <form action={deleteArticle.bind(null, article.id)}>
-                                            <button type="submit" className="text-red-600 hover:underline text-xs font-bold">Delete</button>
-                                        </form>
+                                        {/* THE NEW CLICK TO CONFIRM DELETE BUTTON */}
+                                        <button
+                                            onClick={() => handleDelete(article.id)}
+                                            className="text-red-600 hover:underline text-xs font-bold"
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
