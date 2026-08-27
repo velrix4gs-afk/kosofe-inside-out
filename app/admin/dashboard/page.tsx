@@ -9,6 +9,8 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [articles, setArticles] = useState<any[]>([]);
     const [stats, setStats] = useState({ total: 0, published: 0, draft: 0, directory: 0 });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     useEffect(() => {
         const checkUserAndFetch = async () => {
@@ -38,22 +40,31 @@ export default function AdminDashboard() {
         checkUserAndFetch();
     }, [router]);
 
-    // *** THE NEW CLICK TO CONFIRM DELETE FUNCTION ***
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this story?')) return;
+    const openDeleteModal = (id: string) => {
+        setDeleteId(id);
+        setShowDeleteModal(true);
+    };
+
+    const closeDeleteModal = () => {
+        setShowDeleteModal(false);
+        setDeleteId(null);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
 
         const { error } = await supabase
             .from('articles')
             .delete()
-            .eq('id', id);
+            .eq('id', deleteId);
 
         if (error) {
             alert('Failed to delete: ' + error.message);
         } else {
-            // Instantly remove from the local list so the UI updates immediately
-            setArticles(articles.filter(a => a.id !== id));
+            setArticles(articles.filter(a => a.id !== deleteId));
             alert('Story deleted successfully!');
         }
+        closeDeleteModal();
     };
 
     if (loading) return <div className="min-h-screen flex justify-center items-center font-bold text-gray-500">Loading Command Center...</div>;
@@ -115,13 +126,7 @@ export default function AdminDashboard() {
                                     <td className="p-2 text-gray-500 hidden sm:table-cell">{new Date(article.created_at).toLocaleDateString()}</td>
                                     <td className="p-2 flex gap-2">
                                         <Link href={`/admin/dashboard/edit/${article.id}`} className="text-blue-600 hover:underline text-xs font-bold">Edit</Link>
-                                        {/* THE NEW CLICK TO CONFIRM DELETE BUTTON */}
-                                        <button
-                                            onClick={() => handleDelete(article.id)}
-                                            className="text-red-600 hover:underline text-xs font-bold"
-                                        >
-                                            Delete
-                                        </button>
+                                        <button onClick={() => openDeleteModal(article.id)} className="text-red-600 hover:underline text-xs font-bold">Delete</button>
                                     </td>
                                 </tr>
                             ))}
@@ -129,6 +134,20 @@ export default function AdminDashboard() {
                     </table>
                 </div>
             </div>
+
+            {/* Custom Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded shadow-lg p-6 max-w-sm w-full">
+                        <h2 className="text-lg font-bold text-gray-800 mb-2">Delete Story?</h2>
+                        <p className="text-sm text-gray-600 mb-4">This action cannot be undone. Are you sure you want to delete this story?</p>
+                        <div className="flex gap-2 justify-end">
+                            <button onClick={closeDeleteModal} className="bg-gray-200 text-gray-700 px-4 py-2 rounded font-bold hover:bg-gray-300">Cancel</button>
+                            <button onClick={confirmDelete} className="bg-red-600 text-white px-4 py-2 rounded font-bold hover:bg-red-700">Yes, Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

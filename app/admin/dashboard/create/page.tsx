@@ -35,6 +35,12 @@ export default function CreateStory() {
         }
     };
 
+    // Function to extract the first image URL from the HTML content
+    const extractFirstImageUrl = (html: string) => {
+        const match = html.match(/<img[^>]+src=["']([^"']+)["']/);
+        return match ? match[1] : '';
+    };
+
     const handleUploadAndSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (selectedTags.length < 2) {
@@ -56,6 +62,11 @@ export default function CreateStory() {
                 if (i === 0) mainImageUrl = url;
                 galleryUrls.push(url);
             }
+        }
+
+        // If no dedicated image uploaded, grab the first image from the text content
+        if (!mainImageUrl) {
+            mainImageUrl = extractFirstImageUrl(form.content);
         }
 
         const { data: articleData, error: articleError } = await supabase
@@ -137,6 +148,7 @@ export default function CreateStory() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Short Excerpt (Summary)</label>
                         <textarea rows={2} className="w-full border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]" value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} />
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
                         <RichTextEditor
@@ -145,6 +157,7 @@ export default function CreateStory() {
                         />
                         <div className="h-12"></div>
                     </div>
+
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2">
                         <label className="flex items-center gap-2 text-sm cursor-pointer">
                             <input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} />
