@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import ArticleViewer from "@/components/ArticleViewer";
+import AdSlot from "@/components/AdSlot";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -69,6 +70,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     const readTime = Math.ceil(wordCount / 200);
 
     return (
-        <ArticleViewer article={article} galleryImages={galleryImages} readTime={readTime} />
+        <div>
+            <ArticleViewer article={article} galleryImages={galleryImages} readTime={readTime} />
+
+            {/* --- CUSTOM IN-ARTICLE AD --- */}
+            <div className="max-w-3xl mx-auto px-4 mt-8 mb-8">
+                <AdSlot placement="in_article" />
+            </div>
+        </div>
     );
 }

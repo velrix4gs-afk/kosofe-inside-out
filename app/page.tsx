@@ -5,8 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
-import AdSense from "@/components/AdSense";
-
+import AdSlot from "@/components/AdSlot"; // Replace AdSense with AdSlot
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
@@ -59,7 +58,7 @@ export default async function Home() {
     .from('articles')
     .select('*')
     .eq('published', true)
-    .order('created_at', { ascending: false }) // Strictly newest first
+    .order('created_at', { ascending: false })
     .limit(10);
 
   const { data: breakingNews } = await supabase
@@ -83,31 +82,10 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- SPLIT MAIN BANNER (1 Big, 1 Small) --- */}
+      {/* --- CUSTOM AD BANNER (Top of page) --- */}
       <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Main Big Banner (Takes up 2 columns on desktop) */}
-          <Link href="/advertise" className="md:col-span-2 cursor-pointer hover:opacity-95 transition-opacity">
-            <div className="w-full relative rounded overflow-hidden h-[60px] md:h-[100px]">
-              <Image
-                src="/img/kio-banner-main.jpg"
-                alt="Advertise with Kosofe Inside Out"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </Link>
-          {/* Small Banner (Takes up 1 column) */}
-          <Link href="/advertise" className="cursor-pointer hover:opacity-95 transition-opacity">
-            <div className="w-full relative rounded overflow-hidden h-[60px] md:h-[100px]">
-              <Image
-                src="/img/kio-banner-side.jpg"
-                alt="Advertise with Kosofe Inside Out"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </Link>
+        <div className="max-w-7xl mx-auto">
+          <AdSlot placement="top_banner" />
         </div>
       </div>
 
@@ -170,9 +148,9 @@ export default async function Home() {
               </div>
             ))}
 
-            {/* --- NEW SIDE AD SPACE --- */}
+            {/* --- CUSTOM SIDEBAR AD --- */}
             <div className="flex justify-center items-center w-full">
-              <AdSense />
+              <AdSlot placement="sidebar" />
             </div>
 
             {/* Remaining Side Stories */}
