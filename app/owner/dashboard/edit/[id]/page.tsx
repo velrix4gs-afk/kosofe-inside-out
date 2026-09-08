@@ -9,7 +9,10 @@ export default function EditBusiness({ params }: { params: Promise<{ id: string 
     const [id, setId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+
+    // Added 'id' to the state type
     const [form, setForm] = useState({
+        id: '', // <--- Added this
         business_name: '', category: '', phone: '', address: '', website: '', whatsapp: '', description: '', opening_hours: ''
     });
 
@@ -25,7 +28,18 @@ export default function EditBusiness({ params }: { params: Promise<{ id: string 
                 router.push('/owner/dashboard');
                 return;
             }
-            setForm(data);
+            // Populate form with the 'id' as well
+            setForm({
+                id: data.id,
+                business_name: data.business_name || '',
+                category: data.category || '',
+                phone: data.phone || '',
+                address: data.address || '',
+                website: data.website || '',
+                whatsapp: data.whatsapp || '',
+                description: data.description || '',
+                opening_hours: data.opening_hours || ''
+            });
             setLoading(false);
         };
         fetchData();
@@ -58,4 +72,4 @@ export default function EditBusiness({ params }: { params: Promise<{ id: string 
             </div>
         </div>
     );
-}/
+}
