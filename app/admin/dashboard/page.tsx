@@ -67,6 +67,17 @@ export default function AdminDashboard() {
         closeDeleteModal();
     };
 
+    const handleSendNewsletter = async () => {
+        if (!confirm('Send newsletter to all subscribers?')) return;
+        const res = await fetch('/api/cron-newsletter', { method: 'GET' });
+        const data = await res.json();
+        if (data.message === 'No subscribers found') {
+            alert('No subscribers yet! Share your site so people can sign up.');
+        } else {
+            alert(data.message || 'Email sent successfully!');
+        }
+    };
+
     if (loading) return <div className="min-h-screen flex justify-center items-center font-bold text-gray-500">Loading Command Center...</div>;
 
     return (
@@ -75,6 +86,7 @@ export default function AdminDashboard() {
                 <h1 className="text-2xl font-bold text-gray-800">Admin Command Center</h1>
             </div>
 
+            {/* Stats */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-4 rounded shadow-sm border border-gray-200 text-center">
                     <p className="text-2xl font-bold text-[#c41e3a]">{stats.total}</p>
@@ -94,6 +106,7 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
+            {/* THE FIXED BUTTON GRID (No more overlap!) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link href="/admin/dashboard/create" className="bg-[#c41e3a] hover:bg-[#a0152e] text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">✍️</span>
@@ -106,40 +119,21 @@ export default function AdminDashboard() {
                 <Link href="/admin/dashboard/ads" className="bg-green-600 hover:bg-green-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">📢</span>
                     <span className="font-bold text-lg">Manage Ads</span>
-                    <button
-                        onClick={async () => {
-                            if (!confirm('Test send newsletter to all subscribers?')) return;
-                            const res = await fetch('/api/cron-newsletter', { method: 'GET' });
-                            const data = await res.json();
-                            alert(data.message || 'Email sent!');
-                        }}
-                        className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition"
-                    >
-                        <span className="text-4xl mb-2">📧</span>
-                        <span className="font-bold text-lg">Send Newsletter</span>
-                    </button>
                 </Link>
-                <button
-                    onClick={async () => {
-                        if (!confirm('Send newsletter to all subscribers?')) return;
-                        const res = await fetch('/api/send-newsletter', { method: 'POST' });
-                        const data = await res.json();
-                        alert(data.message || 'Email sent!');
-                    }}
-                    className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition"
-                >
+                <button onClick={handleSendNewsletter} className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">📧</span>
                     <span className="font-bold text-lg">Send Newsletter</span>
                 </button>
             </div>
 
+            {/* Recent Stories (Scrollable box added) */}
             <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
                 <div className="flex justify-between items-center border-b pb-2 mb-4">
                     <h3 className="font-bold text-gray-800">Recent Stories</h3>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto max-h-64 overflow-y-auto">
                     <table className="w-full text-sm text-left">
-                        <thead className="bg-gray-100 text-gray-700 font-bold">
+                        <thead className="bg-gray-100 text-gray-700 font-bold sticky top-0">
                             <tr><th className="p-2">Title</th><th className="p-2 hidden sm:table-cell">Status</th><th className="p-2 hidden sm:table-cell">Date</th><th className="p-2">Actions</th></tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
