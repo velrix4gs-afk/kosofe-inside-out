@@ -53,7 +53,7 @@ export async function GET() {
             // FROM ADDRESS FIX: Use Resend's onboarding address if your domain email is getting blocked
             from: 'Kosofe Inside Out <onboarding@resend.dev>',
             // REPLY-TO FIX: So when subscribers hit "Reply", it goes to your inbox
-            reply_to: 'ilekanlawal@gmail.com',
+            replyTo: 'ilekanlawal@gmail.com',
             to: emails,
             subject: `🌅 ${storyTitle}`,
             html: emailHtml,
