@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-const PUBLISHER_ID = "ca-pub-6800852746478554";
-const AD_SLOT_ID = "7655535836";
+const PUBLISHER_ID = "ca-pub-7658550545400"; // New ID
+const AD_SLOT_ID = "7655535836"; // You will get a new Ad Slot ID once you create an ad unit in this new account
 
 export default function AdSense() {
     const adRef = useRef<HTMLDivElement>(null);

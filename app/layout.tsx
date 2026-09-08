@@ -42,10 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`bg-[#f5f5f5] font-sans`}>
         {/* Deferred AdSense Load - Doesn't block page render */}
+        {/* AdSense Verification & Loading */}
         <Script
           strategy="afterInteractive"
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6800852746478554"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7658550545400"
           crossOrigin="anonymous"
         />
         <Header />
