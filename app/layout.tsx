@@ -3,13 +3,12 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
   description: "News that shape our community",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  icons: { icon: "/favicon.ico" },
   openGraph: {
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
@@ -29,24 +28,26 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
-    images: ["https://kosofeinsideout.com/img/kio-og-image.png"],
+    images: ["https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png"],
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        {/* Using standard link tags for Inter, bypassing the build-time fetch error */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
       </head>
       <body className={`bg-[#f5f5f5] font-sans`}>
+        {/* Deferred AdSense Load - Doesn't block page render */}
+        <Script
+          strategy="afterInteractive"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6800852746478554"
+          crossOrigin="anonymous"
+        />
         <Header />
         {children}
         <Footer />

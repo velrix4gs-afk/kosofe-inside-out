@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
-import AdSlot from "@/components/AdSlot"; // Custom Ads Manager
+import AdSlot from "@/components/AdSlot";
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
@@ -85,11 +85,9 @@ export default async function Home() {
       {/* --- CUSTOM AD BANNERS (2 Slots) --- */}
       <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Slot 1: The Big Main Banner */}
           <div className="md:col-span-2">
             <AdSlot placement="top_banner_hero" />
           </div>
-          {/* Slot 2: The Small Side Banner */}
           <div className="md:col-span-1">
             <AdSlot placement="top_banner_side" />
           </div>
@@ -123,14 +121,25 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Top Story */}
+          {/* Top Story (Optimized Image with priority) */}
           <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
             <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
-              <img
-                src={articles[0].image_url}
-                alt={articles[0].title}
-                className="w-full h-full object-cover"
-              />
+              {articles[0]?.image_url ? (
+                <Image
+                  src={articles[0].image_url}
+                  alt={articles[0].title}
+                  fill
+                  priority
+                  className="w-full h-full object-cover"
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                />
+              ) : (
+                <img
+                  src="/img/kio-og-image.jpg"
+                  alt="Kosofe Inside Out"
+                  className="w-full h-full object-cover"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
               <div className="absolute bottom-0 left-0 p-6 w-full">
                 <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
@@ -145,7 +154,17 @@ export default async function Home() {
           <div className="flex flex-col gap-4">
             {articles.slice(1, 3).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
-                <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
+                <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
+                  {story.image_url && (
+                    <Image
+                      src={story.image_url}
+                      alt={story.title}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
+                  )}
+                </div>
                 <div>
                   <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
                   <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
@@ -161,7 +180,17 @@ export default async function Home() {
 
             {articles.slice(3, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
-                <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
+                <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
+                  {story.image_url && (
+                    <Image
+                      src={story.image_url}
+                      alt={story.title}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
+                  )}
+                </div>
                 <div>
                   <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
                   <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
