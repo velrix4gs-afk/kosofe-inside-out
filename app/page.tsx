@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
 import AdSlot from "@/components/AdSlot";
+import AdSense from "@/components/AdSense";
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
@@ -200,6 +201,10 @@ export default async function Home() {
             ))}
           </div>
         </div>
+      </div>
+      {/* --- GOOGLE ADSENSE (Middle of stories) --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-8">
+        <AdSense />
       </div>
 
       {/* --- WEATHER & STAY INFORMED --- */}

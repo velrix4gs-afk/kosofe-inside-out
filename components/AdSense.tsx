@@ -1,35 +1,33 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const PUBLISHER_ID = "ca-pub-1724869420464430"; // New ID
-const AD_SLOT_ID = "7655535836"; // You will get a new Ad Slot ID once you create an ad unit in this new account
+// YOUR NEW IDS:
+const PUBLISHER_ID = "ca-pub-1724869420464430";
+const AD_SLOT_ID = "8074139518";
 
 export default function AdSense() {
     const adRef = useRef<HTMLDivElement>(null);
-    const [shouldRender, setShouldRender] = useState(true);
 
     useEffect(() => {
         try {
+            // Wait a tiny bit for the layout to settle, then push the ad
             const timer = setTimeout(() => {
                 if (adRef.current && adRef.current.offsetWidth > 0) {
                     (window as any).adsbygoogle = (window as any).adsbygoogle || [];
                     (window as any).adsbygoogle.push({});
                 } else {
-                    // If width is 0, we hide the container completely so it doesn't leave a white hole
-                    setShouldRender(false);
+                    console.log("AdSense skipped: container width is 0 (likely due to adblocker or staging env)");
                 }
             }, 100);
+
             return () => clearTimeout(timer);
         } catch (err) {
             console.error("AdSense error:", err);
-            setShouldRender(false);
         }
     }, []);
 
-    if (!shouldRender) return null;
-
     return (
-        <div ref={adRef} className="w-full bg-white flex justify-center items-center py-4 border-b min-h-[100px]">
+        <div ref={adRef} className="w-full bg-white flex justify-center items-center py-4 border-b">
             <ins
                 className="adsbygoogle"
                 style={{ display: "block" }}
