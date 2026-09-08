@@ -39,6 +39,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+        {/* AdSense Verification Meta Tag */}
+        <meta name="google-adsense-account" content="ca-pub-1724869420464430" />
       </head>
       <body className={`bg-[#f5f5f5] font-sans`}>
         {/* Deferred AdSense Load - Doesn't block page render */}
