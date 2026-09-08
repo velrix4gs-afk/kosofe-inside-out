@@ -107,6 +107,18 @@ export default function AdminDashboard() {
                     <span className="text-4xl mb-2">📢</span>
                     <span className="font-bold text-lg">Manage Ads</span>
                 </Link>
+                <button
+                    onClick={async () => {
+                        if (!confirm('Send newsletter to all subscribers?')) return;
+                        const res = await fetch('/api/send-newsletter', { method: 'POST' });
+                        const data = await res.json();
+                        alert(data.message || 'Email sent!');
+                    }}
+                    className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition"
+                >
+                    <span className="text-4xl mb-2">📧</span>
+                    <span className="font-bold text-lg">Send Newsletter</span>
+                </button>
             </div>
 
             <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
