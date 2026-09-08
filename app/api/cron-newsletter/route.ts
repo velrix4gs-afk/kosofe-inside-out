@@ -3,14 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Create a Supabase Admin client that bypasses RLS
+// Admin client (bypasses RLS)
 const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
 export async function GET() {
-    // Fetch all subscribers using the Admin key (this WORKS)
+    // Fetch all subscribers
     const { data: subscribers, error } = await supabaseAdmin
         .from('subscribers')
         .select('email');
@@ -25,7 +25,7 @@ export async function GET() {
 
     const emails = subscribers.map(s => s.email);
 
-    // 2. Fetch the latest story
+    // Fetch latest story
     const { data: latestStory } = await supabaseAdmin
         .from('articles')
         .select('title, excerpt, image_url')
@@ -50,7 +50,10 @@ export async function GET() {
 
     try {
         const { data, error: sendError } = await resend.emails.send({
-            from: 'Kosofe Inside Out <news@kosofeinsideout.com>',
+            // FROM ADDRESS FIX: Use Resend's onboarding address if your domain email is getting blocked
+            from: 'Kosofe Inside Out <onboarding@resend.dev>',
+            // REPLY-TO FIX: So when subscribers hit "Reply", it goes to your inbox
+            reply_to: 'ilekanlawal@gmail.com',
             to: emails,
             subject: `🌅 ${storyTitle}`,
             html: emailHtml,
