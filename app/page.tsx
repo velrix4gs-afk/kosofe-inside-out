@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
-import AdSlot from "@/components/AdSlot"; // Replace AdSense with AdSlot
+import AdSlot from "@/components/AdSlot"; // Custom Ads Manager
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
@@ -82,10 +82,17 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- CUSTOM AD BANNER (Top of page) --- */}
+      {/* --- CUSTOM AD BANNERS (2 Slots) --- */}
       <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
-        <div className="max-w-7xl mx-auto">
-          <AdSlot placement="top_banner" />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Slot 1: The Big Main Banner */}
+          <div className="md:col-span-2">
+            <AdSlot placement="top_banner_hero" />
+          </div>
+          {/* Slot 2: The Small Side Banner */}
+          <div className="md:col-span-1">
+            <AdSlot placement="top_banner_side" />
+          </div>
         </div>
       </div>
 
@@ -134,9 +141,8 @@ export default async function Home() {
             </div>
           </Link>
 
-          {/* Sidebar Stories + SIDE AD SPACE (Takes up 1 column) */}
+          {/* Sidebar Stories + SIDE AD SPACE */}
           <div className="flex flex-col gap-4">
-            {/* Side Stories */}
             {articles.slice(1, 3).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />
@@ -148,12 +154,11 @@ export default async function Home() {
               </div>
             ))}
 
-            {/* --- CUSTOM SIDEBAR AD --- */}
+            {/* --- NEW SIDE AD SLOT --- */}
             <div className="flex justify-center items-center w-full">
               <AdSlot placement="sidebar" />
             </div>
 
-            {/* Remaining Side Stories */}
             {articles.slice(3, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <img src={story.image_url || ''} className="w-24 h-24 object-cover rounded bg-gray-200" alt={story.title} />

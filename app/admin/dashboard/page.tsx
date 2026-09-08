@@ -103,6 +103,10 @@ export default function AdminDashboard() {
                     <span className="text-4xl mb-2">📂</span>
                     <span className="font-bold text-lg">Manage Directory</span>
                 </Link>
+                <Link href="/admin/dashboard/ads" className="bg-green-600 hover:bg-green-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
+                    <span className="text-4xl mb-2">📢</span>
+                    <span className="font-bold text-lg">Manage Ads</span>
+                </Link>
             </div>
 
             <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
