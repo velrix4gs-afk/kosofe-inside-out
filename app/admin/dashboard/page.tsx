@@ -124,6 +124,10 @@ export default function AdminDashboard() {
                     <span className="text-4xl mb-2">📧</span>
                     <span className="font-bold text-lg">Send Newsletter</span>
                 </button>
+                <Link href="/admin/dashboard/content" className="bg-yellow-500 hover:bg-yellow-600 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
+                    <span className="text-4xl mb-2">🗂️</span>
+                    <span className="font-bold text-lg">Manage Content</span>
+                </Link>
             </div>
 
             {/* Recent Stories (Scrollable box added) */}
