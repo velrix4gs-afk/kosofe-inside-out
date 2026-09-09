@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AdManager() {
     const router = useRouter();
@@ -74,7 +75,12 @@ export default function AdManager() {
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-sm">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">Manage Advertisements</h1>
+                <div className="flex items-center gap-4 mb-6 border-b pb-4">
+                    <Link href="/admin/dashboard" className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded text-sm font-bold hover:bg-gray-200 transition">
+                        ← Back
+                    </Link>
+                    <h1 className="text-2xl font-bold text-gray-800">Manage Advertisements</h1>
+                </div>
 
                 <form onSubmit={handleUpload} className="space-y-4 mb-8">
                     <h3 className="font-bold text-lg">Create New Ad</h3>
