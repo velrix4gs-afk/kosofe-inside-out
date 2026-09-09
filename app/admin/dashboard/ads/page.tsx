@@ -104,6 +104,7 @@ export default function AdManager() {
                             <option value="top_banner_side">Top Banner (Small)</option>
                             <option value="sidebar">Sidebar</option>
                             <option value="in_article">In Article</option>
+                            <option value="in_feed_video">In-Feed Video (Between Stories)</option> {/* <--- ADDED THIS */}
                         </select>
                     </div>
                     <button type="submit" disabled={loading} className="bg-[#c41e3a] text-white px-6 py-2 rounded font-bold disabled:opacity-50">
@@ -142,4 +143,4 @@ export default function AdManager() {
             </div>
         </div>
     );
-}
+}   

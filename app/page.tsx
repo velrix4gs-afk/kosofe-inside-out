@@ -179,6 +179,10 @@ export default async function Home() {
             <div className="flex justify-center items-center w-full">
               <AdSlot placement="sidebar" />
             </div>
+            {/* --- VIDEO AD (Between Story Tiles) --- */}
+            <div className="flex justify-center items-center w-full">
+              <AdSlot placement="in_feed_video" />
+            </div>
 
             {articles.slice(3, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
