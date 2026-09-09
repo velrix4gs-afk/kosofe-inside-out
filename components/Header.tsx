@@ -10,12 +10,13 @@ export default function Header() {
     const pathname = usePathname();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
-    // Sorted alphabetically for easier reading
+    // Public links (Sorted alphabetically)
     const moreLinks = [
         "Agriculture",
         "Archives",
         "Contact",
         "Education",
+        "Emergency",
         "Environment",
         "Events",
         "Health",
@@ -74,11 +75,7 @@ export default function Header() {
 
                     <div className="flex items-center gap-4 md:gap-6 text-sm font-bold text-gray-700 whitespace-nowrap overflow-x-auto pb-1 pr-4 no-scrollbar">
                         <Link href="/" className="hover:text-[#c41e3a]">🏠 Home</Link>
-
-                        <Link href="/categories/news" className={`px-3 py-1 rounded transition-colors ${pathname === '/categories/news' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>
-                            News
-                        </Link>
-
+                        <Link href="/categories/news" className={`px-3 py-1 rounded transition-colors ${pathname === '/categories/news' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>News</Link>
                         <Link href="/categories/politics" className={`${pathname === '/categories/politics' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
                         <Link href="/categories/governance" className={`${pathname === '/categories/governance' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Governance</Link>
                         <Link href="/categories/community" className={`${pathname === '/categories/community' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Community</Link>
@@ -123,6 +120,7 @@ export default function Header() {
                             if (link === 'Podcasts') href = '/podcasts';
                             if (link === 'Obituaries') href = '/obituaries';
                             if (link === 'Archives') href = '/archives';
+                            if (link === 'Emergency') href = '/emergency';
                             if (link === 'Education' || link === 'Health' || link === 'Technology' || link === 'Environment' || link === 'Agriculture') {
                                 href = `/categories/${link.toLowerCase()}`;
                             }
@@ -132,7 +130,16 @@ export default function Header() {
                                 </Link>
                             );
                         })}
+
+                        {/* ADMIN TOOLS (Visible in drawer for logged-in staff) */}
                         <div className="border-t-2 border-[#c41e3a] mt-2">
+                            <div className="bg-gray-50 px-6 py-2 text-xs font-bold text-gray-500 uppercase">Admin Tools</div>
+                            <Link href="/admin/dashboard/content" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
+                                🗂️ Manage Content
+                            </Link>
+                            <Link href="/admin/dashboard/ads" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
+                                📢 Manage Ads
+                            </Link>
                             <Link href="/admin/login" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 bg-[#fdf2f2] text-[#c41e3a] font-bold hover:bg-[#c41e3a] hover:text-white transition-colors text-center border-b border-gray-100">
                                 🔐 Admin Login
                             </Link>

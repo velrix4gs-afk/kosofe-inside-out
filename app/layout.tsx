@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import SubscribePopup from "@/components/SubscribePopup";
+import ReportStoryButton from "@/components/ReportStoryButton";
 
 export const metadata: Metadata = {
   title: "Kosofe Inside Out",
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <Analytics />
         <SubscribePopup />
+        <ReportStoryButton />
       </body>
     </html>
   );
