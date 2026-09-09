@@ -42,7 +42,7 @@ export default function ContentManager() {
             imageUrl = urlData.publicUrl;
         }
 
-        const payload = { ...form, image_url: imageUrl, created_at: new Date().toISOString() };
+        const payload = { ...form, image_url: imageUrl, created_at: new Date().toISOString() } as Record<string, any>;
         // Remove empty fields
         Object.keys(payload).forEach(key => { if (payload[key] === '') delete payload[key]; });
 
