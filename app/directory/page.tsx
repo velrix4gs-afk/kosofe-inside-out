@@ -1,17 +1,15 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import Image from "next/image";
-import { FaInstagram, FaFacebook, FaTiktok, FaWhatsapp, FaGlobe } from "react-icons/fa";
 import DirectoryFilters from "@/components/DirectoryFilters";
 
 export default async function DirectoryPage({
     searchParams
 }: {
-    searchParams: Promise<{ q?: string; category?: string; location?: string; open_now?: string }>
+    searchParams: Promise<{ q?: string; category?: string; location?: string }>
 }) {
-    const { q, category, location, open_now } = await searchParams;
+    const { q, category, location } = await searchParams;
 
-    // 1. Build the dynamic Supabase query
     let query = supabase
         .from('directory_entries')
         .select('*')
@@ -20,10 +18,8 @@ export default async function DirectoryPage({
     // Apply filters if they exist in the URL
     if (q) query = query.ilike('business_name', `%${q}%`);
     if (category) query = query.eq('category', category);
-    if (location) query = query.eq('location', location);
-    if (open_now === 'true') query = query.eq('is_open_now', true);
+    if (location) query = query.eq('address', location);
 
-    // Final ordering
     query = query.order('is_premium', { ascending: false }).order('business_name', { ascending: true });
 
     const { data: businesses, error } = await query;
@@ -58,7 +54,6 @@ export default async function DirectoryPage({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {businesses.map((biz) => (
                         <Link key={biz.id} href={`/directory/${biz.id}`} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden relative flex flex-col hover:shadow-md transition">
-                            {/* Cover Photo & Logo - Exact same layout as before */}
                             <div className="relative h-32 bg-gray-200">
                                 {biz.cover_photo && (
                                     <Image src={biz.cover_photo} alt={biz.business_name} fill className="object-cover" unoptimized />
@@ -79,7 +74,7 @@ export default async function DirectoryPage({
                                 <div className="flex-1 pt-6">
                                     <h4 className="font-bold text-lg text-gray-800 leading-tight">{biz.business_name}</h4>
                                     {biz.category && <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{biz.category}</span>}
-                                    {biz.location && <span className="block text-[10px] text-gray-500">{biz.location}</span>}
+                                    {biz.address && <span className="block text-[10px] text-gray-500">{biz.address}</span>}
                                     {biz.verified_level > 0 && (
                                         <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded mt-1">
                                             ✓ Verified Level {biz.verified_level}
@@ -95,8 +90,7 @@ export default async function DirectoryPage({
 
                             <div className="px-4 pb-4 space-y-2">
                                 {biz.description && <p className="text-sm text-gray-600 line-clamp-2">{biz.description}</p>}
-                                {biz.opening_hours && <p className="text-xs text-gray-500 font-medium">🕐 {biz.opening_hours}</p>}
-                                {biz.address && <p className="text-xs text-gray-500">📍 {biz.address}</p>}
+                                {biz.phone && <p className="text-xs text-gray-500">📞 {biz.phone}</p>}
                             </div>
                         </Link>
                     ))}
