@@ -7,24 +7,36 @@ export default function SubscribePopup() {
     const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-    const [hasSeen, setHasSeen] = useState(false);
+    const [canShow, setCanShow] = useState(false);
 
     useEffect(() => {
-        // Check if user has already seen/subscribed in this browser
-        const seen = localStorage.getItem('kio_popup_seen');
-        if (seen) {
-            setHasSeen(true);
+        // 1. Check if user already subscribed (Never show again)
+        const subscribed = localStorage.getItem('kio_subscribed');
+        if (subscribed) return;
+
+        // 2. Check when they last saw the popup
+        const lastShown = localStorage.getItem('kio_popup_last_shown');
+        const now = Date.now();
+        const threeAndHalfDays = 3.5 * 24 * 60 * 60 * 1000; // milliseconds
+
+        // If it's been less than 3.5 days since they last saw it, don't show it
+        if (lastShown && now - parseInt(lastShown) < threeAndHalfDays) {
             return;
         }
 
+        // 3. Random check: Only 50% of users will see it on this visit
+        const randomChance = Math.random() < 0.5;
+        if (!randomChance) {
+            return;
+        }
+
+        // 4. If all good, let it show after 50% scroll
         const handleScroll = () => {
             const scrollPosition = window.scrollY + window.innerHeight;
             const pageHeight = document.documentElement.scrollHeight;
-
-            // Trigger when user reaches 50% of the page
             if (scrollPosition > pageHeight * 0.5) {
+                setCanShow(true);
                 setShowModal(true);
-                // Remove listener so it only triggers once
                 window.removeEventListener('scroll', handleScroll);
             }
         };
@@ -35,7 +47,7 @@ export default function SubscribePopup() {
 
     const handleClose = () => {
         setShowModal(false);
-        localStorage.setItem('kio_popup_seen', 'true');
+        localStorage.setItem('kio_popup_last_shown', Date.now().toString());
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -53,9 +65,14 @@ export default function SubscribePopup() {
         } else {
             setStatus('success');
         }
+
+        // If they successfully subscribe, store the flag so it never shows again
+        if (!error || error.code === '23505') {
+            localStorage.setItem('kio_subscribed', 'true');
+        }
     };
 
-    if (hasSeen) return null;
+    if (!canShow) return null;
 
     return (
         <>
