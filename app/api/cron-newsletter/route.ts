@@ -34,7 +34,7 @@ export async function GET() {
         .limit(5);
 
     // If no stories, use a generic headline
-    const stories = latestStories?.length > 0 ? latestStories : [];
+    const stories = (latestStories || []).slice(0, 5);
 
     // 3. Construct the story cards HTML
     const storyCardsHtml = stories.map(story => `
