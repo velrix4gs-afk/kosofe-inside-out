@@ -28,7 +28,7 @@ export async function GET() {
     // 2. Fetch the 5 most recent published stories
     const { data: latestStories } = await supabaseAdmin
         .from('articles')
-        .select('title, excerpt, image_url, category, created_at')
+        .select('id, title, excerpt, image_url, category, created_at') // ADDED 'id' HERE
         .eq('published', true)
         .order('created_at', { ascending: false })
         .limit(5);
