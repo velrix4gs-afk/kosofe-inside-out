@@ -50,9 +50,9 @@ export async function GET() {
 
     try {
         const { data, error: sendError } = await resend.emails.send({
-            // FROM ADDRESS FIX: Use Resend's onboarding address if your domain email is getting blocked
-            from: 'Kosofe Inside Out <onboarding@resend.dev>',
-            // REPLY-TO FIX: So when subscribers hit "Reply", it goes to your inbox
+            // ✅ FINAL FIX: Use a real email from the verified domain
+            from: 'Kosofe Inside Out <news@kosofeinsideout.com>',
+            // Subscribers can reply directly to your Gmail
             replyTo: 'ilekanlawal@gmail.com',
             to: emails,
             subject: `🌅 ${storyTitle}`,
