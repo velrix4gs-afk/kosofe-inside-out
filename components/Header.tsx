@@ -10,7 +10,6 @@ export default function Header() {
     const pathname = usePathname();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
-    // Public links (Sorted alphabetically)
     const moreLinks = [
         "Agriculture",
         "Archives",
@@ -131,15 +130,8 @@ export default function Header() {
                             );
                         })}
 
-                        {/* ADMIN TOOLS (Visible in drawer for logged-in staff) */}
+                        {/* ONLY THE ADMIN LOGIN BUTTON REMAINS */}
                         <div className="border-t-2 border-[#c41e3a] mt-2">
-                            <div className="bg-gray-50 px-6 py-2 text-xs font-bold text-gray-500 uppercase">Admin Tools</div>
-                            <Link href="/admin/dashboard/content" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
-                                🗂️ Manage Content
-                            </Link>
-                            <Link href="/admin/dashboard/ads" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 hover:text-[#c41e3a] transition-colors">
-                                📢 Manage Ads
-                            </Link>
                             <Link href="/admin/login" onClick={() => setDrawerOpen(false)} className="block px-6 py-4 bg-[#fdf2f2] text-[#c41e3a] font-bold hover:bg-[#c41e3a] hover:text-white transition-colors text-center border-b border-gray-100">
                                 🔐 Admin Login
                             </Link>
