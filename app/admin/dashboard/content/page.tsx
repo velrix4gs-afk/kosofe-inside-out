@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 const CONTENT_TYPES = [
     { id: 'gallery_photos', label: 'Photo Gallery', fields: ['title', 'image_url'], file: true },
@@ -70,7 +71,12 @@ export default function ContentManager() {
     return (
         <div className="min-h-screen bg-[#f5f5f5] p-4 md:p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-sm">
-                <h1 className="text-2xl font-bold text-gray-800 mb-4">Manage Content</h1>
+                <div className="flex items-center gap-4 mb-4 border-b pb-4">
+                    <Link href="/admin/dashboard" className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded text-sm font-bold hover:bg-gray-200 transition">
+                        ← Back
+                    </Link>
+                    <h1 className="text-2xl font-bold text-gray-800">Manage Content</h1>
+                </div>
 
                 {/* Select Content Type */}
                 <div className="mb-6 flex flex-wrap gap-2">
