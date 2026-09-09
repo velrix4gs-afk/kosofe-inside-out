@@ -10,19 +10,20 @@ export default function DirectoryFilters() {
     const [category, setCategory] = useState(searchParams.get("category") || "");
     const [location, setLocation] = useState(searchParams.get("location") || "");
 
-    const applyFilters = () => {
+    // Update the URL instantly without refreshing the page
+    const updateFilters = (newQ: string, newCategory: string, newLocation: string) => {
         const params = new URLSearchParams();
-        if (q) params.set("q", q);
-        if (category) params.set("category", category);
-        if (location) params.set("location", location);
-        router.push(`/directory?${params.toString()}`);
+        if (newQ) params.set("q", newQ);
+        if (newCategory) params.set("category", newCategory);
+        if (newLocation) params.set("location", newLocation);
+        router.push(`/directory?${params.toString()}`, { scroll: false });
     };
 
     const resetFilters = () => {
         setQ("");
         setCategory("");
         setLocation("");
-        router.push("/directory");
+        router.push("/directory", { scroll: false });
     };
 
     const categories = [
@@ -37,22 +38,27 @@ export default function DirectoryFilters() {
     ];
 
     return (
-        <div className="bg-white p-4 rounded shadow-sm border border-gray-200 mb-6 space-y-3">
+        <div className="bg-white p-4 rounded shadow-sm border border-gray-200 mb-6">
             <div className="flex flex-col md:flex-row gap-3">
-                {/* Search Input */}
+                {/* Search Box - Now searches everything */}
                 <input
                     type="text"
-                    placeholder="Search business name..."
+                    placeholder="Search business, category, or location..."
                     value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") applyFilters(); }}
+                    onChange={(e) => {
+                        setQ(e.target.value);
+                        updateFilters(e.target.value, category, location);
+                    }}
                     className="flex-1 border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]"
                 />
 
-                {/* Category Dropdown */}
+                {/* Category Dropdown - Instant Update */}
                 <select
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    onChange={(e) => {
+                        setCategory(e.target.value);
+                        updateFilters(q, e.target.value, location);
+                    }}
                     className="border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]"
                 >
                     <option value="">All Categories</option>
@@ -61,10 +67,13 @@ export default function DirectoryFilters() {
                     ))}
                 </select>
 
-                {/* Location Dropdown */}
+                {/* Location Dropdown - Instant Update */}
                 <select
                     value={location}
-                    onChange={(e) => setLocation(e.target.value)}
+                    onChange={(e) => {
+                        setLocation(e.target.value);
+                        updateFilters(q, category, e.target.value);
+                    }}
                     className="border p-2 rounded focus:ring-1 focus:ring-[#c41e3a]"
                 >
                     <option value="">All Locations</option>
@@ -74,13 +83,7 @@ export default function DirectoryFilters() {
                 </select>
             </div>
 
-            <div className="flex gap-2">
-                <button
-                    onClick={applyFilters}
-                    className="bg-[#c41e3a] text-white px-4 py-2 rounded text-sm font-bold hover:bg-[#a0152e]"
-                >
-                    Apply Filters
-                </button>
+            <div className="flex gap-2 mt-3">
                 <button
                     onClick={resetFilters}
                     className="bg-gray-100 text-gray-600 px-4 py-2 rounded text-sm font-bold hover:bg-gray-200"

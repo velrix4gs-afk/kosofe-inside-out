@@ -15,8 +15,11 @@ export default async function DirectoryPage({
         .select('*')
         .eq('approved', true);
 
-    // Apply filters if they exist in the URL
-    if (q) query = query.ilike('business_name', `%${q}%`);
+    // If search box has text, search across Name, Category, Description, AND Address
+    if (q) {
+        query = query.or(`business_name.ilike.%${q}%,category.ilike.%${q}%,description.ilike.%${q}%,address.ilike.%${q}%`);
+    }
+
     if (category) query = query.eq('category', category);
     if (location) query = query.eq('address', location);
 
@@ -33,7 +36,7 @@ export default async function DirectoryPage({
                 </Link>
             </div>
 
-            {/* Render the filters component */}
+            {/* Smart Filter Component */}
             <DirectoryFilters />
 
             {error && (
@@ -46,7 +49,7 @@ export default async function DirectoryPage({
             {!error && (!businesses || businesses.length === 0) && (
                 <div className="bg-white p-10 rounded shadow-sm text-center border border-gray-200">
                     <h3 className="font-bold text-lg text-gray-800">No businesses found</h3>
-                    <p className="text-sm text-gray-500 mt-1">Try adjusting your search or filters above.</p>
+                    <p className="text-sm text-gray-500 mt-1">Try a different keyword or location.</p>
                 </div>
             )}
 
