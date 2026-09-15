@@ -12,31 +12,25 @@ export const metadata: Metadata = {
   description: "News that shape our community",
   icons: { icon: "/favicon.ico" },
   openGraph: {
-    type: "website",
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
     url: "https://kosofeinsideout.com",
     siteName: "Kosofe Inside Out",
-    images: [{ url: "...", width: 1200, height: 630, alt: "..." }],
-    fb: { app_id: "4423832997883572" }, // <--- OUR APP ID
+    images: [
+      {
+        url: "https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Kosofe Inside Out - News that shape our community",
+      },
+    ],
+    type: "website",
+    fb: { app_id: "4423832997883572" }, // <--- Added Facebook App ID
   },
-  title: "Kosofe Inside Out",
-  description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
-  url: "https://kosofeinsideout.com",
-  siteName: "Kosofe Inside Out",
-  images: [
-    {
-      url: "https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png",
-      width: 1200,
-      height: 630,
-      alt: "Kosofe Inside Out - News that shape our community",
-    },
-  ],
-  type: "website",
-},
   twitter: {
     card: "summary_large_image",
-    site: "@KosofeInsideOut", // <--- ADD THIS
+    site: "@KosofeInsideOut", // <--- Twitter handle for attribution
+    creator: "@KosofeInsideOut", // <--- Author attribution
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
     images: ["https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png"],
@@ -50,12 +44,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-        {/* AdSense Verification Meta Tag */}
-        <meta name="google-adsense-account" content="ca-pub-1724869420464430" />
       </head>
       <body className={`bg-[#f5f5f5] font-sans`}>
-        {/* Deferred AdSense Load - Doesn't block page render */}
-        {/* AdSense Verification & Loading */}
         <Script
           strategy="afterInteractive"
           async
