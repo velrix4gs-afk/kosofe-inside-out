@@ -12,20 +12,28 @@ export const metadata: Metadata = {
   description: "News that shape our community",
   icons: { icon: "/favicon.ico" },
   openGraph: {
+    type: "website",
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
     url: "https://kosofeinsideout.com",
     siteName: "Kosofe Inside Out",
-    images: [
-      {
-        url: "https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Kosofe Inside Out - News that shape our community",
-      },
-    ],
-    type: "website",
+    images: [{ url: "...", width: 1200, height: 630, alt: "..." }],
+    fb: { app_id: "4423832997883572" }, // <--- OUR APP ID
   },
+  title: "Kosofe Inside Out",
+  description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
+  url: "https://kosofeinsideout.com",
+  siteName: "Kosofe Inside Out",
+  images: [
+    {
+      url: "https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "Kosofe Inside Out - News that shape our community",
+    },
+  ],
+  type: "website",
+},
   twitter: {
     card: "summary_large_image",
     site: "@KosofeInsideOut", // <--- ADD THIS
