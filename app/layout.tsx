@@ -25,15 +25,17 @@ export const metadata: Metadata = {
       },
     ],
     type: "website",
-    fb: { app_id: "4423832997883572" }, // <--- Added Facebook App ID
   },
   twitter: {
     card: "summary_large_image",
-    site: "@KosofeInsideOut", // <--- Twitter handle for attribution
-    creator: "@KosofeInsideOut", // <--- Author attribution
+    site: "@KosofeInsideOut",
+    creator: "@KosofeInsideOut",
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
     images: ["https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png"],
+  },
+  other: {
+    "fb:app_id": "4423832997883572",
   },
 };
 
