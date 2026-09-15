@@ -34,8 +34,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         },
         twitter: {
             card: "summary_large_image",
+            site: "@KosofeInsideOut",      // <--- ADD THIS
+            creator: "@KosofeInsideOut",   // <--- ADD THIS (helps attribute the author)
             title: article.title,
-            description,
+            description: article.excerpt || "Read the latest news from Kosofe.",
             images: [imageUrl],
         },
     };

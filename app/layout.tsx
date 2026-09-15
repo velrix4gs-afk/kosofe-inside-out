@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@KosofeInsideOut", // <--- ADD THIS
     title: "Kosofe Inside Out",
     description: "Trusted hyperlocal news, community updates, and verified intelligence from Kosofe.",
     images: ["https://xznzsrlcinagmxdhedld.supabase.co/storage/v1/object/public/article-images/kio-og-image.png"],
