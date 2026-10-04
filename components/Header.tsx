@@ -28,7 +28,8 @@ export default function Header() {
         "Podcasts",
         "Public Notices",
         "Technology",
-        "Videos"
+        "Videos",
+        "Week in Review"
     ];
 
     return (
@@ -113,6 +114,7 @@ export default function Header() {
                             if (link === 'Contact') href = '/contact';
                             if (link === 'Public Notices') href = '/notices';
                             if (link === 'Opinion') href = '/categories/opinion';
+                            if (link === 'Week in Review') href = '/week-in-review';
                             if (link === 'Lifestyle') href = '/categories/lifestyle';
                             if (link === 'Photo Gallery') href = '/gallery';
                             if (link === 'Videos') href = '/videos';

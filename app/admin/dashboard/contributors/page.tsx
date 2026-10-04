@@ -30,6 +30,17 @@ export default function ContributorsPage() {
         setApplicants(applicants.map(a => a.id === id ? { ...a, status: newStatus } : a));
     };
 
+    // DELETE FUNCTION
+    const handleDelete = async (id: string, name: string) => {
+        if (!confirm(`Delete application from ${name}? This cannot be undone.`)) return;
+        const { error } = await supabase.from("contributors").delete().eq("id", id);
+        if (error) {
+            alert("Failed to delete: " + error.message);
+        } else {
+            setApplicants(applicants.filter(a => a.id !== id));
+        }
+    };
+
     if (loading) return <div className="min-h-screen flex justify-center items-center font-bold text-gray-500">Loading applicants...</div>;
 
     return (
@@ -54,16 +65,24 @@ export default function ContributorsPage() {
                                     <h3 className="font-bold text-lg text-gray-800">{app.full_name} {app.byline && <span className="text-sm text-gray-500">({app.byline})</span>}</h3>
                                     <p className="text-xs text-gray-500">Applied: {new Date(app.created_at).toLocaleDateString()}</p>
                                 </div>
-                                <select
-                                    value={app.status}
-                                    onChange={(e) => updateStatus(app.id, e.target.value)}
-                                    className={`text-xs font-bold px-2 py-1 rounded border ${app.status === 'approved' ? 'bg-green-100 text-green-700' : app.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}
-                                >
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                    <option value="contacted">Contacted</option>
-                                </select>
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        value={app.status}
+                                        onChange={(e) => updateStatus(app.id, e.target.value)}
+                                        className={`text-xs font-bold px-2 py-1 rounded border ${app.status === 'approved' ? 'bg-green-100 text-green-700' : app.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                        <option value="contacted">Contacted</option>
+                                    </select>
+                                    <button
+                                        onClick={() => handleDelete(app.id, app.full_name)}
+                                        className="bg-red-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-red-700"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm">
