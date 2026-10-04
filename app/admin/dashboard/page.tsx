@@ -120,6 +120,10 @@ export default function AdminDashboard() {
                     <span className="text-4xl mb-2">📢</span>
                     <span className="font-bold text-lg">Manage Ads</span>
                 </Link>
+                <Link href="/admin/dashboard/contributors" className="bg-orange-500 hover:bg-orange-600 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
+                    <span className="text-4xl mb-2">👥</span>
+                    <span className="font-bold text-lg">Contributors</span>
+                </Link>
                 <button onClick={handleSendNewsletter} className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">📧</span>
                     <span className="font-bold text-lg">Send Newsletter</span>
