@@ -6,7 +6,6 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
 import AdSlot from "@/components/AdSlot";
-import AdSense from "@/components/AdSense";
 import MostReadToday from "@/components/MostReadToday";
 
 export const metadata: Metadata = {
@@ -56,12 +55,13 @@ export default async function Home() {
     }
   } catch (e) { console.log("Weather API failed"); }
 
+  // LOAD MORE STORIES NOW (30 instead of 10)
   const { data: articles } = await supabase
     .from('articles')
     .select('*')
     .eq('published', true)
     .order('created_at', { ascending: false })
-    .limit(10);
+    .limit(30);
 
   const { data: breakingNews } = await supabase
     .from('breaking_news')
@@ -118,23 +118,17 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Top Story (Optimized Image with priority) */}
+          {/* Top Story */}
           <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
             <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
-              {articles[0]?.image_url ? (
+              {articles[0]?.image_url && (
                 <Image
                   src={articles[0].image_url}
                   alt={articles[0].title}
                   fill
                   priority
-                  className="w-full h-full object-cover"
+                  className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 66vw"
-                />
-              ) : (
-                <img
-                  src="/img/kio-og-image.jpg"
-                  alt="Kosofe Inside Out"
-                  className="w-full h-full object-cover"
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
@@ -147,19 +141,13 @@ export default async function Home() {
             </div>
           </Link>
 
-          {/* Sidebar Stories + SIDE AD SPACE */}
+          {/* Sidebar */}
           <div className="flex flex-col gap-4">
             {articles.slice(1, 3).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
                   {story.image_url && (
-                    <Image
-                      src={story.image_url}
-                      alt={story.title}
-                      fill
-                      className="object-cover"
-                      sizes="96px"
-                    />
+                    <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />
                   )}
                 </div>
                 <div>
@@ -170,26 +158,15 @@ export default async function Home() {
               </div>
             ))}
 
-            {/* --- NEW SIDE AD SLOT --- */}
             <div className="flex justify-center items-center w-full">
               <AdSlot placement="sidebar" />
-            </div>
-            {/* --- VIDEO AD (Between Story Tiles) --- */}
-            <div className="flex justify-center items-center w-full">
-              <AdSlot placement="in_feed_video" />
             </div>
 
             {articles.slice(3, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
                   {story.image_url && (
-                    <Image
-                      src={story.image_url}
-                      alt={story.title}
-                      fill
-                      className="object-cover"
-                      sizes="96px"
-                    />
+                    <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />
                   )}
                 </div>
                 <div>
@@ -202,9 +179,48 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      {/* --- GOOGLE ADSENSE (Middle of stories) --- */}
-      <div className="max-w-7xl mx-auto px-4 pb-8">
-        <AdSense />
+
+      {/* --- LATEST NEWS GRID (NEW!) --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-12">
+        <div className="flex justify-between items-center mb-6 border-b pb-3">
+          <h3 className="font-bold text-xl md:text-2xl text-gray-800 uppercase">Latest News</h3>
+          <Link href="/categories/news" className="text-xs font-bold text-[#c41e3a] hover:underline">View All News &rarr;</Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {articles.slice(4, 16).map((story) => (
+            <Link
+              key={story.id}
+              href={`/articles/${story.id}`}
+              className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group"
+            >
+              <div className="relative h-48 bg-gray-200 overflow-hidden">
+                {story.image_url && (
+                  <Image
+                    src={story.image_url}
+                    alt={story.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                )}
+                <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[10px] font-bold px-2 py-1 rounded uppercase z-10">
+                  {story.category || "News"}
+                </span>
+              </div>
+              <div className="p-4">
+                <h4 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">
+                  {story.title}
+                </h4>
+                {story.excerpt && (
+                  <p className="text-xs text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>
+                )}
+                <div className="text-[10px] text-gray-400 mt-3">
+                  {new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* --- MOST READ TODAY --- */}
@@ -237,14 +253,14 @@ export default async function Home() {
             </div>
           </div>
           <div className="flex-1 w-full border-t md:border-t-0 md:border-l pt-6 md:pt-0 md:pl-8">
-            <h3 className="font-bold mb-2 text-lg">Get Kosofe’s Biggest Stories Every Morning</h3>
+            <h3 className="font-bold mb-2 text-lg">Get Kosofe's Biggest Stories Every Morning</h3>
             <p className="text-sm text-gray-600 mb-4">Get the latest news and updates from Kosofe delivered to your inbox.</p>
             <NewsletterForm />
           </div>
         </div>
       </div>
 
-      {/* --- CATEGORIES, FEATURES, FOLLOW, WHATSAPP --- */}
+      {/* --- EXPLORE BY CATEGORY --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Explore By Category</h3>
@@ -262,6 +278,7 @@ export default async function Home() {
         </div>
       </div>
 
+      {/* --- FOLLOW US & TRENDING --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
@@ -288,6 +305,7 @@ export default async function Home() {
         </div>
       </div>
 
+      {/* --- WHATSAPP CTA --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>
