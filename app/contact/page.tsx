@@ -11,7 +11,6 @@ export default function ContactPage() {
         e.preventDefault();
         setLoading(true);
 
-        // Insert into Supabase
         const { error } = await supabase.from('inquiries').insert({
             name: formData.name,
             email: formData.email,
@@ -35,9 +34,9 @@ export default function ContactPage() {
                 <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-4">Contact Us</h1>
                 <div className="space-y-4 text-sm text-gray-600">
                     <p className="font-bold text-gray-800">We'd love to hear from you!</p>
-                    <p><span className="font-semibold text-gray-800">Address:</span> 1, Kosofe Road, Ketu, Lagos State, Nigeria.</p>
-                    <p><span className="font-semibold text-gray-800">Email:</span> <span className="text-[#c41e3a]">info@kosofeinsideout.com</span></p>
-                    <p><span className="font-semibold text-gray-800">Phone:</span> +234 800 123 4567</p>
+                    <p><span className="font-semibold text-gray-800">Address:</span> 31, Adetoro Adelaja Street, Magodo Phase 2, Lagos.</p>
+                    <p><span className="font-semibold text-gray-800">Email:</span> <span className="text-[#c41e3a]">kosofeinsideout@gmail.com</span></p>
+                    <p><span className="font-semibold text-gray-800">Phone:</span> +234 802 849 4099</p>
                 </div>
             </div>
 

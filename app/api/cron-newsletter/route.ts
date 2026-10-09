@@ -1,16 +1,40 @@
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest } from 'next/server';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Admin client (bypasses RLS)
 const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET() {
-    // 1. Fetch all subscribers
+export async function GET(request: NextRequest) {
+    // ============================================
+    // SECURITY: Verify the request
+    // ============================================
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '').trim();
+
+    let authorized = false;
+
+    // Path A: Vercel Cron sends the CRON_SECRET
+    if (token && token === process.env.CRON_SECRET) {
+        authorized = true;
+    }
+    // Path B: Logged-in admin sending their Supabase access token
+    else if (token) {
+        const { data: { user } } = await supabaseAdmin.auth.getUser(token);
+        if (user) authorized = true;
+    }
+
+    if (!authorized) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // ============================================
+    // FETCH SUBSCRIBERS
+    // ============================================
     const { data: subscribers, error } = await supabaseAdmin
         .from('subscribers')
         .select('email');
@@ -25,18 +49,18 @@ export async function GET() {
 
     const emails = subscribers.map(s => s.email);
 
-    // 2. Fetch the 5 most recent published stories
+    // ============================================
+    // FETCH TOP 5 STORIES
+    // ============================================
     const { data: latestStories } = await supabaseAdmin
         .from('articles')
-        .select('id, title, excerpt, image_url, category, created_at') // ADDED 'id' HERE
+        .select('id, title, excerpt, image_url, category, created_at')
         .eq('published', true)
         .order('created_at', { ascending: false })
         .limit(5);
 
-    // If no stories, use a generic headline
     const stories = (latestStories || []).slice(0, 5);
 
-    // 3. Construct the story cards HTML
     const storyCardsHtml = stories.map(story => `
     <div style="margin-bottom: 24px; border-bottom: 1px solid #eeeeee; padding-bottom: 16px;">
       ${story.image_url ? `<img src="${story.image_url}" alt="${story.title}" style="width: 100%; border-radius: 8px; margin-bottom: 12px; object-fit: cover; height: 200px;" />` : ''}
@@ -47,27 +71,24 @@ export async function GET() {
     </div>
   `).join('');
 
-    // 4. Construct the full email HTML
     const emailHtml = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #c41e3a; padding-bottom: 20px;">
         <h1 style="color: #c41e3a; font-size: 28px; margin: 0;">Kosofe Inside Out</h1>
         <p style="color: #888; font-size: 12px; margin-top: 5px;">Your Daily Morning Digest</p>
       </div>
-      
       <h2 style="color: #333; font-size: 22px; margin-bottom: 20px;">🌅 Good Morning! Here are today's top stories:</h2>
-      
       ${storyCardsHtml || '<p>No new stories today. Check back tomorrow!</p>'}
-      
       <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eeeeee; padding-top: 20px;">
         <a href="https://kosofeinsideout.com" style="background-color: #c41e3a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Visit Kosofe Inside Out</a>
       </div>
-      
-      <p style="color: #999; font-size: 12px; text-align: center; margin-top: 30px;">You are receiving this email because you subscribed to Kosofe Inside Out. You can unsubscribe anytime.</p>
+      <p style="color: #999; font-size: 12px; text-align: center; margin-top: 30px;">You are receiving this email because you subscribed to Kosofe Inside Out.</p>
     </div>
   `;
 
-    // 5. Send via Resend
+    // ============================================
+    // SEND
+    // ============================================
     try {
         const { data, error: sendError } = await resend.emails.send({
             from: 'Kosofe Inside Out <news@kosofeinsideout.com>',

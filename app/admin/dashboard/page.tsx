@@ -17,15 +17,8 @@ export default function AdminDashboard() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) { router.push('/admin/login'); return; }
 
-            const { data: storyData } = await supabase
-                .from('articles')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            const { count: dirCount } = await supabase
-                .from('directory_entries')
-                .select('*', { count: 'exact', head: true })
-                .eq('approved', true);
+            const { data: storyData } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
+            const { count: dirCount } = await supabase.from('directory_entries').select('*', { count: 'exact', head: true }).eq('approved', true);
 
             setArticles(storyData || []);
             setStats({
@@ -36,55 +29,37 @@ export default function AdminDashboard() {
             });
             setLoading(false);
         };
-
         checkUserAndFetch();
     }, [router]);
 
-    const openDeleteModal = (id: string) => {
-        setDeleteId(id);
-        setShowDeleteModal(true);
-    };
-
-    const closeDeleteModal = () => {
-        setShowDeleteModal(false);
-        setDeleteId(null);
-    };
+    const openDeleteModal = (id: string) => { setDeleteId(id); setShowDeleteModal(true); };
+    const closeDeleteModal = () => { setShowDeleteModal(false); setDeleteId(null); };
 
     const confirmDelete = async () => {
         if (!deleteId) return;
-
-        const { error } = await supabase
-            .from('articles')
-            .delete()
-            .eq('id', deleteId);
-
-        if (error) {
-            alert('Failed to delete: ' + error.message);
-        } else {
-            setArticles(articles.filter(a => a.id !== deleteId));
-            alert('Story deleted successfully!');
-        }
+        const { error } = await supabase.from('articles').delete().eq('id', deleteId);
+        if (error) alert('Failed: ' + error.message);
+        else { setArticles(articles.filter(a => a.id !== deleteId)); alert('Story deleted!'); }
         closeDeleteModal();
     };
 
     const handleSendNewsletter = async () => {
         if (!confirm('Send newsletter to all subscribers?')) return;
-        const res = await fetch('/api/cron-newsletter', { method: 'GET' });
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/cron-newsletter', {
+            headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+        });
         const data = await res.json();
-        if (data.message === 'No subscribers found') {
-            alert('No subscribers yet! Share your site so people can sign up.');
-        } else {
-            alert(data.message || 'Email sent successfully!');
-        }
+        if (data.message === 'No subscribers found') alert('No subscribers yet!');
+        else if (data.error) alert('Error: ' + data.error);
+        else alert(data.message || 'Email sent!');
     };
 
     if (loading) return <div className="min-h-screen flex justify-center items-center font-bold text-gray-500">Loading Command Center...</div>;
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <h1 className="text-2xl font-bold text-gray-800">Admin Command Center</h1>
-            </div>
+            <h1 className="text-2xl font-bold text-gray-800">Admin Command Center</h1>
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4">
@@ -106,7 +81,7 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* THE FIXED BUTTON GRID (No more overlap!) */}
+            {/* MAIN ACTIONS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link href="/admin/dashboard/create" className="bg-[#c41e3a] hover:bg-[#a0152e] text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
                     <span className="text-4xl mb-2">✍️</span>
@@ -116,37 +91,69 @@ export default function AdminDashboard() {
                     <span className="text-4xl mb-2">📂</span>
                     <span className="font-bold text-lg">Manage Directory</span>
                 </Link>
-                <Link href="/admin/dashboard/ads" className="bg-green-600 hover:bg-green-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">📢</span>
-                    <span className="font-bold text-lg">Manage Ads</span>
-                </Link>
-                <Link href="/admin/dashboard/contributors" className="bg-orange-500 hover:bg-orange-600 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">👥</span>
-                    <span className="font-bold text-lg">Contributors</span>
-                </Link>
-                <Link href="/admin/dashboard/week-review" className="bg-indigo-600 hover:bg-indigo-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">📅</span>
-                    <span className="font-bold text-lg">Week in Review</span>
-                </Link>
-                <button onClick={handleSendNewsletter} className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">📧</span>
-                    <span className="font-bold text-lg">Send Newsletter</span>
-                </button>
-                <Link href="/admin/dashboard/events" className="bg-pink-600 hover:bg-pink-700 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">📅</span>
-                    <span className="font-bold text-lg">Manage Events</span>
-                </Link>
-                <Link href="/admin/dashboard/content" className="bg-yellow-500 hover:bg-yellow-600 text-white p-6 rounded shadow-sm flex flex-col items-center justify-center transition">
-                    <span className="text-4xl mb-2">🗂️</span>
-                    <span className="font-bold text-lg">Manage Content</span>
-                </Link>
             </div>
 
-            {/* Recent Stories (Scrollable box added) */}
-            <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
-                <div className="flex justify-between items-center border-b pb-2 mb-4">
-                    <h3 className="font-bold text-gray-800">Recent Stories</h3>
+            {/* COMMUNITY */}
+            <div>
+                <h2 className="text-sm font-bold text-gray-500 uppercase mb-3">Community</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <Link href="/admin/dashboard/events" className="bg-pink-600 hover:bg-pink-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">📅</span>
+                        <span className="font-bold text-sm">Events</span>
+                    </Link>
+                    <Link href="/admin/dashboard/notices" className="bg-orange-500 hover:bg-orange-600 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">📌</span>
+                        <span className="font-bold text-sm">Notices</span>
+                    </Link>
+                    <Link href="/admin/dashboard/jobs" className="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">💼</span>
+                        <span className="font-bold text-sm">Jobs</span>
+                    </Link>
+                    <Link href="/admin/dashboard/marketplace" className="bg-cyan-600 hover:bg-cyan-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">🛒</span>
+                        <span className="font-bold text-sm">Marketplace</span>
+                    </Link>
+                    <Link href="/admin/dashboard/contributors" className="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">👥</span>
+                        <span className="font-bold text-sm">Contributors</span>
+                    </Link>
+                    <Link href="/admin/dashboard/week-review" className="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">📅</span>
+                        <span className="font-bold text-sm">Week in Review</span>
+                    </Link>
                 </div>
+            </div>
+
+            {/* CONTENT & MONETIZATION */}
+            <div>
+                <h2 className="text-sm font-bold text-gray-500 uppercase mb-3">Content & Monetization</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <Link href="/admin/dashboard/content" className="bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">🗂️</span>
+                        <span className="font-bold text-sm">Manage Content</span>
+                    </Link>
+                    <Link href="/admin/dashboard/ads" className="bg-green-600 hover:bg-green-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">📢</span>
+                        <span className="font-bold text-sm">Manage Ads</span>
+                    </Link>
+                    <Link href="/admin/dashboard/breaking" className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">📰</span>
+                        <span className="font-bold text-sm">Breaking News</span>
+                    </Link>
+                    <button onClick={handleSendNewsletter} className="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">📧</span>
+                        <span className="font-bold text-sm">Send Newsletter</span>
+                    </button>
+                    <Link href="/" className="bg-gray-500 hover:bg-gray-600 text-white p-4 rounded shadow-sm flex flex-col items-center justify-center transition">
+                        <span className="text-3xl mb-1">👁️</span>
+                        <span className="font-bold text-sm">View Site</span>
+                    </Link>
+                </div>
+            </div>
+
+            {/* Recent Stories */}
+            <div className="bg-white p-4 rounded shadow-sm border border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-4 border-b pb-2">Recent Stories</h3>
                 <div className="overflow-x-auto max-h-64 overflow-y-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-100 text-gray-700 font-bold sticky top-0">
@@ -173,15 +180,14 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Custom Delete Confirmation Modal */}
             {showDeleteModal && (
                 <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
                     <div className="bg-white rounded shadow-lg p-6 max-w-sm w-full">
                         <h2 className="text-lg font-bold text-gray-800 mb-2">Delete Story?</h2>
-                        <p className="text-sm text-gray-600 mb-4">This action cannot be undone. Are you sure you want to delete this story?</p>
+                        <p className="text-sm text-gray-600 mb-4">This action cannot be undone.</p>
                         <div className="flex gap-2 justify-end">
-                            <button onClick={closeDeleteModal} className="bg-gray-200 text-gray-700 px-4 py-2 rounded font-bold hover:bg-gray-300">Cancel</button>
-                            <button onClick={confirmDelete} className="bg-red-600 text-white px-4 py-2 rounded font-bold hover:bg-red-700">Yes, Delete</button>
+                            <button onClick={closeDeleteModal} className="bg-gray-200 text-gray-700 px-4 py-2 rounded font-bold">Cancel</button>
+                            <button onClick={confirmDelete} className="bg-red-600 text-white px-4 py-2 rounded font-bold">Yes, Delete</button>
                         </div>
                     </div>
                 </div>
