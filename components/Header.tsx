@@ -118,6 +118,7 @@ export default function Header() {
                             if (link === 'Lifestyle') href = '/categories/lifestyle';
                             if (link === 'Photo Gallery') href = '/gallery';
                             if (link === 'Videos') href = '/videos';
+                            if (link === 'Events') href = '/events';
                             if (link === 'Podcasts') href = '/podcasts';
                             if (link === 'Obituaries') href = '/obituaries';
                             if (link === 'Archives') href = '/archives';
