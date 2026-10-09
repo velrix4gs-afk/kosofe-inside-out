@@ -87,6 +87,17 @@ body {
   }
 }
 
+/* Breaking News Ticker Animation (Horizontal Scroll) */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 .animate-ticker {
-  animation: scroll-left 50s linear infinite;
+  animation: scroll-left 40s linear infinite;
 }

@@ -96,24 +96,19 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- BREAKING NEWS TICKER --- */}
+      {/* --- BREAKING NEWS TICKER (Horizontal Scroll) --- */}
       <div className="w-full bg-[#f5f5f5] py-4 px-0">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden relative">
-            <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10">
+          <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
+            <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 uppercase rounded-sm whitespace-nowrap flex-shrink-0 z-10 relative">
               Breaking News
             </span>
-            <div className="flex-1 overflow-hidden whitespace-nowrap relative h-5">
-              <div className="breaking-news-slider w-full">
-                {breakingNews && breakingNews.length > 0 ? (
-                  <div className="animate-scroll-up flex flex-col">
-                    {breakingNews.map((b) => (
-                      <span key={b.id} className="h-5 leading-5 block">{b.message}</span>
-                    ))}
-                  </div>
-                ) : (
-                  <span className="h-5 leading-5 block">No breaking news at the moment.</span>
-                )}
+            <div className="flex-1 overflow-hidden whitespace-nowrap">
+              <div className="animate-ticker inline-block">
+                {breakingNews && breakingNews.length > 0
+                  ? breakingNews.map((b) => `📰 ${b.message}`).join('   •   ')
+                  : "No breaking news at the moment."
+                }
               </div>
             </div>
           </div>
