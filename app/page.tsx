@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import NewsletterForm from "@/components/NewsletterForm";
 import AdSlot from "@/components/AdSlot";
+import AdSense from "@/components/AdSense";
 import MostReadToday from "@/components/MostReadToday";
 
 export const metadata: Metadata = {
@@ -55,7 +56,6 @@ export default async function Home() {
     }
   } catch (e) { console.log("Weather API failed"); }
 
-  // LOAD MORE STORIES NOW (30 instead of 10)
   const { data: articles } = await supabase
     .from('articles')
     .select('*')
@@ -81,10 +81,14 @@ export default async function Home() {
     );
   }
 
+  // Split stories for the Latest News grid — batch 1 and batch 2 with a Google ad in between
+  const latestNewsBatch1 = articles.slice(4, 10);   // 6 stories
+  const latestNewsBatch2 = articles.slice(10, 16);  // 6 stories
+
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- CUSTOM AD BANNERS (2 Slots) --- */}
+      {/* --- CUSTOM AD BANNERS (2 Slots at top) --- */}
       <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
@@ -96,7 +100,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- BREAKING NEWS TICKER (Horizontal Scroll) --- */}
+      {/* --- BREAKING NEWS TICKER --- */}
       <div className="w-full bg-[#f5f5f5] py-4 px-0">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
@@ -115,12 +119,12 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- HERO SECTION --- */}
+      {/* --- HERO SECTION (16:9) --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Top Story */}
+
           <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
-            <div className="relative h-[400px] md:h-[550px] bg-gray-200 rounded overflow-hidden">
+            <div className="relative aspect-video bg-gray-200 rounded overflow-hidden">
               {articles[0]?.image_url && (
                 <Image
                   src={articles[0].image_url}
@@ -134,8 +138,8 @@ export default async function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
               <div className="absolute bottom-0 left-0 p-6 w-full">
                 <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-                <h2 className="text-white text-2xl md:text-3xl font-bold leading-tight mt-2">{articles[0]?.title}</h2>
-                <p className="text-gray-300 text-sm mt-2 line-clamp-2">{articles[0]?.excerpt}</p>
+                <h2 className="text-white text-xl md:text-3xl font-bold leading-tight mt-2 line-clamp-2">{articles[0]?.title}</h2>
+                <p className="text-gray-300 text-sm mt-2 line-clamp-2 hidden md:block">{articles[0]?.excerpt}</p>
                 <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
               </div>
             </div>
@@ -143,7 +147,7 @@ export default async function Home() {
 
           {/* Sidebar */}
           <div className="flex flex-col gap-4">
-            {articles.slice(1, 3).map((story, idx) => (
+            {articles.slice(1, 2).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
                   {story.image_url && (
@@ -152,14 +156,35 @@ export default async function Home() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
-                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
+                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block line-clamp-2">{story.title}</Link>
                   <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
             ))}
 
+            {articles.slice(2, 3).map((story, idx) => (
+              <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
+                <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
+                  {story.image_url && (
+                    <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />
+                  )}
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
+                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block line-clamp-2">{story.title}</Link>
+                  <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* Custom Sidebar Ad */}
             <div className="flex justify-center items-center w-full">
               <AdSlot placement="sidebar" />
+            </div>
+
+            {/* Custom Video Ad between stories */}
+            <div className="flex justify-center items-center w-full">
+              <AdSlot placement="in_feed_video" />
             </div>
 
             {articles.slice(3, 4).map((story, idx) => (
@@ -171,7 +196,7 @@ export default async function Home() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
-                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block">{story.title}</Link>
+                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block line-clamp-2">{story.title}</Link>
                   <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
@@ -180,14 +205,58 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- LATEST NEWS GRID (NEW!) --- */}
-      <div className="max-w-7xl mx-auto px-4 pb-12">
+      {/* --- LATEST NEWS GRID (Batch 1: 6 stories) --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-8">
         <div className="flex justify-between items-center mb-6 border-b pb-3">
           <h3 className="font-bold text-xl md:text-2xl text-gray-800 uppercase">Latest News</h3>
           <Link href="/categories/news" className="text-xs font-bold text-[#c41e3a] hover:underline">View All News &rarr;</Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.slice(4, 16).map((story) => (
+          {latestNewsBatch1.map((story) => (
+            <Link
+              key={story.id}
+              href={`/articles/${story.id}`}
+              className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group"
+            >
+              <div className="relative h-48 bg-gray-200 overflow-hidden">
+                {story.image_url && (
+                  <Image
+                    src={story.image_url}
+                    alt={story.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                )}
+                <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[10px] font-bold px-2 py-1 rounded uppercase z-10">
+                  {story.category || "News"}
+                </span>
+              </div>
+              <div className="p-4">
+                <h4 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">
+                  {story.title}
+                </h4>
+                {story.excerpt && (
+                  <p className="text-xs text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>
+                )}
+                <div className="text-[10px] text-gray-400 mt-3">
+                  {new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* --- GOOGLE ADSENSE (Between Article Batches) --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-8">
+        <AdSense />
+      </div>
+
+      {/* --- LATEST NEWS GRID (Batch 2: 6 stories) --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {latestNewsBatch2.map((story) => (
             <Link
               key={story.id}
               href={`/articles/${story.id}`}
