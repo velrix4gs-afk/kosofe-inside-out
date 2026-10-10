@@ -81,9 +81,10 @@ export default async function Home() {
     );
   }
 
-  // Split stories for the Latest News grid — batch 1 and batch 2 with a Google ad in between
-  const latestNewsBatch1 = articles.slice(4, 10);   // 6 stories
-  const latestNewsBatch2 = articles.slice(10, 16);  // 6 stories
+  // Split stories
+  const desktopHeroExtras = articles.slice(4, 7);     // 3 extra stories under hero (desktop only)
+  const latestNewsBatch1 = articles.slice(7, 13);     // 6 stories
+  const latestNewsBatch2 = articles.slice(13, 19);    // 6 stories
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
@@ -119,33 +120,72 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- HERO SECTION (16:9) --- */}
+      {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          <Link href={`/articles/${articles[0].id}`} className="lg:col-span-2 relative group cursor-pointer block">
-            <div className="relative aspect-video bg-gray-200 rounded overflow-hidden">
-              {articles[0]?.image_url && (
-                <Image
-                  src={articles[0].image_url}
-                  alt={articles[0].title}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 66vw"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-6 w-full">
-                <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
-                <h2 className="text-white text-xl md:text-3xl font-bold leading-tight mt-2 line-clamp-2">{articles[0]?.title}</h2>
-                <p className="text-gray-300 text-sm mt-2 line-clamp-2 hidden md:block">{articles[0]?.excerpt}</p>
-                <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
-              </div>
-            </div>
-          </Link>
+          {/* LEFT COLUMN: Top Story + 3 Desktop-only Extras */}
+          <div className="lg:col-span-2 flex flex-col gap-4">
 
-          {/* Sidebar */}
+            {/* Top Story Hero */}
+            <Link href={`/articles/${articles[0].id}`} className="relative group cursor-pointer block">
+              <div className="relative aspect-video bg-gray-200 rounded overflow-hidden">
+                {articles[0]?.image_url && (
+                  <Image
+                    src={articles[0].image_url}
+                    alt={articles[0].title}
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 p-6 w-full">
+                  <span className="bg-[#c41e3a] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Top Story</span>
+                  <h2 className="text-white text-xl md:text-3xl font-bold leading-tight mt-2 line-clamp-2">{articles[0]?.title}</h2>
+                  <p className="text-gray-300 text-sm mt-2 line-clamp-2 hidden md:block">{articles[0]?.excerpt}</p>
+                  <div className="text-gray-400 text-xs mt-3">{new Date(articles[0]?.created_at).toLocaleDateString()} • 5 min read</div>
+                </div>
+              </div>
+            </Link>
+
+            {/* DESKTOP-ONLY: 3 compact stories under the hero to fill the gap */}
+            <div className="hidden lg:grid grid-cols-3 gap-4">
+              {desktopHeroExtras.map((story) => (
+                <Link
+                  key={story.id}
+                  href={`/articles/${story.id}`}
+                  className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group"
+                >
+                  <div className="relative h-32 bg-gray-200 overflow-hidden">
+                    {story.image_url && (
+                      <Image
+                        src={story.image_url}
+                        alt={story.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="300px"
+                      />
+                    )}
+                    <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase z-10">
+                      {story.category || "News"}
+                    </span>
+                  </div>
+                  <div className="p-3">
+                    <h4 className="font-bold text-gray-800 text-sm leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">
+                      {story.title}
+                    </h4>
+                    <div className="text-[10px] text-gray-400 mt-2">
+                      {new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: Sidebar */}
           <div className="flex flex-col gap-4">
             {articles.slice(1, 2).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
@@ -205,7 +245,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- LATEST NEWS GRID (Batch 1: 6 stories) --- */}
+      {/* --- LATEST NEWS GRID (Batch 1) --- */}
       <div className="max-w-7xl mx-auto px-4 pb-8">
         <div className="flex justify-between items-center mb-6 border-b pb-3">
           <h3 className="font-bold text-xl md:text-2xl text-gray-800 uppercase">Latest News</h3>
@@ -253,7 +293,7 @@ export default async function Home() {
         <AdSense />
       </div>
 
-      {/* --- LATEST NEWS GRID (Batch 2: 6 stories) --- */}
+      {/* --- LATEST NEWS GRID (Batch 2) --- */}
       <div className="max-w-7xl mx-auto px-4 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestNewsBatch2.map((story) => (
