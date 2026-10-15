@@ -376,12 +376,12 @@ export default async function Home() {
           <Link href="/categories" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Categories &rarr;</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[{ name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️' }, { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️' }, { name: 'COMMUNITY', desc: 'Stories that celebrate our everyday life', icon: '👥' }, { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' }, { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' }, { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' }, { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' }, { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },].map((cat, idx) => (
+          {[{ name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️' }, { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️' }, { name: 'community-affairs', desc: 'Stories that celebrate our everyday life', icon: '👥' }, { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' }, { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' }, { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' }, { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' }, { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },].map((cat, idx) => (
             <div key={idx} className="bg-white p-6 rounded shadow-sm border-t-4 border-[#c41e3a] text-center cursor-pointer hover:shadow-md transition-all duration-200">
               <div className="text-3xl mb-2">{cat.icon}</div>
               <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base">{cat.name}</h4>
               <p className="text-[10px] md:text-xs text-gray-500 leading-tight">{cat.desc}</p>
-              <Link href={`/categories/${cat.name.toLowerCase()}`} className="mt-3 text-[10px] font-bold text-[#c41e3a] border border-[#c41e3a] px-3 py-1 rounded hover:bg-[#c41e3a] hover:text-white transition block">View all</Link>
+              <Link href={`/categories/${cat.name.toLowerCase().replace(/\s+/g, '-')}`} className="mt-3 text-[10px] font-bold text-[#c41e3a] border border-[#c41e3a] px-3 py-1 rounded hover:bg-[#c41e3a] hover:text-white transition block">View all</Link>
             </div>
           ))}
         </div>

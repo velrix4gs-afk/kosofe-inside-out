@@ -78,7 +78,7 @@ export default function Header() {
                         <Link href="/categories/news" className={`px-3 py-1 rounded transition-colors ${pathname === '/categories/news' ? 'bg-[#c41e3a] text-white' : 'hover:text-[#c41e3a]'}`}>News</Link>
                         <Link href="/categories/politics" className={`${pathname === '/categories/politics' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Politics</Link>
                         <Link href="/categories/governance" className={`${pathname === '/categories/governance' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Governance</Link>
-                        <Link href="/categories/community" className={`${pathname === '/categories/community' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Community</Link>
+                        <Link href="/categories/community-affairs" className={`${pathname === '/categories/community-affairs' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Community Affairs</Link>
                         <Link href="/categories/business" className={`${pathname === '/categories/business' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Business</Link>
                         <Link href="/categories/sports" className={`${pathname === '/categories/sports' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Sports</Link>
                         <Link href="/categories/entertainment" className={`${pathname === '/categories/entertainment' ? 'text-[#c41e3a] border-b-2 border-[#c41e3a]' : 'hover:text-[#c41e3a]'}`}>Entertainment</Link>

@@ -36,7 +36,7 @@ export default function Footer() {
                     <ul className="space-y-2 text-xs">
                         <li><Link href="/categories/politics" className="hover:text-[#c41e3a] transition-colors">Politics</Link></li>
                         <li><Link href="/categories/governance" className="hover:text-[#c41e3a] transition-colors">Governance</Link></li>
-                        <li><Link href="/categories/community" className="hover:text-[#c41e3a] transition-colors">Community</Link></li>
+                        <li><Link href="/categories/community-affairs" className="hover:text-[#c41e3a] transition-colors">community-affairs</Link></li>
                         <li><Link href="/categories/business" className="hover:text-[#c41e3a] transition-colors">Business</Link></li>
                         <li><Link href="/categories/entertainment" className="hover:text-[#c41e3a] transition-colors">Entertainment</Link></li>
                     </ul>

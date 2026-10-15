@@ -4,7 +4,7 @@ export default function CategoriesPage() {
     const categories = [
         { name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️', slug: 'politics' },
         { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️', slug: 'governance' },
-        { name: 'COMMUNITY', desc: 'Stories that celebrate our everyday life', icon: '👥', slug: 'community' },
+        { name: 'COMMUNITY AFFAIRS', desc: 'Stories that celebrate our everyday life', icon: '👥', slug: 'community-affairs' },
         { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈', slug: 'business' },
         { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐', slug: 'entertainment' },
         { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️', slug: 'opinion' },

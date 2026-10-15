@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import RichTextEditor from "@/components/RichTextEditor";
 
 const AVAILABLE_TAGS = [
-    'Politics', 'Governance', 'Community', 'Business', 'Sports',
+    'Politics', 'Governance', 'Community Affairs', 'Business', 'Sports',
     'Entertainment', 'Lifestyle', 'Technology', 'Health', 'Education',
     'Environment', 'Agriculture', 'Security', 'Religion', 'Opinion'
 ];
