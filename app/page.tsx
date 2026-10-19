@@ -81,15 +81,14 @@ export default async function Home() {
     );
   }
 
-  // Split stories
-  const desktopHeroExtras = articles.slice(4, 7);     // 3 extra stories under hero (desktop only)
-  const latestNewsBatch1 = articles.slice(7, 13);     // 6 stories
-  const latestNewsBatch2 = articles.slice(13, 19);    // 6 stories
+  const desktopHeroExtras = articles.slice(4, 7);
+  const latestNewsBatch1 = articles.slice(7, 13);
+  const latestNewsBatch2 = articles.slice(13, 19);
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- CUSTOM AD BANNERS (2 Slots at top) --- */}
+      {/* --- CUSTOM AD BANNERS --- */}
       <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
@@ -123,20 +122,18 @@ export default async function Home() {
       {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* LEFT COLUMN: Top Story + 3 Desktop-only Extras */}
+          
           <div className="lg:col-span-2 flex flex-col gap-4">
-
-            {/* Top Story Hero */}
             <Link href={`/articles/${articles[0].id}`} className="relative group cursor-pointer block">
-              <div className="relative aspect-video bg-gray-200 rounded overflow-hidden">
+              {/* Hero Background set to black, object-contain to stop cropping */}
+              <div className="relative aspect-video bg-black rounded overflow-hidden">
                 {articles[0]?.image_url && (
                   <Image
                     src={articles[0].image_url}
                     alt={articles[0].title}
                     fill
                     priority
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 1024px) 100vw, 66vw"
                   />
                 )}
@@ -150,49 +147,31 @@ export default async function Home() {
               </div>
             </Link>
 
-            {/* DESKTOP-ONLY: 3 compact stories under the hero to fill the gap */}
+            {/* DESKTOP EXTRA STORIES */}
             <div className="hidden lg:grid grid-cols-3 gap-4">
               {desktopHeroExtras.map((story) => (
-                <Link
-                  key={story.id}
-                  href={`/articles/${story.id}`}
-                  className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group"
-                >
-                  <div className="relative h-32 bg-gray-200 overflow-hidden">
+                <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group">
+                  <div className="relative aspect-video bg-black overflow-hidden">
                     {story.image_url && (
-                      <Image
-                        src={story.image_url}
-                        alt={story.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="300px"
-                      />
+                      <Image src={story.image_url} alt={story.title} fill className="object-contain group-hover:scale-105 transition-transform duration-300" sizes="300px" />
                     )}
-                    <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase z-10">
-                      {story.category || "News"}
-                    </span>
+                    <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase z-10">{story.category || "News"}</span>
                   </div>
                   <div className="p-3">
-                    <h4 className="font-bold text-gray-800 text-sm leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">
-                      {story.title}
-                    </h4>
-                    <div className="text-[10px] text-gray-400 mt-2">
-                      {new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })}
-                    </div>
+                    <h4 className="font-bold text-gray-800 text-sm leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">{story.title}</h4>
+                    <div className="text-[10px] text-gray-400 mt-2">{new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })}</div>
                   </div>
                 </Link>
               ))}
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Sidebar */}
+          {/* SIDEBAR */}
           <div className="flex flex-col gap-4">
-            {articles.slice(1, 2).map((story, idx) => (
+            {articles.slice(1, 3).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
-                  {story.image_url && (
-                    <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />
-                  )}
+                  {story.image_url && <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />}
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
@@ -201,38 +180,14 @@ export default async function Home() {
                 </div>
               </div>
             ))}
-
-            {articles.slice(2, 3).map((story, idx) => (
-              <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
-                <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
-                  {story.image_url && (
-                    <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />
-                  )}
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
-                  <Link href={`/articles/${story.id}`} className="font-bold text-sm leading-snug mt-1 hover:text-[#c41e3a] cursor-pointer block line-clamp-2">{story.title}</Link>
-                  <p className="text-[10px] text-gray-500 mt-2">{new Date(story.created_at).toLocaleDateString()}</p>
-                </div>
-              </div>
-            ))}
-
-            {/* Custom Sidebar Ad */}
-            <div className="flex justify-center items-center w-full">
-              <AdSlot placement="sidebar" />
-            </div>
-
-            {/* Custom Video Ad between stories */}
-            <div className="flex justify-center items-center w-full">
-              <AdSlot placement="in_feed_video" />
-            </div>
+            
+            <div className="flex justify-center items-center w-full"><AdSlot placement="sidebar" /></div>
+            <div className="flex justify-center items-center w-full"><AdSlot placement="in_feed_video" /></div>
 
             {articles.slice(3, 4).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
                 <div className="relative w-24 h-24 shrink-0 bg-gray-200 rounded overflow-hidden">
-                  {story.image_url && (
-                    <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />
-                  )}
+                  {story.image_url && <Image src={story.image_url} alt={story.title} fill className="object-cover" sizes="96px" />}
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-[#c41e3a] uppercase">{story.category || "News"}</span>
@@ -253,86 +208,47 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestNewsBatch1.map((story) => (
-            <Link
-              key={story.id}
-              href={`/articles/${story.id}`}
-              className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group"
-            >
-              <div className="relative h-48 bg-gray-200 overflow-hidden">
+            <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group">
+              <div className="relative aspect-video bg-black overflow-hidden">
                 {story.image_url && (
-                  <Image
-                    src={story.image_url}
-                    alt={story.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
+                  <Image src={story.image_url} alt={story.title} fill className="object-contain group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                 )}
-                <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[10px] font-bold px-2 py-1 rounded uppercase z-10">
-                  {story.category || "News"}
-                </span>
+                <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[10px] font-bold px-2 py-1 rounded uppercase z-10">{story.category || "News"}</span>
               </div>
               <div className="p-4">
-                <h4 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">
-                  {story.title}
-                </h4>
-                {story.excerpt && (
-                  <p className="text-xs text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>
-                )}
-                <div className="text-[10px] text-gray-400 mt-3">
-                  {new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
-                </div>
+                <h4 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">{story.title}</h4>
+                {story.excerpt && <p className="text-xs text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>}
+                <div className="text-[10px] text-gray-400 mt-3">{new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
               </div>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* --- GOOGLE ADSENSE (Between Article Batches) --- */}
-      <div className="max-w-7xl mx-auto px-4 pb-8">
-        <AdSense />
-      </div>
+      {/* --- GOOGLE ADSENSE --- */}
+      <div className="max-w-7xl mx-auto px-4 pb-8"><AdSense /></div>
 
       {/* --- LATEST NEWS GRID (Batch 2) --- */}
       <div className="max-w-7xl mx-auto px-4 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestNewsBatch2.map((story) => (
-            <Link
-              key={story.id}
-              href={`/articles/${story.id}`}
-              className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group"
-            >
-              <div className="relative h-48 bg-gray-200 overflow-hidden">
+            <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group">
+              <div className="relative aspect-video bg-black overflow-hidden">
                 {story.image_url && (
-                  <Image
-                    src={story.image_url}
-                    alt={story.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
+                  <Image src={story.image_url} alt={story.title} fill className="object-contain group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                 )}
-                <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[10px] font-bold px-2 py-1 rounded uppercase z-10">
-                  {story.category || "News"}
-                </span>
+                <span className="absolute top-2 left-2 bg-[#c41e3a] text-white text-[10px] font-bold px-2 py-1 rounded uppercase z-10">{story.category || "News"}</span>
               </div>
               <div className="p-4">
-                <h4 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">
-                  {story.title}
-                </h4>
-                {story.excerpt && (
-                  <p className="text-xs text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>
-                )}
-                <div className="text-[10px] text-gray-400 mt-3">
-                  {new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
-                </div>
+                <h4 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 group-hover:text-[#c41e3a] transition-colors">{story.title}</h4>
+                {story.excerpt && <p className="text-xs text-gray-500 mt-2 line-clamp-2">{story.excerpt}</p>}
+                <div className="text-[10px] text-gray-400 mt-3">{new Date(story.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
               </div>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* --- MOST READ TODAY --- */}
       <MostReadToday />
 
       {/* --- WEATHER & STAY INFORMED --- */}
@@ -376,7 +292,7 @@ export default async function Home() {
           <Link href="/categories" className="text-xs font-bold text-[#c41e3a] hover:underline">View All Categories &rarr;</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[{ name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️' }, { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️' }, { name: 'community-affairs', desc: 'Stories that celebrate our everyday life', icon: '👥' }, { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' }, { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' }, { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' }, { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' }, { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },].map((cat, idx) => (
+          {[{ name: 'POLITICS', desc: 'Stay updated in political decisions', icon: '🏛️' }, { name: 'GOVERNANCE', desc: 'Accountability, leadership, and policies', icon: '⚖️' }, { name: 'COMMUNITY AFFAIRS', desc: 'Stories that celebrate our everyday life', icon: '👥' }, { name: 'BUSINESS', desc: 'Local business news, startups, and economy', icon: '📈' }, { name: 'ENTERTAINMENT', desc: 'Celebrity gist, events, and entertainment', icon: '⭐' }, { name: 'OPINION', desc: 'Thoughts, analysis, and views from Kosofe', icon: '✍️' }, { name: 'SPORTS', desc: 'Local games, athletes, and sporting events', icon: '⚽' }, { name: 'LIFESTYLE', desc: 'Culture, fashion, food, and community living', icon: '🌿' },].map((cat, idx) => (
             <div key={idx} className="bg-white p-6 rounded shadow-sm border-t-4 border-[#c41e3a] text-center cursor-pointer hover:shadow-md transition-all duration-200">
               <div className="text-3xl mb-2">{cat.icon}</div>
               <h4 className="font-bold text-gray-800 mb-1 text-sm md:text-base">{cat.name}</h4>
@@ -406,25 +322,4 @@ export default async function Home() {
           <ul className="space-y-3 text-sm">
             {articles.slice(0, 5).map((story, idx) => (
               <li key={idx} className="flex gap-2 items-center">
-                <span className="font-bold text-[#c41e3a] text-xs">{(idx + 1).toString().padStart(2, '0')}</span>
-                <Link href={`/articles/${story.id}`} className="text-gray-800 hover:text-[#c41e3a] cursor-pointer truncate">{story.title}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* --- WHATSAPP CTA --- */}
-      <div className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div>
-            <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
-            <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
-          </div>
-          <a href="https://whatsapp.com/channel/0029Vb7tfwGIiRoytADSsU1L" target="_blank"><button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button></a>
-        </div>
-      </div>
-
-    </main>
-  );
-}
+ 
