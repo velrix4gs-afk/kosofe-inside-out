@@ -88,7 +88,6 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] font-sans">
 
-      {/* --- CUSTOM AD BANNERS --- */}
       <div className="w-full bg-white border-b py-2 md:py-4 px-4 pt-4 md:pt-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
@@ -100,7 +99,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- BREAKING NEWS TICKER --- */}
       <div className="w-full bg-[#f5f5f5] py-4 px-0">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-white p-3 flex items-center gap-4 rounded shadow-sm border-l-4 border-[#c41e3a] overflow-hidden">
@@ -119,13 +117,11 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- HERO SECTION --- */}
       <div className="w-full px-0 pb-8">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           <div className="lg:col-span-2 flex flex-col gap-4">
             <Link href={`/articles/${articles[0].id}`} className="relative group cursor-pointer block">
-              {/* Hero Background set to black, object-contain to stop cropping */}
               <div className="relative aspect-video bg-black rounded overflow-hidden">
                 {articles[0]?.image_url && (
                   <Image
@@ -147,7 +143,6 @@ export default async function Home() {
               </div>
             </Link>
 
-            {/* DESKTOP EXTRA STORIES */}
             <div className="hidden lg:grid grid-cols-3 gap-4">
               {desktopHeroExtras.map((story) => (
                 <Link key={story.id} href={`/articles/${story.id}`} className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition block group">
@@ -166,7 +161,6 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* SIDEBAR */}
           <div className="flex flex-col gap-4">
             {articles.slice(1, 3).map((story, idx) => (
               <div key={idx} className="bg-white p-4 rounded shadow-sm border-l-4 border-[#c41e3a] flex gap-4">
@@ -200,7 +194,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- LATEST NEWS GRID (Batch 1) --- */}
       <div className="max-w-7xl mx-auto px-4 pb-8">
         <div className="flex justify-between items-center mb-6 border-b pb-3">
           <h3 className="font-bold text-xl md:text-2xl text-gray-800 uppercase">Latest News</h3>
@@ -225,10 +218,8 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- GOOGLE ADSENSE --- */}
       <div className="max-w-7xl mx-auto px-4 pb-8"><AdSense /></div>
 
-      {/* --- LATEST NEWS GRID (Batch 2) --- */}
       <div className="max-w-7xl mx-auto px-4 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestNewsBatch2.map((story) => (
@@ -251,7 +242,6 @@ export default async function Home() {
 
       <MostReadToday />
 
-      {/* --- WEATHER & STAY INFORMED --- */}
       <div className="max-w-6xl mx-auto px-4 pb-8">
         <div className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row gap-8 justify-between items-start">
           <div className="flex-1 w-full">
@@ -285,7 +275,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- EXPLORE BY CATEGORY --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-lg md:text-xl text-gray-800 uppercase">Explore By Category</h3>
@@ -303,7 +292,6 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* --- FOLLOW US & TRENDING --- */}
       <div className="max-w-6xl mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded shadow-sm">
           <h3 className="font-bold text-lg mb-6">FOLLOW US</h3>
@@ -322,4 +310,24 @@ export default async function Home() {
           <ul className="space-y-3 text-sm">
             {articles.slice(0, 5).map((story, idx) => (
               <li key={idx} className="flex gap-2 items-center">
- 
+                <span className="font-bold text-[#c41e3a] text-xs">{(idx + 1).toString().padStart(2, '0')}</span>
+                <Link href={`/articles/${story.id}`} className="text-gray-800 hover:text-[#c41e3a] cursor-pointer truncate">{story.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 pb-12">
+        <div className="bg-[#25D366] text-white p-6 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+          <div>
+            <h4 className="font-bold text-lg">Join our WhatsApp Channel</h4>
+            <p className="text-sm opacity-90">Get real-time updates and breaking news delivered to your phone.</p>
+          </div>
+          <a href="https://whatsapp.com/channel/0029Vb7tfwGIiRoytADSsU1L" target="_blank"><button className="bg-white text-[#25D366] px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition">Join Now</button></a>
+        </div>
+      </div>
+
+    </main>
+  );
+}
