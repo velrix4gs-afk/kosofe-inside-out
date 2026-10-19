@@ -12,44 +12,12 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
     setLightboxOpen(true);
   };
 
-  // Process the content to preserve spaces
-  const renderContent = () => {
-    let content = (article.content || '')
-      .replace(/&shy;|\u00AD/g, '')
-      .replace(/&nbsp;/g, ' ');
-
-    // THE FIX: Convert empty paragraphs into real blank lines
-    content = content
-      // Handle <p><br></p> (Quill's empty line)
-      .replace(/<p><br\s*\/?><\/p>/gi, '<p class="empty-line">&nbsp;</p>')
-      // Handle <p></p>
-      .replace(/<p><\/p>/gi, '<p class="empty-line">&nbsp;</p>')
-      // Handle <p> </p> (paragraph with only a space)
-      .replace(/<p>\s+<\/p>/gi, '<p class="empty-line">&nbsp;</p>');
-
-    // Fix video embeds
-    content = content.replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"');
-
-    return content;
-  };
-
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Custom CSS to force blank lines to actually show */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .article-content .empty-line {
-          min-height: 1.5em;
-          display: block;
-        }
-        .article-content p:empty {
-          display: block;
-          min-height: 1.5em;
-        }
-        /* Ensure paragraphs aren't collapsed */
-        .article-content p {
-          margin-top: 1em;
-          margin-bottom: 1em;
-        }
+        .article-content .empty-line { min-height: 1.5em; display: block; }
+        .article-content p:empty { display: block; min-height: 1.5em; }
+        .article-content p { margin-top: 1em; margin-bottom: 1em; }
       `}} />
 
       <ImageLightbox 
@@ -73,27 +41,30 @@ export default function ArticleViewer({ article, galleryImages, readTime }: any)
           <span className="flex items-center gap-1">👁️ {article.views || 0} views</span>
         </div>
         
-        {/* Main Image */}
+        {/* Main Image - Changed to show full image without cropping */}
         {article.image_url && (
           <div 
-            className="w-full h-64 md:h-96 bg-gray-200 rounded mb-6 overflow-hidden relative cursor-pointer group"
+            className="w-full bg-black rounded mb-6 overflow-hidden relative cursor-pointer group"
             onClick={() => openLightbox(article.image_url, article.title)}
           >
-            <img src={article.image_url} alt={article.title} className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
+            <img src={article.image_url} alt={article.title} className="w-full h-auto object-contain transition-transform duration-200 group-hover:scale-105" />
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <span className="bg-white/80 text-gray-800 px-3 py-1 rounded text-sm font-bold">🔍 View Full</span>
             </div>
           </div>
         )}
         
-        {/* Content with the empty-line preservation */}
         <div 
           className="article-content text-gray-700 leading-relaxed w-full text-left" 
           style={{ hyphens: 'none', wordBreak: 'break-word', overflowWrap: 'break-word' }} 
-          dangerouslySetInnerHTML={{ __html: renderContent() }} 
+          dangerouslySetInnerHTML={{ 
+            __html: (article.content || '')
+              .replace(/&shy;|\u00AD/g, '')
+              .replace(/&nbsp;/g, ' ')
+              .replace(/<iframe/g, '<iframe class="w-full aspect-video rounded mb-4"')
+          }} 
         />
 
-        {/* Gallery Section */}
         {galleryImages && galleryImages.length > 0 && (
           <div className="mt-10 pt-8 border-t border-gray-200">
             <h3 className="font-bold text-xl text-gray-800 mb-4">Photo Gallery</h3>
